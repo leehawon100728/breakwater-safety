@@ -1,0 +1,3519 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>해안 안전 관제</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    :root {
+      --navy: #10243a;
+      --navy-light: #183653;
+      --blue: #2d7dd2;
+      --green: #159c7b;
+      --yellow: #e4a015;
+      --orange: #e9772b;
+      --red: #e34e4e;
+      --text: #14263e;
+      --muted: #71839f;
+      --line: #dce4ed;
+      --page: #f1f4f8;
+      --white: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--page);
+      font-family: Pretendard, "Noto Sans KR", -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button,
+    select,
+    textarea,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+    }
+
+    /* 왼쪽 사이드바 */
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 5;
+      display: flex;
+      width: 300px;
+      flex-direction: column;
+      padding: 24px 18px 20px;
+      overflow-y: auto;
+      color: #eaf1f8;
+      background: var(--navy);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 8px 22px;
+      border-bottom: 1px solid #ffffff24;
+    }
+
+    .brand-symbol {
+      display: grid;
+      width: 50px;
+      height: 50px;
+      flex: 0 0 50px;
+      place-items: center;
+      color: white;
+      background: var(--blue);
+      font-size: 27px;
+      font-weight: 700;
+    }
+
+    .brand-name {
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -.05em;
+    }
+
+    .brand-sub {
+      margin-top: 3px;
+      color: #a8b8ca;
+      font-size: 11px;
+    }
+
+    .sidebar-heading {
+      margin: 24px 8px 12px;
+      color: #a8b8ca;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .area-list {
+      display: grid;
+      gap: 4px;
+    }
+
+    .area-button {
+      display: flex;
+      width: 100%;
+      min-height: 50px;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px;
+      border: 1px solid transparent;
+      color: #e4edf7;
+      background: transparent;
+      text-align: left;
+    }
+
+    .area-button:hover {
+      background: #ffffff0b;
+    }
+
+    .area-button.active {
+      border-color: #416789;
+      border-left: 4px solid var(--blue);
+      background: var(--navy-light);
+    }
+
+    .area-name {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .area-status {
+      color: #b7c6d6;
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 11px;
+      height: 11px;
+      flex: 0 0 11px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .dot.watch { background: var(--yellow); }
+    .dot.warn { background: var(--orange); }
+    .dot.danger { background: var(--red); animation: blink 1s infinite; }
+
+    @keyframes blink {
+      50% { opacity: .35; }
+    }
+
+    .sea-list {
+      display: none;
+      padding: 3px 0 6px 26px;
+    }
+
+    .sea-list.open {
+      display: grid;
+      gap: 3px;
+    }
+
+    .sea-button {
+      display: flex;
+      width: 100%;
+      min-height: 38px;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      border: 0;
+      color: #aebed0;
+      background: transparent;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .sea-button:hover,
+    .sea-button.active {
+      color: white;
+      background: #ffffff12;
+    }
+
+    .sea-button .dot {
+      width: 8px;
+      height: 8px;
+      flex-basis: 8px;
+    }
+
+    .sea-button .sea-name {
+      flex: 1;
+    }
+
+    .sea-meta {
+      color: #8fa3b8;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .sea-meta b {
+      color: #ffb0b0;
+    }
+
+    .sidebar-spacer {
+      flex: 1;
+      min-height: 20px;
+    }
+
+    .system-status {
+      margin: 18px 4px 0;
+      padding: 15px;
+      border: 1px solid #ffffff30;
+      color: #c1cfdd;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .system-status strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #dce6f1;
+      font-size: 13px;
+    }
+
+    .system-status .connected { color: #55d1ae; font-weight: 700; }
+    .system-status .degraded { color: #f2c166; font-weight: 700; }
+
+    /* 본문 영역 */
+    .main {
+      min-height: 100vh;
+      margin-left: 300px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      display: flex;
+      min-height: 80px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, .97);
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.04em;
+    }
+
+    .page-subtitle {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .topbar-tools {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .monitor-status,
+    .clock,
+    .tool-button {
+      display: flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      background: white;
+      color: #526681;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .clock {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .monitor-status {
+      border-color: #bfe8db;
+      color: #148668;
+      background: #eff9f5;
+      font-weight: 700;
+    }
+
+    .monitor-status .dot {
+      width: 8px;
+      height: 8px;
+      flex-basis: 8px;
+    }
+
+    .monitor-status.alarm {
+      border-color: #f3b9b9;
+      color: #c83232;
+      background: #fff0f0;
+    }
+
+    .monitor-status.alarm .dot {
+      background: var(--red);
+      animation: blink 1s infinite;
+    }
+
+    .tool-button:hover {
+      background: #f6f8fb;
+    }
+
+    .tool-button.strong {
+      border-color: var(--navy);
+      color: white;
+      background: var(--navy);
+      font-weight: 700;
+    }
+
+    .tool-button.strong:hover {
+      background: var(--navy-light);
+    }
+
+    .tool-button.icon {
+      width: 42px;
+      padding: 0;
+      font-size: 17px;
+    }
+
+    .dashboard {
+      display: grid;
+      gap: 16px;
+      padding: 18px 22px 34px;
+    }
+
+    /* 상단 요약 카드 */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .summary-card {
+      padding: 15px 18px;
+      border: 1px solid var(--line);
+      border-top: 3px solid var(--blue);
+      background: white;
+      box-shadow: 0 5px 14px #16324f08;
+    }
+
+    .summary-card.alarm {
+      border-top-color: var(--red);
+    }
+
+    .summary-label {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .summary-value {
+      margin-top: 6px;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .summary-value small {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .summary-note {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* 경보 현황 */
+    .alarm-panel {
+      border: 1px solid #f0b4b4;
+      border-left: 5px solid var(--red);
+      background: #fff7f7;
+    }
+
+    .alarm-head {
+      padding: 11px 16px 4px;
+      color: #b42828;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .alarm-row {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 16px;
+      border: 0;
+      border-top: 1px solid #f6d5d5;
+      color: var(--text);
+      background: transparent;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .alarm-row:hover {
+      background: #ffeded;
+    }
+
+    .alarm-row .alarm-site {
+      min-width: 150px;
+      font-weight: 800;
+    }
+
+    .alarm-row .alarm-detail {
+      flex: 1;
+      color: #4a5c75;
+    }
+
+    .alarm-row .alarm-stage {
+      color: #b42828;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge {
+      display: inline-block;
+      min-width: 44px;
+      padding: 4px 8px;
+      color: white;
+      background: var(--green);
+      font-size: 11px;
+      font-weight: 800;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .badge.watch { background: var(--yellow); }
+    .badge.warn { background: var(--orange); }
+    .badge.danger { background: var(--red); }
+
+    /* 메인 대시보드 그리드 */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      align-items: start;
+      gap: 16px;
+    }
+
+    .center-column,
+    .right-column {
+      display: grid;
+      min-width: 0;
+      gap: 16px;
+    }
+
+    .panel {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: white;
+      box-shadow: 0 5px 14px #16324f08;
+    }
+
+    .panel-header {
+      display: flex;
+      min-height: 54px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 10px;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .panel-note {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .panel-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .mini-button {
+      min-height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      color: #40546f;
+      background: white;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .mini-button:hover {
+      background: #f3f6fa;
+    }
+
+    .mini-button.primary {
+      border-color: var(--navy);
+      color: white;
+      background: var(--navy);
+    }
+
+    /* CCTV */
+    .cctv-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 3px;
+      background: #0b1620;
+    }
+
+    .cctv-grid.one {
+      grid-template-columns: 1fr;
+    }
+
+    .tile {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      background: #0b1620;
+      outline: 0 solid var(--red);
+      user-select: none;
+    }
+
+    .tile canvas {
+      position: absolute;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .tile.alert {
+      outline-width: 3px;
+      outline-offset: -3px;
+      animation: tile-alert 1s infinite;
+    }
+
+    @keyframes tile-alert {
+      50% { outline-color: #e34e4e55; }
+    }
+
+    .tile > span,
+    .tile > button {
+      position: absolute;
+      z-index: 1;
+    }
+
+    .live-tag {
+      top: 10px;
+      left: 10px;
+      padding: 4px 8px;
+      color: white;
+      background: #5d6b7a;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .live-tag.real {
+      background: var(--red);
+    }
+
+    .tile-name {
+      bottom: 10px;
+      left: 10px;
+      max-width: calc(100% - 90px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 4px 8px;
+      color: white;
+      background: #000000a0;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .tile-time {
+      top: 11px;
+      right: 46px;
+      color: white;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 1px 4px #000;
+    }
+
+    .tile-count {
+      right: 10px;
+      bottom: 10px;
+      padding: 4px 8px;
+      color: white;
+      background: #000000a0;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .tile-count.hot {
+      background: var(--red);
+    }
+
+    .tile-full {
+      top: 6px;
+      right: 6px;
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ffffff55;
+      color: white;
+      background: #00000080;
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .tile-full:hover {
+      background: #000000c0;
+    }
+
+    .cctv-disclaimer {
+      padding: 8px 14px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* 위치도 */
+    .map-wrap {
+      position: relative;
+    }
+
+    #map {
+      height: 440px;
+      background: #a9cfdd;
+    }
+
+    #map.editing {
+      cursor: crosshair;
+    }
+
+    .map-hint {
+      padding: 9px 16px;
+      border-top: 1px solid var(--line);
+      color: #40546f;
+      background: #f7f9fc;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .map-hint.warn {
+      color: #8a5a00;
+      background: #fff6e5;
+    }
+
+    .site-mk,
+    .zone-mk,
+    .cam-mk,
+    .end-mk {
+      position: absolute;
+      padding: 3px 7px;
+      color: white;
+      background: var(--green);
+      box-shadow: 0 1px 5px #0008;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+      transform: translate(-50%, -150%);
+    }
+
+    .site-mk { cursor: pointer; opacity: .88; }
+    .site-mk.on { outline: 2px solid white; opacity: 1; }
+    .site-mk.watch { background: var(--yellow); }
+    .site-mk.warn { background: var(--orange); }
+    .site-mk.danger { background: var(--red); }
+    .zone-mk { background: #10243ad0; transform: translate(-50%, 60%); font-size: 10px; }
+    .cam-mk { background: var(--navy); border: 2px solid white; transform: translate(-50%, -50%); font-size: 10px; }
+    .end-mk { color: var(--text); background: #fffffff0; transform: translate(-50%, 90%); font-size: 10px; }
+
+    .mk {
+      position: absolute;
+      display: grid;
+      width: 22px;
+      height: 22px;
+      place-items: center;
+      border: 3px solid white;
+      border-radius: 50%;
+      color: white;
+      background: var(--blue);
+      box-shadow: 0 0 0 6px #2d7dd255, 0 1px 6px #000a;
+      font-size: 12px;
+      font-weight: 800;
+      transform: translate(-50%, -50%);
+    }
+
+    .mk.hot {
+      background: var(--red);
+      box-shadow: 0 0 0 6px #e34e4e66, 0 1px 6px #000a;
+      animation: blink 1s infinite;
+    }
+
+    .map-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      padding: 9px 16px;
+      border-top: 1px solid var(--line);
+      color: #526681;
+      font-size: 11px;
+    }
+
+    .legend-line {
+      width: 18px;
+      height: 5px;
+    }
+
+    /* 24시간 예보 */
+    .fc-card {
+      padding: 15px 16px;
+      border: 1px solid var(--line);
+      background: white;
+      box-shadow: 0 5px 14px #16324f08;
+    }
+
+    .fc-title {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .fc-title small {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .fc-bars {
+      position: relative;
+      display: flex;
+      height: 84px;
+      align-items: flex-end;
+      gap: 2px;
+      margin-top: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .fc-bars i {
+      flex: 1;
+      min-height: 3px;
+      background: var(--green);
+    }
+
+    .fc-bars i.watch { background: var(--yellow); }
+    .fc-bars i.warn { background: var(--orange); }
+    .fc-bars i.danger { background: var(--red); }
+
+    .fc-bars .fc-line {
+      position: absolute;
+      right: 0;
+      left: 0;
+      border-top: 1px dashed var(--text);
+    }
+
+    .fc-hours {
+      display: flex;
+      gap: 2px;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .fc-hours span {
+      flex: 1;
+      overflow: visible;
+      width: 0;
+      white-space: nowrap;
+    }
+
+    .fc-text {
+      margin-top: 9px;
+      color: #40546f;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .fc-text.hot {
+      color: #b42828;
+    }
+
+    .modal-body input[type="text"],
+    .modal-body input[type="url"] {
+      width: 100%;
+      margin-top: 5px;
+      padding: 9px 10px;
+      border: 1px solid #c4cfdc;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--red);
+    }
+
+    .legend-dot.blue { background: var(--blue); }
+    .legend-dot.cam { border-radius: 0; background: var(--navy); }
+
+    .pulse {
+      animation: pulse 1.2s infinite;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    @keyframes pulse {
+      0% { opacity: .7; transform: scale(.6); }
+      100% { opacity: 0; transform: scale(1.7); }
+    }
+
+    .people-list {
+      border-top: 1px solid var(--line);
+    }
+
+    .people-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 16px;
+      border-bottom: 1px solid #edf1f6;
+      font-size: 13px;
+    }
+
+    .people-row:last-child {
+      border-bottom: 0;
+    }
+
+    .people-num {
+      display: grid;
+      width: 22px;
+      height: 22px;
+      flex: 0 0 22px;
+      place-items: center;
+      border-radius: 50%;
+      color: white;
+      background: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .people-num.hot {
+      background: var(--red);
+    }
+
+    .people-row .where {
+      flex: 1;
+      font-weight: 700;
+    }
+
+    .people-row .cam,
+    .people-empty {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .people-empty {
+      padding: 12px 16px;
+    }
+
+    /* 기록 */
+    .log-list {
+      max-height: 260px;
+      overflow-y: auto;
+      font-size: 12px;
+    }
+
+    .log-row {
+      display: grid;
+      grid-template-columns: 62px 46px 130px 1fr;
+      gap: 8px;
+      align-items: baseline;
+      padding: 7px 16px;
+      border-bottom: 1px solid #edf1f6;
+    }
+
+    .log-row time {
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .log-type {
+      font-weight: 800;
+    }
+
+    .log-type.alert, .log-type.detect { color: #c83232; }
+    .log-type.broadcast { color: #a96e00; }
+    .log-type.dispatch { color: var(--blue); }
+    .log-type.clear { color: #148668; }
+    .log-type.sys { color: var(--muted); }
+
+    .log-site {
+      overflow: hidden;
+      color: #40546f;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* 위험도 카드 */
+    .risk-card {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--green);
+      background: white;
+      box-shadow: 0 5px 14px #16324f08;
+    }
+
+    .risk-card.watch { border-top-color: var(--yellow); }
+    .risk-card.warn { border-top-color: var(--orange); }
+    .risk-card.danger { border-top-color: var(--red); }
+
+    .risk-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .risk-value {
+      margin-top: 10px;
+      font-size: 44px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .risk-value small {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .risk-track {
+      position: relative;
+    }
+
+    .risk-mark {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      width: 2px;
+      background: var(--text);
+    }
+
+    .risk-description {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .steps {
+      display: grid;
+      gap: 0;
+      margin: 14px 0 0;
+      padding: 0;
+      border-top: 1px solid var(--line);
+      list-style: none;
+    }
+
+    .steps li {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 0;
+      border-bottom: 1px solid #edf1f6;
+      color: #9aa8bb;
+      font-size: 12px;
+    }
+
+    .steps li i {
+      display: grid;
+      width: 18px;
+      height: 18px;
+      flex: 0 0 18px;
+      place-items: center;
+      border: 2px solid #c9d3df;
+      border-radius: 50%;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 800;
+    }
+
+    .steps li span {
+      flex: 1;
+      font-weight: 700;
+    }
+
+    .steps li time {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .steps li.done {
+      color: var(--text);
+    }
+
+    .steps li.done i {
+      border-color: var(--green);
+      color: white;
+      background: var(--green);
+    }
+
+    .steps li.now {
+      color: #c83232;
+    }
+
+    .steps li.now i {
+      border-color: var(--red);
+      animation: blink 1s infinite;
+    }
+
+    .next-hint {
+      margin-top: 12px;
+      padding: 10px 11px;
+      color: #40546f;
+      background: #f3f6fa;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .next-hint.hot {
+      color: #a32222;
+      background: #ffecec;
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .action-button {
+      min-height: 46px;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .action-button.broadcast {
+      border-color: var(--yellow);
+      background: #fff6e5;
+    }
+
+    .action-button.primary {
+      border-color: var(--red);
+      color: white;
+      background: var(--red);
+    }
+
+    .action-button.wide {
+      grid-column: 1 / -1;
+      min-height: 38px;
+      color: #40546f;
+      font-size: 12px;
+    }
+
+    .action-button:hover {
+      filter: brightness(.96);
+    }
+
+    /* 센서 카드 */
+    .metric-card {
+      padding: 15px 16px;
+      border: 1px solid var(--line);
+      background: white;
+      box-shadow: 0 5px 14px #16324f08;
+    }
+
+    .metric-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .metric-icon {
+      font-size: 17px;
+    }
+
+    .metric-value {
+      margin-top: 8px;
+      font-size: 28px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .metric-value small {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .progress-track {
+      height: 7px;
+      margin-top: 10px;
+      background: #e9eef4;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--green);
+      transition: width .25s ease;
+    }
+
+    .progress-fill.watch { background: var(--yellow); }
+    .progress-fill.warn { background: var(--orange); }
+    .progress-fill.danger { background: var(--red); }
+
+    .metric-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    /* CCTV 전체화면 */
+    .wall {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      color: white;
+      background: #05090d;
+    }
+
+    .wall-bar {
+      display: flex;
+      min-height: 48px;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      background: #0d1a27;
+      font-size: 13px;
+    }
+
+    .wall.nohud .wall-bar,
+    .wall.nohud .wall-alarm,
+    .wall.nohud .tile > span,
+    .wall.nohud .tile > button {
+      display: none;
+    }
+
+    .wall-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .wall-info {
+      flex: 1;
+      color: #b8c7d7;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .wall-button {
+      min-height: 34px;
+      padding: 0 11px;
+      border: 1px solid #ffffff38;
+      color: #e4edf7;
+      background: transparent;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .wall-button:hover {
+      background: #ffffff18;
+    }
+
+    .wall-button.on {
+      border-color: var(--blue);
+      background: var(--blue);
+    }
+
+    .wall-button.broadcast {
+      border-color: var(--yellow);
+      color: #ffd98a;
+    }
+
+    .wall-button.dispatch {
+      border-color: var(--red);
+      color: white;
+      background: var(--red);
+    }
+
+    .wall-alarm {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 6px 12px;
+      background: #5a1414;
+    }
+
+    .wall-alarm button {
+      min-height: 30px;
+      padding: 0 10px;
+      border: 1px solid #ffffff55;
+      color: white;
+      background: #00000040;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .wall-grid {
+      display: grid;
+      min-height: 0;
+      flex: 1;
+      grid-auto-rows: minmax(0, 1fr);
+      gap: 3px;
+    }
+
+    .wall-grid .tile {
+      aspect-ratio: auto;
+    }
+
+    .wall-grid.many .tile-time,
+    .wall-grid.many .tile-full {
+      display: none;
+    }
+
+    .wall-grid.many .tile {
+      cursor: pointer;
+    }
+
+    .wall-hint {
+      position: absolute;
+      bottom: 44px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      padding: 5px 9px;
+      color: #c6d2df;
+      background: #000000a0;
+      font-size: 11px;
+      pointer-events: none;
+    }
+
+    /* 모달 */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      padding: 16px;
+      overflow-y: auto;
+      place-items: center;
+      background: #0b1a2a99;
+    }
+
+    .modal-box {
+      width: min(520px, 100%);
+      border-top: 4px solid var(--blue);
+      background: white;
+      box-shadow: 0 18px 50px #0b1a2a55;
+    }
+
+    .modal-box.danger {
+      border-top-color: var(--red);
+    }
+
+    .modal-title {
+      margin: 0;
+      padding: 16px 20px 0;
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .modal-body {
+      padding: 12px 20px 4px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .modal-body label {
+      display: block;
+      margin-top: 12px;
+      color: #40546f;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .modal-body select,
+    .modal-body textarea,
+    .modal-body input[type="range"] {
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    .modal-body select,
+    .modal-body textarea {
+      padding: 9px 10px;
+      border: 1px solid #c4cfdc;
+      color: var(--text);
+      background: white;
+      font-size: 13px;
+    }
+
+    .modal-body textarea {
+      min-height: 96px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .modal-body .check {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 600;
+    }
+
+    .modal-body .check input {
+      width: auto;
+      margin: 0;
+    }
+
+    .fact-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .fact-table th,
+    .fact-table td {
+      padding: 7px 0;
+      border-bottom: 1px solid #edf1f6;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .fact-table th {
+      width: 92px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .modal-section {
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+
+    .modal-section h4 {
+      margin: 0 0 4px;
+      font-size: 13px;
+    }
+
+    .demo-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .modal-foot {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 14px 20px 18px;
+    }
+
+    .modal-foot button {
+      min-height: 42px;
+      padding: 0 18px;
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: white;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .modal-foot .ok {
+      border-color: var(--blue);
+      color: white;
+      background: var(--blue);
+    }
+
+    .modal-box.danger .modal-foot .ok {
+      border-color: var(--red);
+      background: var(--red);
+    }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 40;
+      max-width: min(420px, calc(100vw - 44px));
+      padding: 13px 17px;
+      color: white;
+      background: var(--navy);
+      box-shadow: 0 8px 24px #10243a33;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: .2s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1250px) {
+      .sidebar { width: 240px; }
+      .main { margin-left: 240px; }
+      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .dashboard-grid { grid-template-columns: minmax(0, 1fr) 280px; }
+      .clock { display: none; }
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        position: static;
+        width: 100%;
+        padding: 14px;
+      }
+
+      .brand { padding: 0 5px 12px; }
+      .sidebar-heading { margin: 12px 5px 8px; }
+      .area-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .sea-list { padding-left: 6px; }
+      .sidebar-spacer, .system-status { display: none; }
+      .main { margin-left: 0; }
+
+      .topbar {
+        position: static;
+        flex-wrap: wrap;
+        padding: 12px 14px;
+      }
+
+      .topbar-tools { flex-wrap: wrap; }
+      .dashboard { padding: 12px 12px 24px; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .right-column { order: -1; }
+      .cctv-grid { grid-template-columns: 1fr; }
+      .log-row { grid-template-columns: 58px 40px 1fr; }
+      .log-row .log-msg { grid-column: 1 / -1; }
+      .alarm-row { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-symbol">〰</div>
+        <div>
+          <div class="brand-name">해안 안전 관제</div>
+          <div class="brand-sub">방파제 추락사고 예방 · 경찰 상황실</div>
+        </div>
+      </div>
+
+      <div class="sidebar-heading">감시 구역 선택</div>
+
+      <div class="area-list" id="areaList"></div>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="system-status" id="systemStatus"></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1 class="page-title">방파제 실시간 감시</h1>
+          <div class="page-subtitle" id="pageSubtitle"></div>
+        </div>
+
+        <div class="topbar-tools">
+          <div class="monitor-status" id="monitorStatus"><span class="dot"></span><span id="monitorText">실시간 모니터링</span></div>
+          <div class="clock" id="clock">--:--:--</div>
+          <button class="tool-button" id="demoButton" type="button" title="가상 인원·시연 그래픽 켜기/끄기"></button>
+          <button class="tool-button strong" id="wallButton" type="button" title="CCTV만 전체화면으로 보기 (F)">⛶ CCTV 전체화면</button>
+          <button class="tool-button icon" id="soundButton" type="button" aria-label="경보음 켜기/끄기">🔔</button>
+          <button class="tool-button icon" id="settingsButton" type="button" aria-label="설정">⚙</button>
+        </div>
+      </header>
+
+      <div class="dashboard">
+        <section class="summary-grid" aria-label="관제 요약">
+          <article class="summary-card">
+            <div class="summary-label">감시 구역</div>
+            <div class="summary-value"><span id="sumSites">0</span> <small>개소</small></div>
+            <div class="summary-note" id="sumSitesNote"></div>
+          </article>
+
+          <article class="summary-card">
+            <div class="summary-label">온라인 카메라</div>
+            <div class="summary-value"><span id="sumCams">0</span> <small id="sumCamsTotal"></small></div>
+            <div class="summary-note" id="sumCamsNote"></div>
+          </article>
+
+          <article class="summary-card" id="sumPeopleCard">
+            <div class="summary-label">방파제 내 감지 인원</div>
+            <div class="summary-value"><span id="sumPeople">0</span> <small>명</small></div>
+            <div class="summary-note" id="sumPeopleNote"></div>
+          </article>
+
+          <article class="summary-card" id="sumAlarmCard">
+            <div class="summary-label">진행 중 경보</div>
+            <div class="summary-value"><span id="sumAlarm">0</span> <small>건</small></div>
+            <div class="summary-note" id="sumAlarmNote"></div>
+          </article>
+        </section>
+
+        <section class="alarm-panel" id="alarmPanel" hidden aria-live="assertive">
+          <div class="alarm-head">⚠ 경보 현황 — 항목을 누르면 해당 구역으로 이동합니다</div>
+          <div id="alarmList"></div>
+        </section>
+
+        <section class="dashboard-grid">
+          <div class="center-column">
+            <section class="panel">
+              <div class="panel-header">
+                <div>
+                  <h2 class="panel-title">현장 CCTV · 사람 인식</h2>
+                  <span class="panel-note" id="cameraLabel"></span>
+                </div>
+                <div class="panel-tools">
+                  <button class="mini-button" id="webcamButton" type="button">📷 카메라 연결</button>
+                  <button class="mini-button" id="fileButton" type="button">🎞 영상 파일</button>
+                  <button class="mini-button" id="streamButton" type="button">🌐 스트림 주소</button>
+                  <button class="mini-button" id="calButton" type="button" hidden>📐 위치 보정</button>
+                  <button class="mini-button" id="disconnectButton" type="button" hidden>연결 해제</button>
+                  <button class="mini-button primary" id="wallButton2" type="button">⛶ 전체화면</button>
+                  <input id="fileInput" type="file" accept="video/*" hidden />
+                </div>
+              </div>
+
+              <div class="cctv-grid" id="cctvGrid"></div>
+
+              <div class="cctv-disclaimer" id="cctvDisclaimer"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h2 class="panel-title">방파제 내 인원 위치</h2>
+                <div class="panel-tools">
+                  <button class="mini-button" id="geoStart" type="button">📍 방파제 선 지정</button>
+                  <button class="mini-button primary" id="geoDone" type="button" hidden>완료</button>
+                  <button class="mini-button" id="geoCancel" type="button" hidden>취소</button>
+                  <button class="mini-button" id="geoReset" type="button" hidden>↺ 기본값</button>
+                  <button class="mini-button" id="mapSite" type="button">현재 구역</button>
+                  <button class="mini-button" id="mapAll" type="button">전체 구역</button>
+                </div>
+              </div>
+
+              <div id="map" aria-label="방파제 지도"></div>
+              <div class="map-hint" id="mapHint"></div>
+              <div class="map-legend">
+                <span class="legend-item"><i class="legend-dot"></i>경보 중 감지 인원</span>
+                <span class="legend-item"><i class="legend-dot blue"></i>감지 인원</span>
+                <span class="legend-item"><i class="legend-line" style="background:#7bd3ff"></i>A 진입부</span>
+                <span class="legend-item"><i class="legend-line" style="background:#ffd166"></i>B 중간부</span>
+                <span class="legend-item"><i class="legend-line" style="background:#ff8c6b"></i>C 끝단</span>
+                <span class="legend-item"><i class="legend-dot cam"></i>CCTV (구간 기준 표시)</span>
+              </div>
+
+              <div class="people-list" id="peopleList"></div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-header">
+                <h2 class="panel-title">상황 기록</h2>
+                <div class="panel-tools">
+                  <button class="mini-button" id="csvButton" type="button">⬇ CSV 저장</button>
+                  <button class="mini-button" id="clearLogButton" type="button">기록 비우기</button>
+                </div>
+              </div>
+              <div class="log-list" id="logList"></div>
+            </section>
+          </div>
+
+          <aside class="right-column" aria-label="위험도 및 대응">
+            <article class="risk-card" id="riskCard">
+              <div class="risk-heading">
+                <span>종합 위험도</span>
+                <span class="badge" id="riskBadge">정상</span>
+              </div>
+
+              <div class="risk-value"><span id="riskValue">0</span><small> / 100점</small></div>
+
+              <div class="progress-track risk-track">
+                <div class="progress-fill" id="riskBar"></div>
+                <div class="risk-mark" id="riskMark" title="경보 기준"></div>
+              </div>
+
+              <div class="risk-description">
+                <span id="riskSource"></span>
+                <span id="riskThreshold"></span>
+              </div>
+
+              <ol class="steps" id="steps">
+                <li><i>1</i><span>위험 경보</span><time></time></li>
+                <li><i>2</i><span>인원 감지</span><time></time></li>
+                <li><i>3</i><span>안내 방송</span><time></time></li>
+                <li><i>4</i><span>현장 출동</span><time></time></li>
+              </ol>
+
+              <div class="next-hint" id="nextHint"></div>
+
+              <div class="action-buttons">
+                <button class="action-button broadcast" id="broadcastButton" type="button">📢 안내 방송</button>
+                <button class="action-button primary" id="dispatchButton" type="button">🚨 현장 출동</button>
+                <button class="action-button wide" id="closeButton" type="button" hidden>✔ 상황 종료</button>
+              </div>
+            </article>
+
+            <article class="fc-card">
+              <div class="fc-title"><span>24시간 위험도 예보</span><small id="fcRange"></small></div>
+              <div class="fc-bars" id="fcBars"></div>
+              <div class="fc-hours" id="fcHours"></div>
+              <div class="fc-text" id="fcText"></div>
+            </article>
+
+            <article class="metric-card">
+              <div class="metric-heading"><span>풍속</span><span class="metric-icon">🌬️</span></div>
+              <div class="metric-value"><span id="windValue">-</span> <small>m/s</small></div>
+              <div class="progress-track"><div class="progress-fill" id="windBar"></div></div>
+              <div class="metric-footer"><span id="windStatus"></span><span>주의 14 · 위험 20 m/s</span></div>
+            </article>
+
+            <article class="metric-card">
+              <div class="metric-heading"><span>강수량</span><span class="metric-icon">🌧️</span></div>
+              <div class="metric-value"><span id="rainValue">-</span> <small>mm/h</small></div>
+              <div class="progress-track"><div class="progress-fill" id="rainBar"></div></div>
+              <div class="metric-footer"><span id="rainStatus"></span><span>주의 15 · 위험 30 mm/h</span></div>
+            </article>
+
+            <article class="metric-card">
+              <div class="metric-heading"><span>유의 파고</span><span class="metric-icon">🌊</span></div>
+              <div class="metric-value"><span id="waveValue">-</span> <small>m</small></div>
+              <div class="progress-track"><div class="progress-fill" id="waveBar"></div></div>
+              <div class="metric-footer"><span id="waveStatus"></span><span>주의 1.5 · 위험 3 m</span></div>
+            </article>
+          </aside>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- CCTV 전체화면 -->
+  <div class="wall" id="wall" hidden>
+    <div class="wall-bar">
+      <span class="badge" id="wallBadge">정상</span>
+      <span class="wall-title" id="wallTitle"></span>
+      <span class="wall-info" id="wallInfo"></span>
+      <button class="wall-button" data-mode="single" type="button" title="단축키 1">단일</button>
+      <button class="wall-button" data-mode="site" type="button" title="단축키 2">구역</button>
+      <button class="wall-button" data-mode="all" type="button" title="단축키 3">전체 카메라</button>
+      <button class="wall-button" id="wallPrev" type="button" title="←">◀</button>
+      <button class="wall-button" id="wallNext" type="button" title="→">▶</button>
+      <button class="wall-button broadcast" id="wallBroadcast" type="button">📢 안내 방송</button>
+      <button class="wall-button dispatch" id="wallDispatch" type="button">🚨 현장 출동</button>
+      <button class="wall-button" id="wallClose" type="button" title="Esc">✕ 닫기</button>
+    </div>
+    <div class="wall-alarm" id="wallAlarm" hidden></div>
+    <div class="wall-grid" id="wallGrid"></div>
+    <div class="wall-hint" id="wallHint">1·2·3 화면 분할 · ←→ 이동 · H 표시 숨김 · Esc 닫기</div>
+  </div>
+
+  <div class="modal" id="modal" hidden>
+    <div class="modal-box" id="modalBox" role="dialog" aria-modal="true">
+      <h3 class="modal-title" id="modalTitle"></h3>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-foot">
+        <button id="modalCancel" type="button">취소</button>
+        <button class="ok" id="modalOk" type="button">확인</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    /* ------------------------------------------------------------------
+       현장 설정
+       - line: 방파제 중심선 [위도, 경도] (입구 → 끝단).
+         src가 "OSM"이면 OpenStreetMap 자료, "위성 사진 판독"이면 위성 사진을 보고 직접 딴 좌표.
+       - line이 없는 구역은 lat/lon 근처에 임시 선으로 표시되며,
+         화면의 '방파제 선 지정'으로 위성 지도 위에 직접 찍어 저장합니다.
+       ------------------------------------------------------------------ */
+    const SITE_DATA = [
+      { gu: "해운대구", name: "해운대 미포 방파제", src: "OSM", line: [[35.15751, 129.17103], [35.15754, 129.17089], [35.15739, 129.17014], [35.15752, 129.16971]], lat: 35.15751, lon: 129.17103, len: 300, base: { wind: 14.2, rain: 13.7, wave: 1.1 } },
+      { gu: "해운대구", name: "송정항 방파제", src: "위성 사진 판독", line: [[35.179737, 129.206311], [35.179934, 129.206928], [35.180132, 129.207249], [35.180395, 129.207464], [35.180548, 129.207571]], lat: 35.179737, lon: 129.206311, len: 300, base: { wind: 12.6, rain: 11.0, wave: 1.3 } },
+      { gu: "해운대구", name: "수영만 요트경기장 방파제", src: "위성 사진 판독", line: [[35.156878, 129.14091], [35.157316, 129.140427], [35.157535, 129.140159], [35.15747, 129.139354]], lat: 35.156878, lon: 129.14091, len: 300, base: { wind: 15.0, rain: 14.2, wave: 1.4 } },
+      { gu: "수영구", name: "민락항 방파제", src: "OSM", line: [[35.15338, 129.12691], [35.15308, 129.1272], [35.1529, 129.12772], [35.15242, 129.12992], [35.15262, 129.131]], lat: 35.15338, lon: 129.12691, len: 300, base: { wind: 18.3, rain: 15, wave: 2.1 } },
+      { gu: "남구", name: "오륙도 방파제 (해상)", src: "OSM", line: [[35.09091, 129.11342], [35.09052, 129.11238], [35.08514, 129.10631], [35.08456, 129.10552]], lat: 35.09091, lon: 129.11342, len: 300, base: { wind: 14.1, rain: 12.4, wave: 1.6 } },
+      { gu: "사하구", name: "다대포항 방파제", src: "위성 사진 판독", line: [[35.05121, 128.982484], [35.052825, 128.983698], [35.053321, 128.98394], [35.053725, 128.983736], [35.053893, 128.983531]], lat: 35.05121, lon: 128.982484, len: 300, base: { wind: 9.5, rain: 2.3, wave: 1.0 } },
+      { gu: "강서구", name: "가덕도 대항항 방파제", src: "위성 사진 판독", line: [[35.012291, 128.827015], [35.012357, 128.825379], [35.012841, 128.825325], [35.013214, 128.825137]], lat: 35.012291, lon: 128.827015, len: 300, base: { wind: 11.4, rain: 2.0, wave: 1.2 } }
+    ];
+
+    // 위험도 산정 기준: 이 값에 도달하면 해당 요소가 100% (기상특보 기준 참고, 현장에 맞게 조정)
+    const LIMIT = { wind: 20, rain: 30, wave: 3 };
+    const WEIGHT = { wind: 35, rain: 20, wave: 45 };
+
+    const LEVELS = [
+      { min: 70, key: "danger", name: "위험" },
+      { min: 50, key: "warn", name: "주의" },
+      { min: 30, key: "watch", name: "관심" },
+      { min: 0, key: "", name: "정상" }
+    ];
+
+    const BROADCASTS = [
+      { title: "대피 안내", text: "경찰에서 안내 말씀드립니다. 현재 기상 악화로 방파제 출입이 위험합니다. 방파제에 계신 분들은 지금 즉시 안전한 곳으로 이동해 주시기 바랍니다." },
+      { title: "추락 경고", text: "경고 방송입니다. 높은 파도와 강한 바람으로 추락 위험이 매우 높습니다. 테트라포드 위에 계신 분은 즉시 내려와 육지 쪽으로 대피하십시오." },
+      { title: "출동 예고", text: "경찰에서 알려드립니다. 잠시 후 경찰관이 현장에 도착합니다. 방파제에 계신 분들은 경찰관의 안내에 따라 주시기 바랍니다." }
+    ];
+
+    const MIN_SCORE = 0.5;          // 사람 인식 최소 신뢰도
+    const WEATHER_INTERVAL = 10 * 60 * 1000;
+    const HOLD_MS = 10 * 60 * 1000; // 수동 종료 후 같은 구역 경보 보류 시간
+
+    const $ = (id) => document.getElementById(id);
+    const clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    const fmtTime = (ts) => {
+      const d = new Date(ts);
+      return [d.getHours(), d.getMinutes(), d.getSeconds()].map((n) => String(n).padStart(2, "0")).join(":");
+    };
+    const fmtDur = (ms) => {
+      const s = Math.max(0, Math.floor(ms / 1000));
+      return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+    };
+
+    function setHTML(el, html) {
+      if (el._html !== html) {
+        el._html = html;
+        el.innerHTML = html;
+      }
+    }
+
+    function setText(id, text) {
+      const el = $(id);
+      if (el.textContent !== String(text)) el.textContent = text;
+    }
+
+    function store(key, value) {
+      try {
+        if (value === undefined) return JSON.parse(localStorage.getItem(key));
+        localStorage.setItem(key, JSON.stringify(value));
+      } catch (e) { /* 저장소를 쓸 수 없어도 화면은 동작 */ }
+      return null;
+    }
+
+    /* ---------------- 상태 ---------------- */
+    const cfg = Object.assign({ alertAt: 50, sound: true, source: "live", demo: true, desktop: false, webhook: "" }, store("bw.cfg") || {});
+    const savedGeo = store("bw.geo") || {};
+    const savedCal = store("bw.cal") || {};
+    const savedStream = store("bw.stream") || {};
+    let logs = store("bw.log") || [];
+    let personSeq = 0;
+    let weather = { mode: "sim", at: 0, error: "" };
+
+    const sites = SITE_DATA.map((d, i) => ({
+      ...d, i,
+      obs: { ...d.base, gust: d.base.wind * 1.4 },
+      r: { ...d.base, gust: d.base.wind * 1.4 },
+      demo: null, people: [], sim: [], live: null,
+      risk: 0, lv: LEVELS[3], inc: null, hold: 0, fc: null, cal: savedCal[d.name] || null
+    }));
+
+    /* ---------------- 방파제 좌표 ---------------- */
+    function meters(a, b) {
+      const kx = 111320 * Math.cos(a[0] * Math.PI / 180);
+      return Math.hypot((a[1] - b[1]) * kx, (a[0] - b[0]) * 110540);
+    }
+
+    function setLine(site, src, line) {
+      const d = SITE_DATA[site.i];
+      if (!line) {
+        // 좌표가 없는 구역: 기준점에서 동쪽으로 뻗은 임시 선
+        line = [[d.lat, d.lon], [d.lat, d.lon + d.len / (111320 * Math.cos(d.lat * Math.PI / 180))]];
+        src = "none";
+      }
+      site.line = line;
+      site.geoSrc = src;
+      site.cum = [0];
+      for (let i = 1; i < line.length; i++) site.cum.push(site.cum[i - 1] + meters(line[i - 1], line[i]));
+      site.len = Math.round(site.cum[site.cum.length - 1]);
+      const mid = pointAt(site, 0.5);
+      site.lat = src === "none" ? d.lat : mid[0];
+      site.lon = src === "none" ? d.lon : mid[1];
+    }
+
+    function pointAt(site, t) {
+      const total = site.cum[site.cum.length - 1];
+      const target = clamp(t) * total;
+      let i = 1;
+      while (i < site.cum.length - 1 && site.cum[i] < target) i++;
+      const seg = site.cum[i] - site.cum[i - 1];
+      const f = seg ? (target - site.cum[i - 1]) / seg : 0;
+      const a = site.line[i - 1];
+      const b = site.line[i];
+      return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+    }
+
+    sites.forEach((s) => setLine(s, savedGeo[s.name] ? "user" : s.line ? "osm" : "none", savedGeo[s.name] || s.line));
+
+    let current = sites.find((s) => s.name === "해운대 미포 방파제") || sites[0];
+
+    function level(score) {
+      return LEVELS.find((l) => score >= l.min);
+    }
+
+    /* 종합 위험도: 가중합과 단일 요소 최대치 중 큰 값.
+       (파고나 바람 하나만 기준치에 도달해도 '위험'이 되도록) */
+    function calcRisk(r) {
+      const wind = clamp(Math.max(r.wind, (r.gust || 0) * 0.7) / LIMIT.wind);
+      const rain = clamp(r.rain / LIMIT.rain);
+      const wave = clamp((r.wave || 0) / LIMIT.wave);
+      const sum = wind * WEIGHT.wind + rain * WEIGHT.rain + wave * WEIGHT.wave;
+      return Math.round(Math.max(sum, 85 * Math.max(wind, wave), 60 * rain));
+    }
+
+    function cams(site) {
+      const n = site.i * 2;
+      const id = (k) => `CAM-${String(n + k + 1).padStart(2, "0")}`;
+      if (site.live) return [{ k: 0, id: id(0), label: site.live.label, a: 0, b: 1, live: true }];
+      return [
+        { k: 0, id: id(0), label: "진입부~중간", a: 0, b: 0.55 },
+        { k: 1, id: id(1), label: "중간~끝단", a: 0.45, b: 1 }
+      ];
+    }
+
+    function where(site, t) {
+      const z = t < 1 / 3 ? "A구간(진입부)" : t < 2 / 3 ? "B구간(중간부)" : "C구간(끝단)";
+      const dist = Math.round(clamp(t) * site.len / 10) * 10;
+      return { z, dist, text: `${z} · 입구에서 약 ${dist}m` };
+    }
+
+    const spot = (site, p) => where(site, p.t).text + (p.tetra ? " · 테트라포드 위" : "");
+
+    function sortedPeople(site) {
+      return [...site.people].sort((a, b) => a.t - b.t);
+    }
+
+    function whereAll(site) {
+      return sortedPeople(site).map((p) => {
+        const w = where(site, p.t);
+        return `${w.z} ${w.dist}m${p.tetra ? " 테트라포드 위" : ""}`;
+      }).join(", ");
+    }
+
+    /* ---------------- 기록 ---------------- */
+    const LOG_NAMES = { alert: "경보", detect: "감지", broadcast: "방송", dispatch: "출동", clear: "해제", sys: "시스템" };
+
+    function addLog(site, type, msg) {
+      logs.unshift({ ts: Date.now(), site: site ? site.name : "-", type, msg });
+      logs = logs.slice(0, 300);
+      store("bw.log", logs);
+      renderLog();
+    }
+
+    function renderLog() {
+      setHTML($("logList"), logs.length ? logs.slice(0, 80).map((l) => `
+        <div class="log-row">
+          <time>${fmtTime(l.ts)}</time>
+          <span class="log-type ${l.type}">${LOG_NAMES[l.type] || ""}</span>
+          <span class="log-site">${esc(l.site)}</span>
+          <span class="log-msg">${esc(l.msg)}</span>
+        </div>`).join("") : `<div class="people-empty">기록이 없습니다.</div>`);
+    }
+
+    function downloadCsv() {
+      const rows = [["일시", "구역", "구분", "내용"], ...logs.map((l) =>
+        [new Date(l.ts).toLocaleString("ko-KR", { hour12: false }), l.site, LOG_NAMES[l.type] || l.type, l.msg])];
+      const csv = rows.map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\r\n");
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv" }));
+      a.download = `상황기록_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    /* ---------------- 알림 (소리·토스트) ---------------- */
+    let audio;
+    let lastBeep = 0;
+
+    function beep(times) {
+      lastBeep = Date.now();
+      if (!cfg.sound) return;
+      try {
+        audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+        if (audio.state === "suspended") audio.resume();
+        for (let i = 0; i < times; i++) {
+          const osc = audio.createOscillator();
+          const gain = audio.createGain();
+          const t = audio.currentTime + i * 0.28;
+          osc.frequency.value = times > 1 ? 980 : 720;
+          gain.gain.setValueAtTime(0.0001, t);
+          gain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
+          osc.connect(gain).connect(audio.destination);
+          osc.start(t);
+          osc.stop(t + 0.24);
+        }
+      } catch (e) { /* 소리를 낼 수 없는 환경 */ }
+    }
+
+    let hookFailed = false;
+
+    /* 외부 알림: 데스크톱 알림 + 설정한 Webhook 주소로 JSON 전송
+       (방송 장비·지령 시스템·메신저 봇 등 받는 쪽 서버를 이 주소에 두면 연동됩니다) */
+    function notifyOut(event, s, message, extra) {
+      if (cfg.desktop && window.Notification && Notification.permission === "granted") {
+        try {
+          new Notification(`해안 안전 관제 — ${s.name}`, { body: message, tag: event + s.i });
+        } catch (e) { /* 알림을 띄울 수 없는 환경 */ }
+      }
+      if (!cfg.webhook) return;
+      const body = JSON.stringify({
+        event, time: new Date().toISOString(), gu: s.gu, site: s.name,
+        risk: s.risk, level: s.lv.name,
+        weather: { wind: s.r.wind, gust: s.r.gust, rain: s.r.rain, wave: s.r.wave },
+        people: sortedPeople(s).map((p) => ({
+          where: spot(s, p),
+          lat: s.geoSrc === "none" ? null : pointAt(s, p.t)[0],
+          lon: s.geoSrc === "none" ? null : pointAt(s, p.t)[1]
+        })),
+        message, ...extra
+      });
+      fetch(cfg.webhook, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=UTF-8" }, body })
+        .then(() => { hookFailed = false; })
+        .catch(() => {
+          if (!hookFailed) addLog(null, "sys", "외부 연동(Webhook) 전송 실패 — 설정의 주소를 확인하세요");
+          hookFailed = true;
+        });
+    }
+
+    let toastTimer;
+
+    function showToast(message) {
+      const toast = $("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+
+    /* ---------------- 기상 데이터 ---------------- */
+    async function fetchWeather() {
+      if (cfg.source !== "live") {
+        weather = { mode: "sim", at: Date.now(), error: "" };
+        sites.forEach((s) => { s.fc = null; });
+        return;
+      }
+      const lat = sites.map((s) => s.lat).join(",");
+      const lon = sites.map((s) => s.lon).join(",");
+      const get = (url) => fetch(url, { signal: AbortSignal.timeout(8000) }).then((r) => {
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      }).then((j) => [].concat(j));
+
+      const [land, sea] = await Promise.allSettled([
+        get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=precipitation,wind_speed_10m,wind_gusts_10m&hourly=precipitation,wind_speed_10m,wind_gusts_10m&forecast_hours=24&wind_speed_unit=ms&timezone=Asia%2FSeoul`),
+        get(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=wave_height&hourly=wave_height&forecast_hours=24&timezone=Asia%2FSeoul`)
+      ]);
+
+      if (land.status !== "fulfilled" || land.value.length !== sites.length) {
+        if (weather.mode !== "sim") addLog(null, "sys", "기상 데이터 수신 실패 — 시뮬레이션 값으로 전환");
+        weather = { mode: "sim", at: Date.now(), error: "수신 실패" };
+        sites.forEach((s) => { s.fc = null; });
+        return;
+      }
+
+      const first = weather.mode !== "live";
+      sites.forEach((s, i) => {
+        const c = land.value[i].current;
+        const w = sea.status === "fulfilled" && sea.value[i] ? sea.value[i].current.wave_height : null;
+        s.obs = {
+          wind: c.wind_speed_10m,
+          gust: c.wind_gusts_10m,
+          rain: c.precipitation * 3600 / (c.interval || 3600), // 구간 강수량 → 시간당
+          wave: w == null ? null : w
+        };
+        if (first && !s.demo) s.r = { ...s.obs };
+
+        const h = land.value[i].hourly;
+        const mh = sea.status === "fulfilled" && sea.value[i] ? sea.value[i].hourly : null;
+        s.fc = h ? h.time.map((time, k) => {
+          const r = { wind: h.wind_speed_10m[k], gust: h.wind_gusts_10m[k], rain: h.precipitation[k], wave: mh ? mh.wave_height[k] : null };
+          return { ...r, ts: new Date(time).getTime(), hour: Number(time.slice(11, 13)), risk: calcRisk(r) };
+        }) : null;
+      });
+      weather = { mode: "live", at: Date.now(), error: sea.status === "fulfilled" ? "" : "파고 미수신" };
+    }
+
+    /* ---------------- 시뮬레이션 (기상 보간 · 가상 인원) ---------------- */
+    let simClock = performance.now();
+
+    function spawn(site, t) {
+      const p = { id: ++personSeq, t, goal: 0.15 + Math.random() * 0.8, wait: 0, leaving: false, score: 0.86 + Math.random() * 0.12, seed: Math.random() * 9, tetra: Math.random() < 0.4 };
+      site.sim.push(p);
+      return p;
+    }
+
+    function stepSim() {
+      const now = performance.now();
+      const dt = Math.min((now - simClock) / 1000, 5);
+      simClock = now;
+      if (dt <= 0) return;
+      const k = 1 - Math.exp(-dt / 2.5);
+      const T = now / 1000;
+
+      for (const s of sites) {
+        if (!cfg.demo) s.demo = null;
+        let target = s.demo || s.obs;
+        if (!s.demo && weather.mode === "sim") {
+          const j = 1 + 0.07 * Math.sin(T / 9 + s.i * 1.7);
+          target = { wind: s.base.wind * j, gust: s.base.wind * 1.4 * j, rain: s.base.rain * j, wave: s.base.wave * j };
+        }
+        for (const key of ["wind", "gust", "rain"]) s.r[key] += (target[key] - s.r[key]) * k;
+        s.r.wave = target.wave == null ? null : (s.r.wave || 0) + (target.wave - (s.r.wave || 0)) * k;
+
+        if (s.live) continue;
+        if (!cfg.demo) {
+          s.sim = [];
+          s.people = s.sim;
+          continue;
+        }
+        for (const p of s.sim) {
+          if (p.wait > 0 && !p.leaving) {
+            p.wait -= dt;
+            if (p.wait <= 0) p.goal = 0.1 + Math.random() * 0.87;
+            continue;
+          }
+          const speed = (p.leaving ? 8 : 5) / s.len * 4; // 화면에서 보이도록 실제보다 빠르게
+          const d = p.goal - p.t;
+          if (Math.abs(d) <= speed * dt) {
+            p.t = p.goal;
+            p.wait = 12 + Math.random() * 40;
+          } else {
+            p.t += Math.sign(d) * speed * dt;
+          }
+        }
+        s.sim = s.sim.filter((p) => p.t > 0);
+        s.people = s.sim;
+      }
+    }
+
+    /* ---------------- 경보 판단 ---------------- */
+    let incSeq = 0;
+
+    function evaluate() {
+      const now = Date.now();
+      for (const s of sites) {
+        s.risk = calcRisk(s.r);
+        s.lv = level(s.risk);
+        const hot = s.risk >= cfg.alertAt;
+        const n = s.people.length;
+
+        if (s.hold && (!hot || now > s.hold)) s.hold = 0;
+
+        if (hot && !s.inc && !s.hold) {
+          s.inc = { id: ++incSeq, at: now, lv: s.lv.key };
+          addLog(s, "alert", `위험도 ${s.risk}점(${s.lv.name}) 경보 발령 — 풍속 ${s.r.wind.toFixed(1)}m/s, 강수 ${s.r.rain.toFixed(1)}mm/h, 파고 ${s.r.wave == null ? "-" : s.r.wave.toFixed(1) + "m"}`);
+          beep(1);
+          showToast(`⚠ ${s.name} 위험도 ${s.risk}점 — 경보 발령`);
+          notifyOut("alert", s, `위험도 ${s.risk}점(${s.lv.name}) 경보 발령`);
+        }
+
+        // 예보상 3시간 안에 경보 기준을 넘으면 미리 알림
+        const soon = !s.inc && !s.demo && s.fc && s.fc.find((f) => f.ts > now && f.ts < now + 3 * 3600e3 && f.risk >= cfg.alertAt);
+        if (soon && !s.pre) {
+          addLog(s, "alert", `예보: ${soon.hour}시경 위험도 ${soon.risk}점 예상 — 사전 대비 필요`);
+          showToast(`${s.name} — ${soon.hour}시경 경보 기준 초과 예상`);
+          notifyOut("forecast", s, `${soon.hour}시경 위험도 ${soon.risk}점 예상`);
+        }
+        s.pre = !!soon;
+
+        const inc = s.inc;
+        if (!inc) continue;
+
+        if (s.lv.key === "danger" && inc.lv !== "danger") {
+          inc.lv = "danger";
+          addLog(s, "alert", `위험도 ${s.risk}점 — '위험' 단계로 격상`);
+          beep(1);
+        }
+
+        if (n && !inc.detAt) {
+          inc.detAt = now;
+          addLog(s, "detect", `방파제 내 인원 ${n}명 감지 — ${whereAll(s)}`);
+          beep(3);
+          showToast(`🚨 ${s.name} 인원 ${n}명 감지 — 안내 방송이 필요합니다`);
+          notifyOut("detect", s, `방파제 내 인원 ${n}명 감지 — ${whereAll(s)}`);
+        }
+
+        if (s.risk < cfg.alertAt - 5 && !inc.dispAt) {
+          addLog(s, "clear", `위험도 ${s.risk}점으로 하락 — 경보 자동 해제`);
+          s.inc = null;
+        }
+      }
+
+      // 인원이 감지됐는데 아직 조치가 없으면 경보음 반복
+      const pending = sites.some((s) => s.inc && s.inc.detAt && !s.inc.castAt && !s.inc.dispAt && s.people.length);
+      if (pending && Date.now() - lastBeep > 15000) beep(3);
+    }
+
+    function stage(s) {
+      const inc = s.inc;
+      if (!inc) return "";
+      if (inc.dispAt) return "출동 중";
+      if (inc.castAt) return s.people.length ? "방송 후 잔류" : "방송 완료";
+      if (inc.detAt && s.people.length) return "조치 필요";
+      return "기상 경보";
+    }
+
+    /* ---------------- 대응 조치 ---------------- */
+    let modalOk = null;
+
+    function openModal({ title, body, ok = "확인", danger = false, onOk, cancel = "취소" }) {
+      $("modalTitle").textContent = title;
+      $("modalBody").innerHTML = body;
+      $("modalOk").textContent = ok;
+      $("modalCancel").textContent = cancel;
+      $("modalOk").hidden = !onOk;
+      $("modalBox").classList.toggle("danger", danger);
+      modalOk = onOk || null;
+      $("modal").hidden = false;
+    }
+
+    function closeModal() {
+      $("modal").hidden = true;
+      modalOk = null;
+    }
+
+    function factTable(s) {
+      const people = sortedPeople(s);
+      const list = people.length
+        ? people.map((p, i) => `${i + 1}. ${esc(spot(s, p))}`).join("<br>")
+        : "감지된 인원 없음";
+      return `
+        <table class="fact-table">
+          <tr><th>구역</th><td><b>${esc(s.gu)} · ${esc(s.name)}</b></td></tr>
+          <tr><th>위험도</th><td>${s.risk}점 (${s.lv.name}) — 풍속 ${s.r.wind.toFixed(1)}m/s · 강수 ${s.r.rain.toFixed(1)}mm/h · 파고 ${s.r.wave == null ? "-" : s.r.wave.toFixed(1) + "m"}</td></tr>
+          <tr><th>감지 인원</th><td><b>${people.length}명</b></td></tr>
+          <tr><th>위치</th><td>${list}</td></tr>
+        </table>`;
+    }
+
+    function askBroadcast(s = current) {
+      const pick = s.inc && s.inc.castAt ? 1 : 0;
+      openModal({
+        title: "📢 안내 방송",
+        ok: "방송 송출",
+        body: `${factTable(s)}
+          <label>방송 문안
+            <select id="castPreset">${BROADCASTS.map((b, i) => `<option value="${i}" ${i === pick ? "selected" : ""}>${b.title}</option>`).join("")}</select>
+          </label>
+          <textarea id="castText" aria-label="방송 내용">${esc(BROADCASTS[pick].text)}</textarea>
+          <label class="check"><input id="castSpeak" type="checkbox" checked /> 이 PC 스피커로 음성 재생 (미리듣기)</label>`,
+        onOk() {
+          const text = $("castText").value.trim();
+          if (!text) return showToast("방송 내용을 입력하세요.");
+          doBroadcast(s, text, $("castSpeak").checked);
+          closeModal();
+        }
+      });
+      $("castPreset").addEventListener("change", (e) => {
+        $("castText").value = BROADCASTS[e.target.value].text;
+      });
+    }
+
+    function doBroadcast(s, text, speak) {
+      notifyOut("broadcast", s, text);
+      if (s.inc) {
+        s.inc.castAt = Date.now();
+        s.inc.castCount = (s.inc.castCount || 0) + 1;
+      }
+      addLog(s, "broadcast", `안내 방송 송출 (현재 인원 ${s.people.length}명) — "${text}"`);
+      showToast(`${s.name} 안내 방송을 송출했습니다.`);
+
+      if (speak && window.speechSynthesis) {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = "ko-KR";
+        u.rate = 0.95;
+        speechSynthesis.speak(u);
+      }
+
+      // 시연용 가상 인원: 방송을 들으면 일부가 육지로 이동
+      if (!s.live) {
+        for (const p of s.sim) {
+          if (Math.random() < 0.6) {
+            p.leaving = true;
+            p.goal = -0.05;
+            p.wait = 0;
+          }
+        }
+      }
+    }
+
+    function askDispatch(s = current) {
+      openModal({
+        title: "🚨 현장 출동 지시",
+        ok: "출동 지시",
+        danger: true,
+        body: `${factTable(s)}
+          <label>전달 사항 (선택)
+            <textarea id="dispMemo" placeholder="예: 테트라포드 위 낚시객 2명, 방송 불응"></textarea>
+          </label>`,
+        onOk() {
+          doDispatch(s, $("dispMemo").value.trim());
+          closeModal();
+        }
+      });
+    }
+
+    function doDispatch(s, memo) {
+      const now = Date.now();
+      if (!s.inc) s.inc = { id: ++incSeq, at: now, lv: s.lv.key, manual: true };
+      if (s.people.length && !s.inc.detAt) s.inc.detAt = now;
+      s.inc.dispAt = now;
+      notifyOut("dispatch", s, `현장 출동 지시${memo ? ` — ${memo}` : ""}`, { memo });
+      addLog(s, "dispatch", `현장 출동 지시 — 인원 ${s.people.length}명${s.people.length ? ` (${whereAll(s)})` : ""}${memo ? ` · ${memo}` : ""}`);
+      showToast(`${s.name} 현장 출동을 지시했습니다.`);
+    }
+
+    function askClose(s = current) {
+      if (!s.inc) return;
+      const hot = s.risk >= cfg.alertAt;
+      openModal({
+        title: "상황 종료",
+        ok: "종료",
+        body: `${factTable(s)}
+          <label>조치 결과 (선택)
+            <textarea id="closeMemo" placeholder="예: 낚시객 2명 계도 후 귀가 조치"></textarea>
+          </label>
+          ${hot ? `<p>위험도가 아직 경보 기준 이상입니다. 종료하면 이 구역의 경보는 10분간 보류되고, 이후에도 기준 이상이면 다시 발령됩니다.</p>` : ""}`,
+        onOk() {
+          const memo = $("closeMemo").value.trim();
+          addLog(s, "clear", `상황 종료${memo ? ` — ${memo}` : ""}`);
+          s.inc = null;
+          if (hot) s.hold = Date.now() + HOLD_MS;
+          closeModal();
+          showToast(`${s.name} 상황을 종료했습니다.`);
+        }
+      });
+    }
+
+    function openSettings() {
+      openModal({
+        title: "설정",
+        cancel: "닫기",
+        body: `
+          <label>경보 기준 위험도: <b id="alertAtText">${cfg.alertAt}</b>점 이상
+            <input id="alertAtInput" type="range" min="30" max="90" step="5" value="${cfg.alertAt}" />
+          </label>
+          <label>기상 데이터
+            <select id="sourceInput">
+              <option value="live" ${cfg.source === "live" ? "selected" : ""}>실측·예보 (Open-Meteo, 10분마다 갱신)</option>
+              <option value="sim" ${cfg.source === "sim" ? "selected" : ""}>시뮬레이션 (가상 값)</option>
+            </select>
+          </label>
+          <label class="check"><input id="soundInput" type="checkbox" ${cfg.sound ? "checked" : ""} /> 경보음 사용</label>
+          <label class="check"><input id="desktopInput" type="checkbox" ${cfg.desktop ? "checked" : ""} /> 데스크톱 알림 (다른 창을 보고 있어도 알림 표시)</label>
+          <label>외부 연동 주소 (Webhook) — 경보·감지·방송·출동 때 JSON을 POST로 전송
+            <input id="hookInput" type="url" placeholder="https://..." value="${esc(cfg.webhook)}" />
+          </label>
+          <div class="demo-buttons"><button class="mini-button" id="hookTest" type="button">테스트 전송</button></div>
+          <div class="modal-section">
+            <h4>시연 도구 — ${esc(current.name)}</h4>
+            <div>선택한 구역에 가상 상황을 만들어 경보→방송→출동 흐름을 확인합니다.</div>
+            <div class="demo-buttons">
+              <button class="mini-button" data-demo="storm" type="button">🌊 기상 악화</button>
+              <button class="mini-button" data-demo="person" type="button">🚶 인원 진입</button>
+              <button class="mini-button" data-demo="reset" type="button">☀ 정상 복귀</button>
+            </div>
+          </div>`
+      });
+
+      $("alertAtInput").addEventListener("input", (e) => {
+        cfg.alertAt = Number(e.target.value);
+        $("alertAtText").textContent = cfg.alertAt;
+        store("bw.cfg", cfg);
+      });
+      $("sourceInput").addEventListener("change", async (e) => {
+        cfg.source = e.target.value;
+        store("bw.cfg", cfg);
+        await fetchWeather();
+        showToast(weather.mode === "live" ? "실측 기상 데이터를 사용합니다." : "시뮬레이션 값을 사용합니다.");
+      });
+      $("soundInput").addEventListener("change", (e) => setSound(e.target.checked));
+      $("desktopInput").addEventListener("change", async (e) => {
+        if (e.target.checked) {
+          const ok = window.Notification && (await Notification.requestPermission()) === "granted";
+          if (!ok) {
+            e.target.checked = false;
+            showToast("이 브라우저에서 알림 권한을 받을 수 없습니다. (https 또는 localhost에서 열어야 합니다)");
+          }
+        }
+        cfg.desktop = e.target.checked;
+        store("bw.cfg", cfg);
+      });
+      $("hookInput").addEventListener("change", (e) => {
+        cfg.webhook = e.target.value.trim();
+        store("bw.cfg", cfg);
+      });
+      $("hookTest").addEventListener("click", () => {
+        cfg.webhook = $("hookInput").value.trim();
+        store("bw.cfg", cfg);
+        if (!cfg.webhook) return showToast("주소를 먼저 입력하세요.");
+        notifyOut("test", current, "연동 테스트 메시지");
+        showToast("테스트 메시지를 보냈습니다. 받는 쪽에서 확인하세요.");
+      });
+      $("modalBody").querySelectorAll("[data-demo]").forEach((b) => b.addEventListener("click", () => demo(b.dataset.demo)));
+    }
+
+    function setDemo(on) {
+      cfg.demo = on;
+      store("bw.cfg", cfg);
+      $("demoButton").textContent = on ? "시연 모드 켜짐" : "시연 모드 꺼짐";
+      if (on) seedPeople();
+      rebuildTiles();
+      render();
+    }
+
+    function seedPeople() {
+      if (sites.some((s) => s.sim.length)) return;
+      Object.assign(spawn(current, 0.38), { wait: 20, tetra: false });
+      Object.assign(spawn(current, 0.78), { wait: 35, tetra: true });
+      spawn(sites[3], 0.6).wait = 30;
+      spawn(sites[6], 0.25).wait = 30;
+      for (const s of sites) if (!s.live) s.people = s.sim;
+    }
+
+    function demo(kind) {
+      const s = current;
+      if (!cfg.demo) return showToast("시연 모드가 꺼져 있습니다. 상단의 ‘시연 모드’를 먼저 켜세요.");
+      if (kind === "storm") {
+        s.demo = { wind: 19, gust: 27, rain: 22, wave: 2.8 };
+        s.hold = 0;
+        addLog(s, "sys", "시연: 기상 악화 상황 적용");
+        showToast(`시연: ${s.name} 기상이 악화됩니다.`);
+      } else if (kind === "person") {
+        if (s.live) return showToast("실제 영상 연결 중에는 가상 인원을 추가할 수 없습니다.");
+        spawn(s, 0.02);
+        showToast(`시연: ${s.name}에 인원이 진입합니다.`);
+      } else {
+        s.demo = null;
+        s.sim = [];
+        addLog(s, "sys", "시연: 정상 상태로 복귀");
+        showToast(`시연: ${s.name} 정상 복귀`);
+      }
+    }
+
+    function setSound(on) {
+      cfg.sound = on;
+      store("bw.cfg", cfg);
+      $("soundButton").textContent = on ? "🔔" : "🔕";
+      $("soundButton").title = on ? "경보음 켜짐" : "경보음 꺼짐";
+    }
+
+    /* ---------------- 실제 카메라 · 사람 인식 (COCO-SSD) ---------------- */
+    let modelPromise = null;
+
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const el = document.createElement("script");
+        el.src = src;
+        el.onload = resolve;
+        el.onerror = () => reject(new Error("스크립트 로드 실패"));
+        document.head.appendChild(el);
+      });
+    }
+
+    function loadModel() {
+      modelPromise = modelPromise || (async () => {
+        await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js");
+        await loadScript("https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js");
+        return window.cocoSsd.load();
+      })();
+      modelPromise.catch(() => { modelPromise = null; });
+      return modelPromise;
+    }
+
+    // 인식 박스의 발 위치를 방파제 위 위치(0=입구, 1=끝단)로 환산
+    function liveT(site, box) {
+      const fx = box[0] + box[2] / 2;
+      const fy = box[1] + box[3];
+      const cal = site.cal;
+      if (!cal) return clamp(fx);
+      const v = site.live.video;
+      const ax = cal.a[0] * v.videoWidth, ay = cal.a[1] * v.videoHeight;
+      const bx = cal.b[0] * v.videoWidth - ax, by = cal.b[1] * v.videoHeight - ay;
+      const px = fx * v.videoWidth - ax, py = fy * v.videoHeight - ay;
+      return clamp((px * bx + py * by) / (bx * bx + by * by || 1));
+    }
+
+    async function connectLive(site, { stream, file, url }) {
+      disconnectLive(site, true);
+      const video = document.createElement("video");
+      video.muted = true;
+      video.playsInline = true;
+      video.loop = !!file;
+      const label = stream ? "실시간 카메라" : file ? `영상 파일 (${file.name})` : "네트워크 스트림";
+      const live = { video, stream, url: null, label, ready: false, seen: 0, hls: null };
+      if (stream) {
+        video.srcObject = stream;
+      } else if (file) {
+        video.src = live.url = URL.createObjectURL(file);
+      } else {
+        video.crossOrigin = "anonymous"; // AI가 화면을 읽으려면 스트림 서버가 CORS를 허용해야 함
+        if (/\.m3u8(\?|$)/i.test(url) && !video.canPlayType("application/vnd.apple.mpegurl")) {
+          try {
+            await loadScript("https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js");
+            live.hls = new window.Hls();
+            live.hls.loadSource(url);
+            live.hls.attachMedia(video);
+          } catch (e) {
+            return showToast("HLS 재생 모듈을 불러오지 못했습니다.");
+          }
+        } else {
+          video.src = url;
+        }
+      }
+
+      site.live = live;
+      site.sim = [];
+      site.people = [];
+      rebuildTiles();
+      try {
+        await video.play();
+      } catch (e) {
+        disconnectLive(site, false, true);
+        return showToast(url ? "스트림을 열 수 없습니다. 주소와 서버의 CORS 허용 여부를 확인하세요." : "영상을 재생할 수 없습니다.");
+      }
+      addLog(site, "sys", `${live.label} 연결 — AI 사람 인식 시작`);
+      showToast("AI 사람 인식 모델을 불러오는 중입니다…");
+
+      let model;
+      try {
+        model = await loadModel();
+      } catch (e) {
+        addLog(site, "sys", "AI 모델 로드 실패 — 영상만 표시 (사람 인식 불가)");
+        return showToast("AI 모델을 불러오지 못했습니다. 인터넷 연결을 확인하세요.");
+      }
+      live.ready = true;
+      showToast("사람 인식을 시작했습니다.");
+
+      while (site.live === live) {
+        if (video.readyState >= 2 && !video.paused) {
+          try {
+            const found = (await model.detect(video, 20, MIN_SCORE)).filter((d) => d.class === "person");
+            if (site.live !== live) break;
+            // 한두 프레임 놓쳐도 인원이 깜빡이지 않도록 1.5초간 유지
+            if (found.length || Date.now() - live.seen > 1500) {
+              if (found.length) live.seen = Date.now();
+              site.people = found.map((d) => {
+                const box = [d.bbox[0] / video.videoWidth, d.bbox[1] / video.videoHeight, d.bbox[2] / video.videoWidth, d.bbox[3] / video.videoHeight];
+                return { id: ++personSeq, t: liveT(site, box), score: d.score, box };
+              });
+            }
+          } catch (e) {
+            if (!live.failed) {
+              live.failed = true;
+              addLog(site, "sys", "영상 화면을 읽을 수 없어 사람 인식 불가 — 스트림 서버의 CORS 설정 필요");
+              showToast("영상은 보이지만 AI가 화면을 읽을 수 없습니다. (스트림 서버 CORS 설정 필요)");
+            }
+          }
+        }
+        await new Promise((r) => setTimeout(r, 250));
+      }
+    }
+
+    function disconnectLive(site, silent, keepSaved) {
+      const live = site.live;
+      if (!live) return;
+      site.live = null;
+      site.people = [];
+      calMode = null;
+      live.video.pause();
+      if (live.hls) live.hls.destroy();
+      if (live.stream) live.stream.getTracks().forEach((t) => t.stop());
+      if (live.url) URL.revokeObjectURL(live.url);
+      if (!silent) {
+        if (!keepSaved) {
+          delete savedStream[site.name];
+          store("bw.stream", savedStream);
+        }
+        addLog(site, "sys", "영상 연결 해제");
+        rebuildTiles();
+      }
+    }
+
+    function askStream() {
+      const s = current;
+      openModal({
+        title: "🌐 CCTV 스트림 주소 연결",
+        ok: "연결",
+        body: `<p><b>${esc(s.name)}</b>에 연결할 영상 주소를 입력하세요. 저장해 두고 다음에 열 때 자동으로 다시 연결합니다.</p>
+          <label>영상 주소 (HLS .m3u8 또는 MP4)
+            <input id="streamInput" type="url" placeholder="https://cctv.example/stream.m3u8" value="${esc(savedStream[s.name] || "")}" />
+          </label>
+          <p>브라우저는 RTSP를 직접 재생하지 못합니다. RTSP 카메라는 중계 서버(MediaMTX 등)에서 HLS로 바꿔 주소를 넣으세요. 사람 인식을 하려면 그 서버가 CORS를 허용해야 합니다.</p>`,
+        onOk() {
+          const url = $("streamInput").value.trim();
+          if (!/^https?:\/\//i.test(url)) return showToast("http:// 또는 https:// 로 시작하는 주소를 입력하세요.");
+          savedStream[s.name] = url;
+          store("bw.stream", savedStream);
+          closeModal();
+          connectLive(s, { url });
+        }
+      });
+    }
+
+    // 위치 보정: 실제 영상에서 방파제 입구와 끝단을 차례로 눌러 화면 위치 → 거리 환산 기준을 잡는다
+    let calMode = null;
+
+    function calClick(tile, e) {
+      const v = current.live.video;
+      const rect = tile.getBoundingClientRect();
+      const sc = Math.min(rect.width / v.videoWidth, rect.height / v.videoHeight);
+      const x = (e.clientX - rect.left - (rect.width - v.videoWidth * sc) / 2) / (v.videoWidth * sc);
+      const y = (e.clientY - rect.top - (rect.height - v.videoHeight * sc) / 2) / (v.videoHeight * sc);
+      calMode.pts.push([clamp(x), clamp(y)]);
+      if (calMode.pts.length < 2) return showToast("이제 방파제 끝단을 누르세요.");
+      current.cal = { a: calMode.pts[0], b: calMode.pts[1] };
+      savedCal[current.name] = current.cal;
+      store("bw.cal", savedCal);
+      calMode = null;
+      addLog(current, "sys", "영상 위치 보정 저장");
+      showToast("위치 보정을 저장했습니다.");
+    }
+
+    /* ---------------- CCTV 화면 그리기 ---------------- */
+    const tiles = [];
+
+    function buildTiles(container, list) {
+      container.innerHTML = "";
+      for (const { site, cam } of list) {
+        const el = document.createElement("div");
+        el.className = "tile";
+        el.dataset.site = site.i;
+        el.dataset.cam = cam.k;
+        el.innerHTML = `
+          <canvas></canvas>
+          <span class="live-tag ${cam.live ? "real" : ""}">${cam.live ? "● LIVE" : cfg.demo ? "시연 화면" : "미연결"}</span>
+          <span class="tile-time"></span>
+          <span class="tile-name">${cam.id} · ${esc(site.name)} · ${esc(cam.label)}</span>
+          <span class="tile-count"></span>
+          <button class="tile-full" type="button" title="이 카메라 전체화면" aria-label="전체화면">⛶</button>`;
+        container.appendChild(el);
+        tiles.push({
+          el, site, cam,
+          canvas: el.firstElementChild,
+          ctx: el.firstElementChild.getContext("2d"),
+          timeEl: el.querySelector(".tile-time"),
+          countEl: el.querySelector(".tile-count")
+        });
+      }
+      for (let i = tiles.length - 1; i >= 0; i--) {
+        if (!tiles[i].el.isConnected) tiles.splice(i, 1);
+      }
+    }
+
+    function mix(a, b, t) {
+      const pa = parseInt(a.slice(1), 16);
+      const pb = parseInt(b.slice(1), 16);
+      const ch = (s) => Math.round(((pa >> s) & 255) + (((pb >> s) & 255) - ((pa >> s) & 255)) * t);
+      return `rgb(${ch(16)},${ch(8)},${ch(0)})`;
+    }
+
+    function drawBox(ctx, x, y, w, h, score, hot, unit) {
+      const color = hot ? "#ff5252" : "#4db2ff";
+      ctx.strokeStyle = color;
+      ctx.lineWidth = Math.max(1.5, unit * 0.006);
+      ctx.strokeRect(x, y, w, h);
+      const font = Math.max(9, unit * 0.034);
+      const label = `사람 ${Math.round(score * 100)}%`;
+      ctx.font = `700 ${font}px sans-serif`;
+      const tw = ctx.measureText(label).width + font * 0.6;
+      ctx.fillStyle = color;
+      ctx.fillRect(x - ctx.lineWidth / 2, y - font * 1.35, tw, font * 1.35);
+      ctx.fillStyle = "#fff";
+      ctx.fillText(label, x + font * 0.25, y - font * 0.38);
+    }
+
+    function drawSim(ctx, w, h, site, cam, T) {
+      const r = site.r;
+      const storm = clamp(site.risk / 100);
+      const wave = r.wave || 0;
+      const shake = Math.min(r.wind, 25) / 25 * h * 0.006;
+
+      ctx.save();
+      ctx.translate(Math.sin(T * 9 + site.i) * shake, Math.cos(T * 7.3 + cam.k) * shake);
+
+      const hz = h * 0.4;
+      let g = ctx.createLinearGradient(0, 0, 0, hz);
+      g.addColorStop(0, mix("#7fa6bd", "#39454f", storm));
+      g.addColorStop(1, mix("#bcd2d9", "#66757c", storm));
+      ctx.fillStyle = g;
+      ctx.fillRect(-20, -20, w + 40, hz + 20);
+
+      g = ctx.createLinearGradient(0, hz, 0, h);
+      g.addColorStop(0, mix("#4d7f93", "#3d5560", storm));
+      g.addColorStop(1, mix("#1d4257", "#14262f", storm));
+      ctx.fillStyle = g;
+      ctx.fillRect(-20, hz, w + 40, h - hz + 20);
+
+      // 파도
+      const amp = (2 + wave * 5) * h / 400;
+      ctx.strokeStyle = "rgba(255,255,255,.22)";
+      ctx.lineWidth = Math.max(1, h / 300);
+      for (let i = 0; i < 9; i++) {
+        const y = hz + (i + 0.5) / 9 * (h - hz);
+        const a = amp * (0.4 + i / 9);
+        ctx.beginPath();
+        for (let s = 0; s <= 40; s++) {
+          const x = -20 + (w + 40) * s / 40;
+          const yy = y + Math.sin(x / w * (14 - i) + T * (1 + i * 0.15) + i * 2 + site.i) * a;
+          s ? ctx.lineTo(x, yy) : ctx.moveTo(x, yy);
+        }
+        ctx.stroke();
+      }
+
+      // 방파제: 콘크리트 상부(보행면) + 바다 쪽 파라펫 + 수면까지 쌓인 테트라포드 사면
+      const top = (x) => h * (0.55 - 0.03 * x / w);
+      const deck = h * 0.05;
+      const parapet = h * 0.03;
+      const slope = h * 0.3;
+      const band = (y0, y1, color) => {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(-20, top(-20) + y0); ctx.lineTo(w + 20, top(w + 20) + y0);
+        ctx.lineTo(w + 20, top(w + 20) + y1); ctx.lineTo(-20, top(-20) + y1);
+        ctx.fill();
+      };
+      band(-parapet, 0, "#a9b0aa");
+      band(0, deck, "#cfd2cb");
+      band(deck, deck + slope, "#4f5a5a");
+
+      // 테트라포드 (가까울수록 크게, 서로 맞물리게)
+      ctx.lineCap = "round";
+      for (let row = 0; row < 5; row++) {
+        const size = h * 0.034 * (1 + row * 0.3);
+        const gap = size * 1.9;
+        for (let i = -1; i * gap < w + gap; i++) {
+          const n = Math.sin((i + cam.k * 31) * 12.9898 + row * 78.233 + site.i) * 43758.5453;
+          const rnd = n - Math.floor(n);
+          const x = i * gap + (row % 2) * gap / 2 + (rnd - 0.5) * gap * 0.3;
+          const y = top(x) + deck + slope * (row + 0.55) / 5;
+          const rot = rnd * Math.PI * 2;
+          const shade = 128 + Math.round(rnd * 50) - row * 4;
+          ctx.strokeStyle = `rgb(${shade},${shade + 6},${shade + 3})`;
+          ctx.lineWidth = size * 0.62;
+          ctx.beginPath();
+          for (let leg = 0; leg < 3; leg++) {
+            const ang = rot + leg * Math.PI * 2 / 3;
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + Math.cos(ang) * size, y + Math.sin(ang) * size * 0.8);
+          }
+          ctx.stroke();
+          ctx.fillStyle = `rgb(${shade + 22},${shade + 26},${shade + 22})`;
+          ctx.beginPath();
+          ctx.arc(x, y - size * 0.1, size * 0.36, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // 수면 (테트라포드 아래쪽을 덮는 앞바다 + 포말)
+      const waterline = (x) => top(x) + deck + slope * 0.93 + Math.sin(x / w * 9 + T * 1.6 + site.i) * amp * 1.2;
+      ctx.fillStyle = mix("#1f465b", "#152a34", storm);
+      ctx.beginPath();
+      ctx.moveTo(-20, h + 20);
+      for (let s = 0; s <= 40; s++) {
+        const x = -20 + (w + 40) * s / 40;
+        ctx.lineTo(x, waterline(x));
+      }
+      ctx.lineTo(w + 20, h + 20);
+      ctx.fill();
+      ctx.strokeStyle = `rgba(255,255,255,${0.35 + Math.min(wave, 3) * 0.15})`;
+      ctx.lineWidth = Math.max(1.5, h * (0.006 + Math.min(wave, 3) * 0.004));
+      ctx.beginPath();
+      for (let s = 0; s <= 40; s++) {
+        const x = -20 + (w + 40) * s / 40;
+        s ? ctx.lineTo(x, waterline(x)) : ctx.moveTo(x, waterline(x));
+      }
+      ctx.stroke();
+
+      // 등대 (끝단 카메라)
+      if (cam.b === 1 && !cam.live) {
+        const x = w * 0.95;
+        const y = top(x) + deck * 0.3;
+        ctx.fillStyle = "#e8e4dc";
+        ctx.fillRect(x - h * 0.018, y - h * 0.2, h * 0.036, h * 0.2);
+        ctx.fillStyle = "#c2453c";
+        ctx.fillRect(x - h * 0.024, y - h * 0.23, h * 0.048, h * 0.035);
+      }
+
+      // 월파: 테트라포드에 부딪혀 상부까지 튀는 물보라
+      if (wave > 1.8) {
+        for (let i = 0; i < 3; i++) {
+          const ph = (T * 0.45 + i * 0.37 + site.i * 0.13) % 1;
+          const x = w * ((i * 0.31 + site.i * 0.17 + Math.floor(T * 0.45 + i * 0.37) * 0.23) % 1);
+          const rad = h * 0.09 * (0.4 + ph) * Math.min(wave / 2.5, 1.5);
+          ctx.fillStyle = `rgba(255,255,255,${0.55 * (1 - ph)})`;
+          ctx.beginPath();
+          ctx.ellipse(x, waterline(x), rad * 1.3, rad * 2.2, 0, Math.PI, 0);
+          ctx.fill();
+        }
+      }
+
+      // 사람 + 인식 박스 (상부 보행면 또는 테트라포드 위)
+      const hot = site.risk >= cfg.alertAt;
+      for (const p of site.people) {
+        if (p.t < cam.a || p.t > cam.b) continue;
+        const x = (p.t - cam.a) / (cam.b - cam.a) * w;
+        const foot = top(x) + (p.tetra ? deck + slope * 0.42 : deck * 0.55);
+        const ph = h * (p.tetra ? 0.2 : 0.16);
+        const pw = ph * 0.3;
+        const sway = Math.sin(T * 2 + p.seed) * pw * 0.06;
+        ctx.fillStyle = "#1a2129";
+        ctx.beginPath();
+        ctx.arc(x + sway, foot - ph + pw * 0.4, pw * 0.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillRect(x - pw / 2 + sway, foot - ph + pw * 0.85, pw, ph * 0.5);
+        ctx.fillRect(x - pw / 2 + sway, foot - ph * 0.42, pw * 0.42, ph * 0.42);
+        ctx.fillRect(x + pw * 0.08 + sway, foot - ph * 0.42, pw * 0.42, ph * 0.42);
+        drawBox(ctx, x - pw * 1.0, foot - ph * 1.06, pw * 2, ph * 1.12, p.score, hot, h);
+      }
+
+      // 비
+      const drops = Math.round(Math.min(r.rain, 40) * 4);
+      if (drops) {
+        ctx.strokeStyle = "rgba(255,255,255,.3)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let i = 0; i < drops; i++) {
+          const x = ((i * 97.13 + T * 60) % 1000) / 1000 * (w + 60) - 30;
+          const y = ((i * 53.71 + T * 900 * (0.8 + (i % 5) * 0.08)) % 1000) / 1000 * h;
+          ctx.moveTo(x, y);
+          ctx.lineTo(x - h * 0.012, y + h * 0.045);
+        }
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = `rgba(35,45,52,${storm * 0.28})`;
+      ctx.fillRect(-20, -20, w + 40, h + 40);
+      ctx.restore();
+    }
+
+    function drawLive(ctx, w, h, site) {
+      const v = site.live.video;
+      ctx.fillStyle = "#05090d";
+      ctx.fillRect(0, 0, w, h);
+      if (!v.videoWidth) return;
+      const sc = Math.min(w / v.videoWidth, h / v.videoHeight);
+      const vw = v.videoWidth * sc;
+      const vh = v.videoHeight * sc;
+      const ox = (w - vw) / 2;
+      const oy = (h - vh) / 2;
+      ctx.drawImage(v, ox, oy, vw, vh);
+      const hot = site.risk >= cfg.alertAt;
+      for (const p of site.people) {
+        if (p.box) drawBox(ctx, ox + p.box[0] * vw, oy + p.box[1] * vh, p.box[2] * vw, p.box[3] * vh, p.score, hot, h);
+      }
+      const cal = calMode && calMode.pts.length ? { a: calMode.pts[0], b: calMode.pts[0] } : site.cal;
+      if (cal) {
+        const fs = Math.max(11, h * 0.035);
+        ctx.strokeStyle = "#00e5ff";
+        ctx.fillStyle = "#00e5ff";
+        ctx.lineWidth = Math.max(2, h * 0.004);
+        ctx.setLineDash([h * 0.02, h * 0.012]);
+        ctx.beginPath();
+        ctx.moveTo(ox + cal.a[0] * vw, oy + cal.a[1] * vh);
+        ctx.lineTo(ox + cal.b[0] * vw, oy + cal.b[1] * vh);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = `700 ${fs}px sans-serif`;
+        ctx.fillText("입구", ox + cal.a[0] * vw + fs * 0.4, oy + cal.a[1] * vh - fs * 0.4);
+        if (cal.b !== cal.a) ctx.fillText("끝단", ox + cal.b[0] * vw + fs * 0.4, oy + cal.b[1] * vh - fs * 0.4);
+      }
+      if (calMode) {
+        ctx.fillStyle = "rgba(0,0,0,.6)";
+        ctx.fillRect(0, 0, w, h * 0.12);
+        ctx.fillStyle = "#fff";
+        ctx.font = `700 ${Math.max(11, h * 0.04)}px sans-serif`;
+        ctx.fillText(calMode.pts.length ? "② 방파제 끝단을 누르세요" : "① 화면에서 방파제 입구(육지 쪽)를 누르세요", w * 0.03, h * 0.075);
+      }
+      if (!site.live.ready) {
+        ctx.fillStyle = "rgba(0,0,0,.55)";
+        ctx.fillRect(0, h - h * 0.12, w, h * 0.12);
+        ctx.fillStyle = "#fff";
+        ctx.font = `700 ${Math.max(11, h * 0.04)}px sans-serif`;
+        ctx.fillText("AI 사람 인식 준비 중…", w * 0.03, h - h * 0.045);
+      }
+    }
+
+    function drawTile(tile, T) {
+      const { canvas, ctx } = tile;
+      const cw = canvas.clientWidth;
+      const ch = canvas.clientHeight;
+      if (!cw || !ch) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = Math.round(cw * dpr);
+      const h = Math.round(ch * dpr);
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
+      if (tile.site.live) {
+        drawLive(ctx, w, h, tile.site);
+      } else if (cfg.demo) {
+        drawSim(ctx, w, h, tile.site, tile.cam, T);
+      } else {
+        ctx.fillStyle = "#0b1620";
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = "#6f8296";
+        ctx.font = `700 ${Math.max(11, h * 0.05)}px sans-serif`;
+        ctx.textAlign = "center";
+        ctx.fillText("카메라 미연결", w / 2, h / 2);
+        ctx.textAlign = "left";
+      }
+    }
+
+    let frameAcc = 0;
+    let frameLast = performance.now();
+
+    function frame(now) {
+      stepSim();
+      frameAcc += now - frameLast;
+      frameLast = now;
+      if (frameAcc >= 50) {
+        frameAcc = 0;
+        for (const tile of tiles) drawTile(tile, now / 1000);
+      }
+      requestAnimationFrame(frame);
+      // 저장해 둔 스트림 주소 자동 재연결
+      for (const s of sites) if (savedStream[s.name]) connectLive(s, { url: savedStream[s.name] });
+    }
+
+    /* ---------------- CCTV 전체화면 ---------------- */
+    const wallState = { open: false, mode: "site", cam: 0, hud: true };
+
+    function rebuildTiles() {
+      const list = cams(current).map((cam) => ({ site: current, cam }));
+      $("cctvGrid").classList.toggle("one", list.length === 1);
+      buildTiles($("cctvGrid"), list);
+      if (wallState.open) buildWall();
+    }
+
+    function buildWall() {
+      let list;
+      if (wallState.mode === "all") {
+        list = sites.flatMap((site) => cams(site).map((cam) => ({ site, cam })));
+      } else {
+        list = cams(current).map((cam) => ({ site: current, cam }));
+        if (wallState.mode === "single") list = [list[Math.min(wallState.cam, list.length - 1)]];
+      }
+      const n = list.length;
+      const wide = window.innerWidth >= window.innerHeight;
+      const cols = n <= 2 ? (wide ? n : 1) : Math.ceil(Math.sqrt(n * (wide ? 1.3 : 0.7)));
+      const grid = $("wallGrid");
+      grid.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+      grid.classList.toggle("many", wallState.mode === "all");
+      buildTiles(grid, list);
+      document.querySelectorAll(".wall-button[data-mode]").forEach((b) => b.classList.toggle("on", b.dataset.mode === wallState.mode));
+      render();
+    }
+
+    function openWall(mode, cam) {
+      wallState.open = true;
+      wallState.mode = mode || wallState.mode;
+      if (cam != null) wallState.cam = cam;
+      $("wall").hidden = false;
+      $("wallHint").hidden = false;
+      clearTimeout(wallState.hintTimer);
+      wallState.hintTimer = setTimeout(() => { $("wallHint").hidden = true; }, 6000);
+      buildWall();
+      const root = document.documentElement;
+      const request = root.requestFullscreen || root.webkitRequestFullscreen;
+      if (request && !fullscreenElement()) {
+        try {
+          const p = request.call(root);
+          if (p && p.catch) p.catch(() => {});
+        } catch (e) { /* 전체화면이 막힌 환경에서는 창 안에서만 확대 */ }
+      }
+    }
+
+    function fullscreenElement() {
+      return document.fullscreenElement || document.webkitFullscreenElement;
+    }
+
+    function closeWall() {
+      if (!wallState.open) return;
+      wallState.open = false;
+      $("wall").hidden = true;
+      $("wallGrid").innerHTML = "";
+      buildTiles($("cctvGrid"), cams(current).map((cam) => ({ site: current, cam })));
+      if (fullscreenElement()) {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) exit.call(document);
+      }
+    }
+
+    function wallMove(step) {
+      if (wallState.mode === "single") {
+        const list = cams(current);
+        const next = wallState.cam + step;
+        if (next >= 0 && next < list.length) {
+          wallState.cam = next;
+          return buildWall();
+        }
+        wallState.cam = step > 0 ? 0 : 1;
+      }
+      selectSite(sites[(current.i + step + sites.length) % sites.length]);
+    }
+
+    /* ---------------- 화면 갱신 ---------------- */
+    function selectSite(site) {
+      current = site;
+      edit = null;
+      calMode = null;
+      renderEdit();
+      focusMap(site);
+      rebuildTiles();
+      render();
+    }
+
+    function renderSidebar() {
+      const groups = [...new Set(sites.map((s) => s.gu))];
+      setHTML($("areaList"), groups.map((gu) => {
+        const list = sites.filter((s) => s.gu === gu);
+        const worst = list.reduce((a, b) => (b.risk > a.risk ? b : a));
+        const active = current.gu === gu;
+        return `
+          <div class="area-group">
+            <button class="area-button ${active ? "active" : ""}" data-site="${list[0].i}" type="button">
+              <span class="dot ${worst.lv.key}"></span>
+              <span class="area-name">${esc(gu)}</span>
+              <span class="area-status">${worst.lv.name}</span>
+            </button>
+            <div class="sea-list ${active ? "open" : ""}">
+              ${list.map((s) => `
+                <button class="sea-button ${s === current ? "active" : ""}" data-site="${s.i}" type="button">
+                  <span class="dot ${s.lv.key}"></span>
+                  <span class="sea-name">${esc(s.name)}</span>
+                  <span class="sea-meta">${s.people.length ? (s.inc ? `<b>👤${s.people.length}</b> · ` : `👤${s.people.length} · `) : ""}${s.risk}</span>
+                </button>`).join("")}
+            </div>
+          </div>`;
+      }).join(""));
+    }
+
+    function setMetric(name, value, max, warnAt, dangerAt, labels) {
+      const bar = $(name + "Bar");
+      if (value == null) {
+        setText(name + "Value", "–");
+        bar.style.width = "0%";
+        setText(name + "Status", "자료 없음");
+        return;
+      }
+      setText(name + "Value", value.toFixed(1));
+      bar.style.width = `${clamp(value / max) * 100}%`;
+      bar.className = "progress-fill " + (value >= dangerAt ? "danger" : value >= warnAt ? "warn" : "");
+      setText(name + "Status", value >= dangerAt ? labels[2] : value >= warnAt ? labels[1] : labels[0]);
+    }
+
+    /* ---------------- 지도 (Leaflet) ---------------- */
+    let map = null;
+    let edit = null;
+    const layer = {};
+    const mapSig = {};
+
+    function initMap() {
+      if (!window.L) {
+        $("map").innerHTML = `<div class="people-empty">지도를 불러오지 못했습니다. 인터넷 연결을 확인하세요.</div>`;
+        return;
+      }
+      map = L.map("map", { zoomSnap: 0.5 });
+      map.attributionControl.setPrefix(false);
+      map.on("zoomend", () => renderMap(current));
+      // 기본은 깔끔한 일반 지도, 필요할 때 위성 사진으로 전환 (선택은 기억해 둠)
+      const base = {
+        "일반 지도": L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19, attribution: "© OpenStreetMap 기여자"
+        }),
+        "위성 사진": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+          maxZoom: 19, attribution: "위성: Esri, Maxar, Earthstar Geographics"
+        })
+      };
+      (base[store("bw.map")] || base["일반 지도"]).addTo(map);
+      L.control.layers(base, null, { position: "topright", collapsed: false }).addTo(map);
+      map.on("baselayerchange", (e) => store("bw.map", e.name));
+      L.control.scale({ imperial: false }).addTo(map);
+      for (const name of ["line", "sites", "people", "edit"]) layer[name] = L.layerGroup().addTo(map);
+      map.on("click", (e) => {
+        if (!edit) return;
+        edit.pts.push([Number(e.latlng.lat.toFixed(6)), Number(e.latlng.lng.toFixed(6))]);
+        renderEdit();
+      });
+      focusMap(current);
+    }
+
+    const icon = (html) => L.divIcon({ className: "", html, iconSize: [0, 0] });
+
+    function focusMap(s) {
+      if (!map) return;
+      if (s && s.geoSrc === "none") map.setView([s.lat, s.lon], 15, { animate: false });
+      else if (s) map.fitBounds(L.latLngBounds(s.line).pad(0.45), { maxZoom: 18, animate: false });
+      else map.fitBounds(L.latLngBounds(sites.map((x) => pointAt(x, 0.5))).pad(0.15), { animate: false });
+    }
+
+    function renderEdit() {
+      $("geoStart").hidden = !!edit;
+      $("geoDone").hidden = $("geoCancel").hidden = !edit;
+      $("map").classList.toggle("editing", !!edit);
+      if (!map) return;
+      layer.edit.clearLayers();
+      if (!edit) return;
+      $("geoDone").textContent = `완료 (${edit.pts.length}점)`;
+      if (edit.pts.length > 1) L.polyline(edit.pts, { color: "#00e5ff", weight: 4, dashArray: "6 6" }).addTo(layer.edit);
+      edit.pts.forEach((p, i) => L.circleMarker(p, { radius: 6, color: "#fff", weight: 2, fillColor: i ? "#00a6c0" : "#159c7b", fillOpacity: 1 }).addTo(layer.edit));
+    }
+
+    function saveLine(s, line) {
+      if (line) savedGeo[s.name] = line;
+      else delete savedGeo[s.name];
+      store("bw.geo", savedGeo);
+      setLine(s, line ? "user" : SITE_DATA[s.i].line ? "osm" : "none", line || SITE_DATA[s.i].line);
+      addLog(s, "sys", line ? `방파제 선 지정 저장 — 길이 ${s.len}m` : "방파제 선을 기본값으로 복원");
+      focusMap(s);
+      render();
+      fetchWeather(); // 기상 조회 좌표가 바뀌었으므로 다시 받음
+    }
+
+    function renderMap(s) {
+      const hot = s.risk >= cfg.alertAt;
+      const list = cams(s);
+      setHTML($("peopleList"), s.people.length ? sortedPeople(s).map((p, i) => `
+        <div class="people-row">
+          <span class="people-num ${hot ? "hot" : ""}">${i + 1}</span>
+          <span class="where">${esc(spot(s, p))}</span>
+          <span class="cam">${s.geoSrc === "none" ? "좌표 미지정" : pointAt(s, p.t).map((v) => v.toFixed(5)).join(", ")} · ${list.filter((c) => p.t >= c.a && p.t <= c.b).map((c) => c.id).join(" · ")} · 인식 ${Math.round(p.score * 100)}%</span>
+        </div>`).join("") : `<div class="people-empty">현재 방파제 내에서 감지된 인원이 없습니다.</div>`);
+
+      const hint = $("mapHint");
+      hint.classList.toggle("warn", !edit && s.geoSrc === "none");
+      setText("mapHint", edit
+        ? "지도에서 방파제를 따라 육지 쪽 입구부터 끝단까지 차례로 누른 뒤 ‘완료’를 누르세요. (꺾이는 곳마다 한 점씩, 오른쪽 위에서 위성 사진으로 바꾸면 찾기 쉽습니다)"
+        : s.geoSrc === "none"
+          ? "⚠ 이 구역은 방파제 위치가 아직 지정되지 않아 지도에 선과 인원 위치를 표시하지 않습니다. ‘방파제 선 지정’으로 지도에서 실제 방파제를 찍어 주세요."
+          : s.geoSrc === "osm"
+            ? `방파제 선형: ${SITE_DATA[s.i].src === "OSM" ? "OpenStreetMap 자료" : "위성 사진 판독"} · 길이 ${s.len}m. 실제와 다르면 ‘방파제 선 지정’으로 고칠 수 있습니다.`
+            : `방파제 선형: 직접 지정 · 길이 ${s.len}m`);
+      $("geoReset").hidden = !!edit || s.geoSrc !== "user";
+      if (!map) return;
+
+      // 전체 구역 표지
+      // 가까이 확대했을 때는 선택 구역 이름표가 인원 표시를 가리지 않도록 숨김
+      const near = map.getZoom() >= 15 && s.geoSrc !== "none";
+      const sig1 = sites.map((x) => `${x.lv.key}${x.risk}${x.people.length}${x.cum.length}${x.lat}`).join() + s.i + near;
+      if (mapSig.sites !== sig1) {
+        mapSig.sites = sig1;
+        layer.sites.clearLayers();
+        for (const x of sites) {
+          if (x === s && near) continue;
+          L.marker(pointAt(x, 0.5), {
+            icon: icon(`<span class="site-mk ${x.lv.key} ${x === s ? "on" : ""}">${x.geoSrc === "none" ? "위치 미지정 · " : ""}${esc(x.name)} · ${x.risk}${x.people.length ? ` · 👤${x.people.length}` : ""}</span>`),
+            zIndexOffset: x === s ? 600 : 0
+          }).on("click", () => { if (!edit) selectSite(x); }).addTo(layer.sites);
+        }
+      }
+
+      // 선택 구역 방파제 선
+      const sig2 = [s.i, hot, s.geoSrc, s.line.join(), !!s.live].join("|");
+      if (mapSig.line !== sig2) {
+        mapSig.line = sig2;
+        layer.line.clearLayers();
+        if (s.geoSrc === "none") {
+          layer.people.clearLayers();
+          return;
+        }
+        const part = (a, b) => Array.from({ length: 13 }, (_, k) => pointAt(s, a + (b - a) * k / 12));
+        // 위성 사진의 방파제가 가려지지 않도록 선은 가늘게
+        if (hot) L.polyline(s.line, { color: "#e34e4e", weight: 16, opacity: 0.35 }).addTo(layer.line);
+        L.polyline(s.line, { color: "#10243a", weight: 7, opacity: 0.9 }).addTo(layer.line);
+        [["#7bd3ff", 0, 1 / 3, "A"], ["#ffd166", 1 / 3, 2 / 3, "B"], ["#ff8c6b", 2 / 3, 1, "C"]].forEach(([color, a, b, name]) => {
+          L.polyline(part(a, b), { color, weight: 4 }).addTo(layer.line);
+          L.marker(pointAt(s, (a + b) / 2), { icon: icon(`<span class="zone-mk">${name}</span>`), interactive: false }).addTo(layer.line);
+        });
+        L.marker(pointAt(s, 0), { icon: icon(`<span class="end-mk">입구 0m</span>`), interactive: false }).addTo(layer.line);
+        L.marker(pointAt(s, 1), { icon: icon(`<span class="end-mk">끝단 ${s.len}m</span>`), interactive: false }).addTo(layer.line);
+        for (const c of list) {
+          L.marker(pointAt(s, c.live ? 0 : c.a === 0 ? 0.02 : 0.5), { icon: icon(`<span class="cam-mk">${c.id}</span>`), interactive: false }).addTo(layer.line);
+        }
+      }
+
+      // 감지 인원
+      layer.people.clearLayers();
+      if (s.geoSrc === "none") return;
+      sortedPeople(s).forEach((p, i) => {
+        L.marker(pointAt(s, p.t), { icon: icon(`<span class="mk ${hot ? "hot" : ""}">${i + 1}</span>`), zIndexOffset: 1000 })
+          .bindTooltip(spot(s, p)).addTo(layer.people);
+      });
+    }
+
+    function renderForecast(s) {
+      const fc = s.fc;
+      if (!fc || !fc.length) {
+        setHTML($("fcBars"), "");
+        setHTML($("fcHours"), "");
+        setText("fcRange", "");
+        $("fcText").classList.remove("hot");
+        return setText("fcText", "실측 기상 데이터가 연결되면 앞으로 24시간의 위험도 예보를 표시합니다.");
+      }
+      setText("fcRange", `${fc[0].hour}시 ~ 내일 ${fc[fc.length - 1].hour}시`);
+      setHTML($("fcBars"), fc.map((f) => `<i class="${level(f.risk).key}" style="height:${Math.max(3, f.risk)}%" title="${f.hour}시 · 위험도 ${f.risk}점 · 풍속 ${f.wind.toFixed(1)}m/s · 강수 ${f.rain.toFixed(1)}mm · 파고 ${f.wave == null ? "-" : f.wave.toFixed(1) + "m"}"></i>`).join("")
+        + `<span class="fc-line" style="bottom:${cfg.alertAt}%"></span>`);
+      setHTML($("fcHours"), fc.map((f, k) => `<span>${k % 4 === 0 ? f.hour + "시" : ""}</span>`).join(""));
+      const peak = fc.reduce((a, b) => (b.risk > a.risk ? b : a));
+      const over = fc.find((f) => f.risk >= cfg.alertAt);
+      $("fcText").classList.toggle("hot", !!over);
+      setText("fcText", over
+        ? `⚠ ${over.hour}시부터 경보 기준 초과 예상 · 최고 ${peak.risk}점 (${peak.hour}시)`
+        : `24시간 내 경보 기준 초과 예상 없음 · 최고 ${peak.risk}점 (${peak.hour}시)`);
+    }
+
+    function renderRisk(s) {
+      const inc = s.inc;
+      const n = s.people.length;
+      setText("riskValue", s.risk);
+      $("riskCard").className = "risk-card " + s.lv.key;
+      $("riskBadge").className = "badge " + s.lv.key;
+      setText("riskBadge", s.lv.name);
+      $("riskBar").style.width = `${s.risk}%`;
+      $("riskBar").className = "progress-fill " + s.lv.key;
+      $("riskMark").style.left = `${cfg.alertAt}%`;
+      setText("riskSource", s.demo ? "시연 값" : weather.mode === "live" ? "Open-Meteo 실측·예보" : "시뮬레이션 값");
+      setText("riskThreshold", `경보 기준 ${cfg.alertAt}점`);
+
+      const times = inc ? [inc.manual ? 0 : inc.at, inc.detAt, inc.castAt, inc.dispAt] : [];
+      const firstOpen = times.findIndex((t) => !t);
+      [...$("steps").children].forEach((li, i) => {
+        li.className = times[i] ? "done" : inc && i === firstOpen && (i !== 1 || n) ? "now" : "";
+        const txt = times[i] ? fmtTime(times[i]) : "";
+        const time = li.lastElementChild;
+        if (time.textContent !== txt) time.textContent = txt;
+        li.firstElementChild.textContent = times[i] ? "✓" : i + 1;
+      });
+
+      const now = Date.now();
+      let hint = "경보 없음 · 평시 감시 중";
+      let hot = false;
+      if (inc) {
+        hot = true;
+        if (inc.dispAt) hint = `출동 지시 후 ${fmtDur(now - inc.dispAt)} 경과 · 현재 인원 ${n}명 — 조치가 끝나면 상황을 종료하세요`;
+        else if (inc.castAt && n) hint = `방송 후 ${fmtDur(now - inc.castAt)} 경과 · ${n}명 잔류 — 재방송 또는 출동 여부를 판단하세요`;
+        else if (inc.castAt) hint = "방송 후 인원 이탈 확인 — 기상이 호전되면 경보가 자동 해제됩니다";
+        else if (n) hint = `인원 ${n}명 감지 (${fmtDur(now - (inc.detAt || now))} 경과) — 안내 방송을 실시하세요`;
+        else hint = "기상 위험 — 현재 방파제 내 인원 없음. 진입 시 즉시 알립니다";
+      } else if (n) {
+        hint = `인원 ${n}명 관찰 중 · 위험도 기준 미만`;
+      } else if (s.hold) {
+        hint = `경보 보류 중 (${fmtTime(s.hold)}까지)`;
+      }
+      setText("nextHint", hint);
+      $("nextHint").classList.toggle("hot", hot && !!n);
+      $("closeButton").hidden = !inc;
+
+      setMetric("wind", s.r.wind, 25, 14, 20, ["보통", "강풍 주의", "강풍 위험"]);
+      setMetric("rain", s.r.rain, 40, 15, 30, [s.r.rain < 0.1 ? "비 없음" : "약한 비", "강한 비", "매우 강한 비"]);
+      setMetric("wave", s.r.wave, 4, 1.5, 3, ["평온", "높은 파도", "매우 높은 파도"]);
+      if (s.r.gust != null) setText("windStatus", `${$("windStatus").textContent} · 순간 ${s.r.gust.toFixed(1)}`);
+    }
+
+    function render() {
+      const s = current;
+      const now = Date.now();
+      const active = sites.filter((x) => x.inc);
+      const allCams = sites.flatMap((x) => cams(x));
+      const people = sites.reduce((a, x) => a + x.people.length, 0);
+      const hotPeople = sites.reduce((a, x) => a + (x.inc ? x.people.length : 0), 0);
+      const need = active.filter((x) => x.people.length && !x.inc.dispAt).length;
+
+      renderSidebar();
+      setText("pageSubtitle", `부산광역시 ${s.gu} · ${s.name} 감시 구역`);
+      const clock = fmtTime(now);
+      setText("clock", clock);
+
+      $("monitorStatus").classList.toggle("alarm", active.length > 0);
+      setText("monitorText", active.length ? `경보 ${active.length}건 진행 중` : "실시간 모니터링");
+      document.title = active.length ? `(${active.length}) ⚠ 경보 — 해안 안전 관제` : "해안 안전 관제";
+
+      setText("sumSites", String(sites.length).padStart(2, "0"));
+      setText("sumSitesNote", active.length ? `경보 ${active.length}개소` : "전 구역 경보 없음");
+      setText("sumCams", String(allCams.length).padStart(2, "0"));
+      setText("sumCamsTotal", `/ ${allCams.length}대`);
+      const real = allCams.filter((c) => c.live).length;
+      if (!cfg.demo) setText("sumCams", String(real).padStart(2, "0"));
+      setText("sumCamsNote", cfg.demo
+        ? (real ? `실제 영상 ${real}대 · 시연 화면 ${allCams.length - real}대` : "전체 시연 화면 (실제 영상 미연결)")
+        : (real ? `실제 영상 ${real}대 연결` : "연결된 카메라 없음"));
+      setText("sumPeople", String(people).padStart(2, "0"));
+      setText("sumPeopleNote", hotPeople ? `경보 구역 내 ${hotPeople}명` : "경보 구역 내 인원 없음");
+      $("sumPeopleCard").classList.toggle("alarm", hotPeople > 0);
+      setText("sumAlarm", String(active.length).padStart(2, "0"));
+      setText("sumAlarmNote", need ? `조치 필요 ${need}건` : active.length ? "조치 필요 없음" : "평시 감시 중");
+      $("sumAlarmCard").classList.toggle("alarm", active.length > 0);
+
+      // 경보 현황
+      const ordered = [...active].sort((a, b) => (b.people.length ? 1 : 0) - (a.people.length ? 1 : 0) || b.risk - a.risk);
+      $("alarmPanel").hidden = !ordered.length;
+      setHTML($("alarmList"), ordered.map((x) => `
+        <button class="alarm-row" data-site="${x.i}" type="button">
+          <span class="badge ${x.lv.key}">${x.lv.name} ${x.risk}</span>
+          <span class="alarm-site">${esc(x.name)}</span>
+          <span class="alarm-detail">${x.people.length ? `인원 ${x.people.length}명 — ${esc(whereAll(x))}` : "방파제 내 인원 없음"} · ${fmtTime(x.inc.at)} 발령</span>
+          <span class="alarm-stage">${stage(x)}</span>
+        </button>`).join(""));
+
+      // CCTV
+      const live = !!s.live;
+      setText("cameraLabel", cams(s).map((c) => c.id).join(" · ") + ` · ${s.name}`);
+      $("disconnectButton").hidden = $("calButton").hidden = !live;
+      setText("cctvDisclaimer", live
+        ? (s.cal
+          ? "실제 영상에서 AI(COCO-SSD)가 사람을 인식합니다. 보정선(입구→끝단)을 기준으로 발 위치를 방파제 거리로 환산해 지도에 표시합니다."
+          : "실제 영상에서 AI(COCO-SSD)가 사람을 인식합니다. ‘위치 보정’으로 화면 속 방파제 입구와 끝단을 지정하면 지도 위치가 정확해집니다. (지금은 화면 가로 위치로 추정)")
+        : cfg.demo
+          ? "실제 CCTV 영상이 아닌 시연용 그래픽입니다. ‘카메라 연결’·‘영상 파일’·‘스트림 주소’로 실제 영상을 연결하면 AI가 사람을 인식합니다."
+          : "연결된 영상이 없습니다. ‘카메라 연결’·‘영상 파일’·‘스트림 주소’로 실제 영상을 연결하세요.");
+
+      for (const tile of tiles) {
+        const x = tile.site;
+        const n = x.people.filter((p) => p.t >= tile.cam.a && p.t <= tile.cam.b).length;
+        const hot = x.risk >= cfg.alertAt;
+        if (tile.timeEl.textContent !== clock) tile.timeEl.textContent = clock;
+        const txt = `사람 ${n}명`;
+        if (tile.countEl.textContent !== txt) tile.countEl.textContent = txt;
+        tile.countEl.classList.toggle("hot", hot && n > 0);
+        tile.el.classList.toggle("alert", hot && n > 0);
+      }
+
+      renderMap(s);
+      renderRisk(s);
+      renderForecast(s);
+
+      // 시스템 상태
+      setHTML($("systemStatus"), `
+        <strong>시스템 상태</strong>
+        <div class="${weather.mode === "live" ? "connected" : "degraded"}">● 기상: ${weather.mode === "live" ? "실측·예보 수신 정상" : "시뮬레이션 값"}</div>
+        <div>${weather.mode === "live" ? `Open-Meteo · ${fmtTime(weather.at).slice(0, 5)} 갱신` : weather.error ? "수신 실패 — 10분 후 재시도" : "설정에서 실측으로 전환 가능"}${weather.error && weather.mode === "live" ? ` · ${weather.error}` : ""}</div>
+        <div>경보 기준: 위험도 ${cfg.alertAt}점 이상</div>`);
+
+      // 전체화면 상단 표시
+      if (wallState.open) {
+        const all = wallState.mode === "all";
+        $("wallBadge").className = "badge " + (all ? (active.length ? "danger" : "") : s.lv.key);
+        setText("wallBadge", all ? (active.length ? `경보 ${active.length}` : "정상") : `${s.lv.name} ${s.risk}`);
+        setText("wallTitle", all ? "전체 카메라" : `${s.gu} · ${s.name}`);
+        setText("wallInfo", all
+          ? `감지 인원 ${people}명 · ${clock}`
+          : `풍속 ${s.r.wind.toFixed(1)}m/s · 강수 ${s.r.rain.toFixed(1)}mm/h · 파고 ${s.r.wave == null ? "-" : s.r.wave.toFixed(1) + "m"} · 인원 ${s.people.length}명 · ${clock}`);
+        $("wallBroadcast").hidden = $("wallDispatch").hidden = $("wallPrev").hidden = $("wallNext").hidden = all;
+        const others = ordered.filter((x) => all || x !== s);
+        $("wallAlarm").hidden = !others.length;
+        setHTML($("wallAlarm"), others.map((x) => `
+          <button data-site="${x.i}" type="button">⚠ ${esc(x.name)} · ${x.lv.name} ${x.risk}${x.people.length ? ` · 인원 ${x.people.length}명` : ""} · ${stage(x)}</button>`).join(""));
+      }
+    }
+
+    function tick() {
+      stepSim();
+      evaluate();
+      render();
+    }
+
+    /* ---------------- 이벤트 ---------------- */
+    function onSiteClick(e) {
+      const el = e.target.closest("[data-site]");
+      if (el && !el.classList.contains("tile")) {
+        selectSite(sites[el.dataset.site]);
+        return true;
+      }
+      return false;
+    }
+
+    $("areaList").addEventListener("click", onSiteClick);
+    $("alarmList").addEventListener("click", onSiteClick);
+    $("wallAlarm").addEventListener("click", (e) => {
+      if (onSiteClick(e) && wallState.mode === "all") {
+        wallState.mode = "site";
+        buildWall();
+      }
+    });
+
+    $("cctvGrid").addEventListener("click", (e) => {
+      const tile = e.target.closest(".tile");
+      if (!tile) return;
+      if (e.target.closest(".tile-full")) return openWall("single", Number(tile.dataset.cam));
+      if (calMode && current.live && current.live.video.videoWidth) calClick(tile, e);
+    });
+    $("cctvGrid").addEventListener("dblclick", (e) => {
+      const tile = e.target.closest(".tile");
+      if (tile && !calMode) openWall("single", Number(tile.dataset.cam));
+    });
+    $("streamButton").addEventListener("click", askStream);
+    $("calButton").addEventListener("click", () => {
+      calMode = calMode ? null : { pts: [] };
+      showToast(calMode ? "영상 화면에서 방파제 입구(육지 쪽)를 누르세요." : "위치 보정을 취소했습니다.");
+    });
+    $("demoButton").addEventListener("click", () => {
+      setDemo(!cfg.demo);
+      showToast(cfg.demo ? "시연 모드: 가상 인원과 시연 그래픽을 표시합니다." : "실제 모드: 연결된 카메라와 실측 기상만 표시합니다.");
+    });
+    $("geoStart").addEventListener("click", () => {
+      if (!map) return showToast("지도를 불러오지 못해 지정할 수 없습니다.");
+      edit = { pts: [] };
+      renderEdit();
+      render();
+    });
+    $("geoCancel").addEventListener("click", () => {
+      edit = null;
+      renderEdit();
+      render();
+    });
+    $("geoDone").addEventListener("click", () => {
+      if (edit.pts.length < 2) return showToast("입구와 끝단, 최소 두 점을 찍어 주세요.");
+      const pts = edit.pts;
+      edit = null;
+      renderEdit();
+      saveLine(current, pts);
+      showToast(`${current.name} 방파제 선을 저장했습니다. (길이 ${current.len}m)`);
+    });
+    $("geoReset").addEventListener("click", () => saveLine(current, null));
+    $("mapSite").addEventListener("click", () => focusMap(current));
+    $("mapAll").addEventListener("click", () => focusMap(null));
+
+    $("wallGrid").addEventListener("click", (e) => {
+      const tile = e.target.closest(".tile");
+      if (!tile) return;
+      if (wallState.mode === "all") {
+        wallState.mode = "site";
+        selectSite(sites[tile.dataset.site]);
+      } else if (e.target.closest(".tile-full")) {
+        wallState.mode = wallState.mode === "single" ? "site" : "single";
+        wallState.cam = Number(tile.dataset.cam);
+        buildWall();
+      }
+    });
+    $("wallGrid").addEventListener("dblclick", (e) => {
+      const tile = e.target.closest(".tile");
+      if (!tile || wallState.mode === "all") return;
+      wallState.mode = wallState.mode === "single" ? "site" : "single";
+      wallState.cam = Number(tile.dataset.cam);
+      buildWall();
+    });
+
+    document.querySelectorAll(".wall-button[data-mode]").forEach((b) => b.addEventListener("click", () => {
+      wallState.mode = b.dataset.mode;
+      buildWall();
+    }));
+    $("wallPrev").addEventListener("click", () => wallMove(-1));
+    $("wallNext").addEventListener("click", () => wallMove(1));
+    $("wallClose").addEventListener("click", closeWall);
+    $("wallBroadcast").addEventListener("click", () => askBroadcast());
+    $("wallDispatch").addEventListener("click", () => askDispatch());
+    $("wallButton").addEventListener("click", () => openWall("site"));
+    $("wallButton2").addEventListener("click", () => openWall("site"));
+
+    for (const name of ["fullscreenchange", "webkitfullscreenchange"]) {
+      document.addEventListener(name, () => {
+        if (!fullscreenElement()) closeWall();
+      });
+    }
+    window.addEventListener("resize", () => {
+      if (wallState.open && wallState.mode !== "single") buildWall();
+    });
+
+    $("broadcastButton").addEventListener("click", () => askBroadcast());
+    $("dispatchButton").addEventListener("click", () => askDispatch());
+    $("closeButton").addEventListener("click", () => askClose());
+    $("settingsButton").addEventListener("click", openSettings);
+    $("soundButton").addEventListener("click", () => {
+      setSound(!cfg.sound);
+      if (cfg.sound) beep(1);
+      showToast(cfg.sound ? "경보음을 켰습니다." : "경보음을 껐습니다.");
+    });
+
+    $("modalCancel").addEventListener("click", closeModal);
+    $("modalOk").addEventListener("click", () => modalOk && modalOk());
+    $("modal").addEventListener("click", (e) => {
+      if (e.target === $("modal")) closeModal();
+    });
+
+    $("csvButton").addEventListener("click", downloadCsv);
+    $("clearLogButton").addEventListener("click", () => {
+      openModal({
+        title: "기록 비우기",
+        ok: "비우기",
+        danger: true,
+        body: `<p>상황 기록 ${logs.length}건을 모두 삭제합니다. 필요하면 먼저 CSV로 저장하세요.</p>`,
+        onOk() {
+          logs = [];
+          store("bw.log", logs);
+          renderLog();
+          closeModal();
+        }
+      });
+    });
+
+    $("webcamButton").addEventListener("click", async () => {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        return showToast("이 브라우저에서는 카메라를 사용할 수 없습니다. (https 또는 localhost 필요)");
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment", width: { ideal: 1280 } }, audio: false });
+        connectLive(current, { stream });
+      } catch (e) {
+        showToast("카메라에 접근할 수 없습니다. 브라우저 권한을 확인하세요.");
+      }
+    });
+    $("fileButton").addEventListener("click", () => $("fileInput").click());
+    $("fileInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      e.target.value = "";
+      if (file) connectLive(current, { file });
+    });
+    $("disconnectButton").addEventListener("click", () => disconnectLive(current));
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (!$("modal").hidden) return closeModal();
+        return closeWall();
+      }
+      if (!$("modal").hidden || e.metaKey || e.ctrlKey || e.altKey || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+      const key = e.key.toLowerCase();
+      if (key === "f") return wallState.open ? closeWall() : openWall("site");
+      if (!wallState.open) return;
+      if (key === "1" || key === "2" || key === "3") {
+        wallState.mode = ["single", "site", "all"][Number(key) - 1];
+        buildWall();
+      } else if (e.key === "ArrowLeft" && wallState.mode !== "all") {
+        wallMove(-1);
+      } else if (e.key === "ArrowRight" && wallState.mode !== "all") {
+        wallMove(1);
+      } else if (key === "h") {
+        wallState.hud = !wallState.hud;
+        $("wall").classList.toggle("nohud", !wallState.hud);
+        $("wallHint").hidden = true;
+      }
+    });
+
+    /* ---------------- 시작 ---------------- */
+    async function start() {
+      setSound(cfg.sound);
+      renderLog();
+      $("demoButton").textContent = cfg.demo ? "시연 모드 켜짐" : "시연 모드 꺼짐";
+      if (cfg.demo) seedPeople();
+      initMap();
+      renderEdit();
+      rebuildTiles();
+      await fetchWeather();
+      addLog(null, "sys", weather.mode === "live" ? "관제 시작 — 실측 기상 데이터 수신" : "관제 시작 — 시뮬레이션 기상 값 사용");
+      tick();
+      setInterval(tick, 500);
+      setInterval(fetchWeather, WEATHER_INTERVAL);
+      requestAnimationFrame(frame);
+    }
+
+    start();
+  </script>
+</body>
+</html>
