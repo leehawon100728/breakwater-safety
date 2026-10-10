@@ -22,7 +22,7 @@ for back in (5, 10, 20):  # 최신 분 자료가 아직 없거나 응답이 늦�
     for line in raw.splitlines():
         f = line.split(",")
         if len(f) > 12 and f[1] in STATIONS:
-            out[f[1]] = {"name": STATIONS[f[1]], "wind": val(f[7]), "gust": val(f[5]), "rain": val(f[11])}
+            out[f[1]] = {"name": STATIONS[f[1]], "wind": val(f[7]), "gust": val(f[5]), "rain": val(f[11]), "temp": val(f[8]), "hum": val(f[14])}
     if out:
         json.dump({"time": tm, "stations": out}, open("obs.json", "w"), ensure_ascii=False)
         print(tm, out)

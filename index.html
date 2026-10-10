@@ -1104,6 +1104,12 @@
       filter: brightness(.96);
     }
 
+    .pair-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
     /* 센서 카드 */
     .metric-card {
       padding: 15px 16px;
@@ -1666,6 +1672,17 @@
               <div class="fc-text" id="fcText"></div>
             </article>
 
+            <div class="pair-cards">
+              <article class="metric-card">
+                <div class="metric-heading"><span>기온</span><span class="metric-icon">🌡️</span></div>
+                <div class="metric-value"><span id="tempValue">-</span> <small>℃</small></div>
+              </article>
+              <article class="metric-card">
+                <div class="metric-heading"><span>습도</span><span class="metric-icon">💧</span></div>
+                <div class="metric-value"><span id="humValue">-</span> <small>%</small></div>
+              </article>
+            </div>
+
             <article class="metric-card">
               <div class="metric-heading"><span>풍속</span><span class="metric-icon">🌬️</span></div>
               <div class="metric-value"><span id="windValue">-</span> <small>m/s</small></div>
@@ -2006,7 +2023,7 @@
       }).then((j) => [].concat(j));
 
       const [land, sea] = await Promise.allSettled([
-        get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=precipitation,wind_speed_10m,wind_gusts_10m&hourly=precipitation,wind_speed_10m,wind_gusts_10m&forecast_hours=24&wind_speed_unit=ms&timezone=Asia%2FSeoul`),
+        get(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=precipitation,wind_speed_10m,wind_gusts_10m,temperature_2m,relative_humidity_2m&hourly=precipitation,wind_speed_10m,wind_gusts_10m&forecast_hours=24&wind_speed_unit=ms&timezone=Asia%2FSeoul`),
         get(`https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&current=wave_height&hourly=wave_height&forecast_hours=24&timezone=Asia%2FSeoul`)
       ]);
 
@@ -2025,7 +2042,9 @@
           wind: c.wind_speed_10m,
           gust: c.wind_gusts_10m,
           rain: c.precipitation * 3600 / (c.interval || 3600), // 구간 강수량 → 시간당
-          wave: w == null ? null : w
+          wave: w == null ? null : w,
+          temp: c.temperature_2m,
+          hum: c.relative_humidity_2m
         };
         if (first && !s.demo) s.r = { ...s.obs };
 
@@ -2051,6 +2070,8 @@
           s.obs.wind = st.wind;
           if (st.gust != null) s.obs.gust = st.gust;
           if (st.rain != null) s.obs.rain = st.rain;
+          if (st.temp != null) s.obs.temp = st.temp;
+          if (st.hum != null) s.obs.hum = st.hum;
         });
       } catch (e) {
         sites.forEach((s) => { s.real = null; });
@@ -3233,6 +3254,10 @@
       $("nextHint").classList.toggle("hot", hot && !!n);
       $("closeButton").hidden = !inc;
 
+      // 기온·습도는 위험도 계산에 쓰지 않는 참고 값 (시연·시뮬레이션 중에는 표시 안 함)
+      const air = weather.mode === "live" ? s.obs : {};
+      setText("tempValue", air.temp == null ? "–" : air.temp.toFixed(1));
+      setText("humValue", air.hum == null ? "–" : Math.round(air.hum));
       setMetric("wind", s.r.wind, 25, 14, 20, ["보통", "강풍 주의", "강풍 위험"]);
       setMetric("rain", s.r.rain, 40, 15, 30, [s.r.rain < 0.1 ? "비 없음" : "약한 비", "강한 비", "매우 강한 비"]);
       setMetric("wave", s.r.wave, 4, 1.5, 3, ["평온", "높은 파도", "매우 높은 파도"]);
