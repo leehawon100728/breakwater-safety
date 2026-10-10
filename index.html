@@ -2302,7 +2302,7 @@
           </label>
           <label>기상 데이터
             <select id="sourceInput">
-              <option value="live" ${cfg.source === "live" ? "selected" : ""}>실측·예보 (Open-Meteo, 10분마다 갱신)</option>
+              <option value="live" ${cfg.source === "live" ? "selected" : ""}>기상 모델 추정값 (Open-Meteo, 10분마다 갱신)</option>
               <option value="sim" ${cfg.source === "sim" ? "selected" : ""}>시뮬레이션 (가상 값)</option>
             </select>
           </label>
@@ -2332,7 +2332,7 @@
         cfg.source = e.target.value;
         store("bw.cfg", cfg);
         await fetchWeather();
-        showToast(weather.mode === "live" ? "실측 기상 데이터를 사용합니다." : "시뮬레이션 값을 사용합니다.");
+        showToast(weather.mode === "live" ? "Open-Meteo 기상 모델 값을 사용합니다." : "시뮬레이션 값을 사용합니다.");
       });
       $("soundInput").addEventListener("change", (e) => setSound(e.target.checked));
       $("desktopInput").addEventListener("change", async (e) => {
@@ -3157,7 +3157,7 @@
         setHTML($("fcHours"), "");
         setText("fcRange", "");
         $("fcText").classList.remove("hot");
-        return setText("fcText", "실측 기상 데이터가 연결되면 앞으로 24시간의 위험도 예보를 표시합니다.");
+        return setText("fcText", "기상 데이터가 연결되면 앞으로 24시간의 위험도 예보를 표시합니다.");
       }
       setText("fcRange", `${fc[0].hour}시 ~ 내일 ${fc[fc.length - 1].hour}시`);
       setHTML($("fcBars"), fc.map((f) => `<i class="${level(f.risk).key}" style="height:${Math.max(3, f.risk)}%" title="${f.hour}시 · 위험도 ${f.risk}점 · 풍속 ${f.wind.toFixed(1)}m/s · 강수 ${f.rain.toFixed(1)}mm · 파고 ${f.wave == null ? "-" : f.wave.toFixed(1) + "m"}"></i>`).join("")
@@ -3181,7 +3181,7 @@
       $("riskBar").style.width = `${s.risk}%`;
       $("riskBar").className = "progress-fill " + s.lv.key;
       $("riskMark").style.left = `${cfg.alertAt}%`;
-      setText("riskSource", s.demo ? "시연 값" : weather.mode === "live" ? "Open-Meteo 실측·예보" : "시뮬레이션 값");
+      setText("riskSource", s.demo ? "시연 값" : weather.mode === "live" ? "기상 모델 추정값 (현장 관측 아님)" : "시뮬레이션 값");
       setText("riskThreshold", `경보 기준 ${cfg.alertAt}점`);
 
       const times = inc ? [inc.manual ? 0 : inc.at, inc.detAt, inc.castAt, inc.dispAt] : [];
@@ -3294,8 +3294,8 @@
       // 시스템 상태
       setHTML($("systemStatus"), `
         <strong>시스템 상태</strong>
-        <div class="${weather.mode === "live" ? "connected" : "degraded"}">● 기상: ${weather.mode === "live" ? "실측·예보 수신 정상" : "시뮬레이션 값"}</div>
-        <div>${weather.mode === "live" ? `Open-Meteo · ${fmtTime(weather.at).slice(0, 5)} 갱신` : weather.error ? "수신 실패 — 10분 후 재시도" : "설정에서 실측으로 전환 가능"}${weather.error && weather.mode === "live" ? ` · ${weather.error}` : ""}</div>
+        <div class="${weather.mode === "live" ? "connected" : "degraded"}">● 기상: ${weather.mode === "live" ? "모델 추정값 수신 정상" : "시뮬레이션 값"}</div>
+        <div>${weather.mode === "live" ? `Open-Meteo · ${fmtTime(weather.at).slice(0, 5)} 갱신` : weather.error ? "수신 실패 — 10분 후 재시도" : "설정에서 기상 모델 값으로 전환 가능"}${weather.error && weather.mode === "live" ? ` · ${weather.error}` : ""}</div>
         <div>경보 기준: 위험도 ${cfg.alertAt}점 이상</div>`);
 
       // 전체화면 상단 표시
@@ -3357,7 +3357,7 @@
     });
     $("demoButton").addEventListener("click", () => {
       setDemo(!cfg.demo);
-      showToast(cfg.demo ? "시연 모드: 가상 인원과 시연 그래픽을 표시합니다." : "실제 모드: 연결된 카메라와 실측 기상만 표시합니다.");
+      showToast(cfg.demo ? "시연 모드: 가상 인원과 시연 그래픽을 표시합니다." : "실제 모드: 연결된 카메라와 기상 모델 값만 표시합니다.");
     });
     $("geoStart").addEventListener("click", () => {
       if (!map) return showToast("지도를 불러오지 못해 지정할 수 없습니다.");
@@ -3507,7 +3507,7 @@
       renderEdit();
       rebuildTiles();
       await fetchWeather();
-      addLog(null, "sys", weather.mode === "live" ? "관제 시작 — 실측 기상 데이터 수신" : "관제 시작 — 시뮬레이션 기상 값 사용");
+      addLog(null, "sys", weather.mode === "live" ? "관제 시작 — Open-Meteo 기상 모델 값 수신" : "관제 시작 — 시뮬레이션 기상 값 사용");
       tick();
       setInterval(tick, 500);
       setInterval(fetchWeather, WEATHER_INTERVAL);
