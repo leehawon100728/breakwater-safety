@@ -10,11 +10,14 @@ def val(text):
     v = float(text)
     return None if v <= -50 else v  # -50 이하는 결측
 
-for back in (5, 10, 20):  # 최신 분 자료가 아직 없거나 응답이 늦으면 조금 앞 시각으로 재시도
-    tm = (datetime.now(KST) - timedelta(minutes=back)).strftime("%Y%m%d%H%M")
+# 10분 단위 시각만 요청한다 (그 외 시각을 전체 관측소로 요청하면 응답이 오지 않음)
+now = datetime.now(KST) - timedelta(minutes=3)
+base = now.replace(minute=now.minute // 10 * 10, second=0, microsecond=0)
+for step in range(3):  # 최신 자료가 아직 없으면 10분씩 앞 시각으로 재시도
+    tm = (base - timedelta(minutes=10 * step)).strftime("%Y%m%d%H%M")
     url = f"https://apihub.kma.go.kr/api/typ01/cgi-bin/url/nph-aws2_min?tm2={tm}&stn=0&disp=1&help=0&authKey={key}"
     try:
-        raw = urllib.request.urlopen(url, timeout=60).read().decode("euc-kr", "ignore")
+        raw = urllib.request.urlopen(url, timeout=25).read().decode("euc-kr", "ignore")
     except OSError as e:
         print(tm, "요청 실패:", type(e).__name__)
         continue
