@@ -2241,7 +2241,7 @@
         const o = await fetch("obs.json?" + Date.now()).then((r) => r.json());
         const t = o.time;
         const at = new Date(`${t.slice(0, 4)}-${t.slice(4, 6)}-${t.slice(6, 8)}T${t.slice(8, 10)}:${t.slice(10, 12)}:00+09:00`).getTime();
-        const fresh = Date.now() - at < 40 * 60 * 1000;
+        const fresh = true; // 오래된 값이라도 모델 값으로 바꾸지 않고 마지막 실제 관측값을 유지 (관측 시각과 지연 경고를 함께 표시)
         sites.forEach((s) => {
           const st = fresh && o.stations[s.aws];
           s.real = st && st.wind != null ? { name: st.name, at } : null;
@@ -2256,7 +2256,7 @@
         const kst = (v) => new Date(`${v.slice(0, 4)}-${v.slice(4, 6)}-${v.slice(6, 8)}T${v.slice(8, 10)}:${v.slice(10, 12)}:00+09:00`).getTime();
         sites.forEach((s) => {
           const b = o.waves && o.waves[s.buoy];
-          s.realWave = b && Date.now() - kst(b.time) < 90 * 60 * 1000 ? { name: b.name, at: kst(b.time) } : null;
+          s.realWave = b ? { name: b.name, at: kst(b.time) } : null;
           if (s.realWave) s.obs.wave = b.wave;
         });
       } catch (e) {
@@ -3409,7 +3409,7 @@
       $("riskBar").className = "progress-fill " + s.lv.key;
       $("riskMark").style.left = `${cfg.alertAt}%`;
       setText("riskSource", s.demo ? "시연 값" : weather.mode !== "live" ? "시뮬레이션 값"
-        : s.real ? `풍속·강수: 기상청 ${s.real.name} 관측 ${fmtTime(s.real.at).slice(0, 5)} · 파고: ${s.realWave ? `${s.realWave.name} 부이 ${fmtTime(s.realWave.at).slice(0, 5)}` : "모델"}`
+        : s.real ? `${Date.now() - s.real.at > 60 * 60 * 1000 ? "⚠ 갱신 지연 · " : ""}풍속·강수: 기상청 ${s.real.name} 관측 ${fmtTime(s.real.at).slice(0, 5)} · 파고: ${s.realWave ? `${s.realWave.name} 부이 ${fmtTime(s.realWave.at).slice(0, 5)}` : "모델"}`
           : "기상 모델 추정값 (현장 관측 아님)");
       setText("riskThreshold", `경보 기준 ${cfg.alertAt}점`);
 
@@ -3448,7 +3448,7 @@
       setText("humValue", air.hum == null ? "–" : Math.round(air.hum));
       setMetric("wind", s.r.wind, 25, 14, 20, ["보통", "강풍 주의", "강풍 위험"]);
       setMetric("rain", s.r.rain, 40, 15, 30, [s.r.rain < 0.1 ? "비 없음" : "약한 비", "강한 비", "매우 강한 비"]);
-      setText("waveSrc", s.demo || weather.mode !== "live" ? "" : s.realWave ? `(${s.realWave.name} 부이 실측)` : "(모델 추정)");
+      setText("waveSrc", s.demo || weather.mode !== "live" ? "" : s.realWave ? `(${s.realWave.name} 부이 실측)` : "");
       setMetric("wave", s.r.wave, 4, 1.5, 3, ["평온", "높은 파도", "매우 높은 파도"]);
       if (s.r.gust != null) setText("windStatus", `${$("windStatus").textContent} · 순간 ${s.r.gust.toFixed(1)}`);
     }
