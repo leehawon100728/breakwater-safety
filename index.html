@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -154,12 +155,23 @@
       background: var(--green);
     }
 
-    .dot.watch { background: var(--yellow); }
-    .dot.warn { background: var(--orange); }
-    .dot.danger { background: var(--red); animation: blink 1s infinite; }
+    .dot.watch {
+      background: var(--yellow);
+    }
+
+    .dot.warn {
+      background: var(--orange);
+    }
+
+    .dot.danger {
+      background: var(--red);
+      animation: blink 1s infinite;
+    }
 
     @keyframes blink {
-      50% { opacity: .35; }
+      50% {
+        opacity: .35;
+      }
     }
 
     .sea-list {
@@ -234,8 +246,15 @@
       font-size: 13px;
     }
 
-    .system-status .connected { color: #55d1ae; font-weight: 700; }
-    .system-status .degraded { color: #f2c166; font-weight: 700; }
+    .system-status .connected {
+      color: #55d1ae;
+      font-weight: 700;
+    }
+
+    .system-status .degraded {
+      color: #f2c166;
+      font-weight: 700;
+    }
 
     /* 본문 영역 */
     .main {
@@ -452,9 +471,17 @@
       white-space: nowrap;
     }
 
-    .badge.watch { background: var(--yellow); }
-    .badge.warn { background: var(--orange); }
-    .badge.danger { background: var(--red); }
+    .badge.watch {
+      background: var(--yellow);
+    }
+
+    .badge.warn {
+      background: var(--orange);
+    }
+
+    .badge.danger {
+      background: var(--red);
+    }
 
     /* 메인 대시보드 그리드 */
     .dashboard-grid {
@@ -563,11 +590,13 @@
     }
 
     @keyframes tile-alert {
-      50% { outline-color: #e34e4e55; }
+      50% {
+        outline-color: #e34e4e55;
+      }
     }
 
-    .tile > span,
-    .tile > button {
+    .tile>span,
+    .tile>button {
       position: absolute;
       z-index: 1;
     }
@@ -651,7 +680,8 @@
     }
 
     #map {
-      z-index: 0; /* 지도 내부 레이어가 설정 창·전체화면 위로 올라오지 않게 묶음 */
+      z-index: 0;
+      /* 지도 내부 레이어가 설정 창·전체화면 위로 올라오지 않게 묶음 */
       height: 440px;
       background: #a9cfdd;
     }
@@ -689,14 +719,47 @@
       transform: translate(-50%, -150%);
     }
 
-    .site-mk { cursor: pointer; opacity: .88; }
-    .site-mk.on { outline: 2px solid white; opacity: 1; }
-    .site-mk.watch { background: var(--yellow); }
-    .site-mk.warn { background: var(--orange); }
-    .site-mk.danger { background: var(--red); }
-    .zone-mk { background: #10243ad0; transform: translate(-50%, 60%); font-size: 10px; }
-    .cam-mk { background: var(--navy); border: 2px solid white; transform: translate(-50%, -50%); font-size: 10px; }
-    .end-mk { color: var(--text); background: #fffffff0; transform: translate(-50%, 90%); font-size: 10px; }
+    .site-mk {
+      cursor: pointer;
+      opacity: .88;
+    }
+
+    .site-mk.on {
+      outline: 2px solid white;
+      opacity: 1;
+    }
+
+    .site-mk.watch {
+      background: var(--yellow);
+    }
+
+    .site-mk.warn {
+      background: var(--orange);
+    }
+
+    .site-mk.danger {
+      background: var(--red);
+    }
+
+    .zone-mk {
+      background: #10243ad0;
+      transform: translate(-50%, 60%);
+      font-size: 10px;
+    }
+
+    .cam-mk {
+      background: var(--navy);
+      border: 2px solid white;
+      transform: translate(-50%, -50%);
+      font-size: 10px;
+    }
+
+    .end-mk {
+      color: var(--text);
+      background: #fffffff0;
+      transform: translate(-50%, 90%);
+      font-size: 10px;
+    }
 
     .mk {
       position: absolute;
@@ -772,9 +835,17 @@
       background: var(--green);
     }
 
-    .fc-bars i.watch { background: var(--yellow); }
-    .fc-bars i.warn { background: var(--orange); }
-    .fc-bars i.danger { background: var(--red); }
+    .fc-bars i.watch {
+      background: var(--yellow);
+    }
+
+    .fc-bars i.warn {
+      background: var(--orange);
+    }
+
+    .fc-bars i.danger {
+      background: var(--red);
+    }
 
     .fc-bars .fc-line {
       position: absolute;
@@ -835,8 +906,14 @@
       background: var(--red);
     }
 
-    .legend-dot.blue { background: var(--blue); }
-    .legend-dot.cam { border-radius: 0; background: var(--navy); }
+    .legend-dot.blue {
+      background: var(--blue);
+    }
+
+    .legend-dot.cam {
+      border-radius: 0;
+      background: var(--navy);
+    }
 
     .pulse {
       animation: pulse 1.2s infinite;
@@ -845,8 +922,15 @@
     }
 
     @keyframes pulse {
-      0% { opacity: .7; transform: scale(.6); }
-      100% { opacity: 0; transform: scale(1.7); }
+      0% {
+        opacity: .7;
+        transform: scale(.6);
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(1.7);
+      }
     }
 
     .people-list {
@@ -923,11 +1007,26 @@
       font-weight: 800;
     }
 
-    .log-type.alert, .log-type.detect { color: #c83232; }
-    .log-type.broadcast { color: #a96e00; }
-    .log-type.dispatch { color: var(--blue); }
-    .log-type.clear { color: #148668; }
-    .log-type.sys { color: var(--muted); }
+    .log-type.alert,
+    .log-type.detect {
+      color: #c83232;
+    }
+
+    .log-type.broadcast {
+      color: #a96e00;
+    }
+
+    .log-type.dispatch {
+      color: var(--blue);
+    }
+
+    .log-type.clear {
+      color: #148668;
+    }
+
+    .log-type.sys {
+      color: var(--muted);
+    }
 
     .log-site {
       overflow: hidden;
@@ -946,9 +1045,17 @@
       box-shadow: 0 5px 14px #16324f08;
     }
 
-    .risk-card.watch { border-top-color: var(--yellow); }
-    .risk-card.warn { border-top-color: var(--orange); }
-    .risk-card.danger { border-top-color: var(--red); }
+    .risk-card.watch {
+      border-top-color: var(--yellow);
+    }
+
+    .risk-card.warn {
+      border-top-color: var(--orange);
+    }
+
+    .risk-card.danger {
+      border-top-color: var(--red);
+    }
 
     .risk-heading {
       display: flex;
@@ -1156,9 +1263,17 @@
       transition: width .25s ease;
     }
 
-    .progress-fill.watch { background: var(--yellow); }
-    .progress-fill.warn { background: var(--orange); }
-    .progress-fill.danger { background: var(--red); }
+    .progress-fill.watch {
+      background: var(--yellow);
+    }
+
+    .progress-fill.warn {
+      background: var(--orange);
+    }
+
+    .progress-fill.danger {
+      background: var(--red);
+    }
 
     .metric-footer {
       display: flex;
@@ -1193,8 +1308,8 @@
 
     .wall.nohud .wall-bar,
     .wall.nohud .wall-alarm,
-    .wall.nohud .tile > span,
-    .wall.nohud .tile > button {
+    .wall.nohud .tile>span,
+    .wall.nohud .tile>button {
       display: none;
     }
 
@@ -1459,11 +1574,25 @@
     }
 
     @media (max-width: 1250px) {
-      .sidebar { width: 240px; }
-      .main { margin-left: 240px; }
-      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .dashboard-grid { grid-template-columns: minmax(0, 1fr) 280px; }
-      .clock { display: none; }
+      .sidebar {
+        width: 240px;
+      }
+
+      .main {
+        margin-left: 240px;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dashboard-grid {
+        grid-template-columns: minmax(0, 1fr) 280px;
+      }
+
+      .clock {
+        display: none;
+      }
     }
 
     @media (max-width: 900px) {
@@ -1473,12 +1602,30 @@
         padding: 14px;
       }
 
-      .brand { padding: 0 5px 12px; }
-      .sidebar-heading { margin: 12px 5px 8px; }
-      .area-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .sea-list { padding-left: 6px; }
-      .sidebar-spacer, .system-status { display: none; }
-      .main { margin-left: 0; }
+      .brand {
+        padding: 0 5px 12px;
+      }
+
+      .sidebar-heading {
+        margin: 12px 5px 8px;
+      }
+
+      .area-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .sea-list {
+        padding-left: 6px;
+      }
+
+      .sidebar-spacer,
+      .system-status {
+        display: none;
+      }
+
+      .main {
+        margin-left: 0;
+      }
 
       .topbar {
         position: static;
@@ -1486,14 +1633,37 @@
         padding: 12px 14px;
       }
 
-      .topbar-tools { flex-wrap: wrap; }
-      .dashboard { padding: 12px 12px 24px; }
-      .dashboard-grid { grid-template-columns: 1fr; }
-      .right-column { order: -1; }
-      .cctv-grid { grid-template-columns: 1fr; }
-      .log-row { grid-template-columns: 58px 40px 1fr; }
-      .log-row .log-msg { grid-column: 1 / -1; }
-      .alarm-row { flex-wrap: wrap; }
+      .topbar-tools {
+        flex-wrap: wrap;
+      }
+
+      .dashboard {
+        padding: 12px 12px 24px;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .right-column {
+        order: -1;
+      }
+
+      .cctv-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .log-row {
+        grid-template-columns: 58px 40px 1fr;
+      }
+
+      .log-row .log-msg {
+        grid-column: 1 / -1;
+      }
+
+      .alarm-row {
+        flex-wrap: wrap;
+      }
     }
   </style>
 </head>
@@ -1526,10 +1696,12 @@
         </div>
 
         <div class="topbar-tools">
-          <div class="monitor-status" id="monitorStatus"><span class="dot"></span><span id="monitorText">실시간 모니터링</span></div>
+          <div class="monitor-status" id="monitorStatus"><span class="dot"></span><span id="monitorText">실시간 모니터링</span>
+          </div>
           <div class="clock" id="clock">--:--:--</div>
           <button class="tool-button" id="demoButton" type="button" title="가상 인원·시연 그래픽 켜기/끄기"></button>
-          <button class="tool-button strong" id="wallButton" type="button" title="CCTV만 전체화면으로 보기 (F)">⛶ CCTV 전체화면</button>
+          <button class="tool-button strong" id="wallButton" type="button" title="CCTV만 전체화면으로 보기 (F)">⛶ CCTV
+            전체화면</button>
           <button class="tool-button icon" id="soundButton" type="button" aria-label="경보음 켜기/끄기">🔔</button>
           <button class="tool-button icon" id="settingsButton" type="button" aria-label="설정">⚙</button>
         </div>
@@ -1686,21 +1858,28 @@
             <article class="metric-card">
               <div class="metric-heading"><span>풍속</span><span class="metric-icon">🌬️</span></div>
               <div class="metric-value"><span id="windValue">-</span> <small>m/s</small></div>
-              <div class="progress-track"><div class="progress-fill" id="windBar"></div></div>
+              <div class="progress-track">
+                <div class="progress-fill" id="windBar"></div>
+              </div>
               <div class="metric-footer"><span id="windStatus"></span><span>주의 14 · 위험 20 m/s</span></div>
             </article>
 
             <article class="metric-card">
               <div class="metric-heading"><span>강수량</span><span class="metric-icon">🌧️</span></div>
               <div class="metric-value"><span id="rainValue">-</span> <small>mm/h</small></div>
-              <div class="progress-track"><div class="progress-fill" id="rainBar"></div></div>
+              <div class="progress-track">
+                <div class="progress-fill" id="rainBar"></div>
+              </div>
               <div class="metric-footer"><span id="rainStatus"></span><span>주의 15 · 위험 30 mm/h</span></div>
             </article>
 
             <article class="metric-card">
-              <div class="metric-heading"><span>유의 파고 <small>(모델 추정)</small></span><span class="metric-icon">🌊</span></div>
+              <div class="metric-heading"><span>유의 파고 <small id="waveSrc"></small></span><span class="metric-icon">🌊</span>
+              </div>
               <div class="metric-value"><span id="waveValue">-</span> <small>m</small></div>
-              <div class="progress-track"><div class="progress-fill" id="waveBar"></div></div>
+              <div class="progress-track">
+                <div class="progress-fill" id="waveBar"></div>
+              </div>
               <div class="metric-footer"><span id="waveStatus"></span><span>주의 1.5 · 위험 3 m</span></div>
             </article>
           </aside>
@@ -2975,7 +3154,7 @@
       if (request && !fullscreenElement()) {
         try {
           const p = request.call(root);
-          if (p && p.catch) p.catch(() => {});
+          if (p && p.catch) p.catch(() => { });
         } catch (e) { /* 전체화면이 막힌 환경에서는 창 안에서만 확대 */ }
       }
     }
@@ -3231,7 +3410,7 @@
       $("riskMark").style.left = `${cfg.alertAt}%`;
       setText("riskSource", s.demo ? "시연 값" : weather.mode !== "live" ? "시뮬레이션 값"
         : s.real ? `풍속·강수: 기상청 ${s.real.name} 관측 ${fmtTime(s.real.at).slice(0, 5)} · 파고: ${s.realWave ? `${s.realWave.name} 부이 ${fmtTime(s.realWave.at).slice(0, 5)}` : "모델"}`
-        : "기상 모델 추정값 (현장 관측 아님)");
+          : "기상 모델 추정값 (현장 관측 아님)");
       setText("riskThreshold", `경보 기준 ${cfg.alertAt}점`);
 
       const times = inc ? [inc.manual ? 0 : inc.at, inc.detAt, inc.castAt, inc.dispAt] : [];
@@ -3269,6 +3448,7 @@
       setText("humValue", air.hum == null ? "–" : Math.round(air.hum));
       setMetric("wind", s.r.wind, 25, 14, 20, ["보통", "강풍 주의", "강풍 위험"]);
       setMetric("rain", s.r.rain, 40, 15, 30, [s.r.rain < 0.1 ? "비 없음" : "약한 비", "강한 비", "매우 강한 비"]);
+      setText("waveSrc", s.demo || weather.mode !== "live" ? "" : s.realWave ? `(${s.realWave.name} 부이 실측)` : "(모델 추정)");
       setMetric("wave", s.r.wave, 4, 1.5, 3, ["평온", "높은 파도", "매우 높은 파도"]);
       if (s.r.gust != null) setText("windStatus", `${$("windStatus").textContent} · 순간 ${s.r.gust.toFixed(1)}`);
     }
@@ -3348,7 +3528,7 @@
       // 시스템 상태
       setHTML($("systemStatus"), `
         <strong>시스템 상태</strong>
-        <div class="${weather.mode === "live" ? "connected" : "degraded"}">● 기상: ${weather.mode === "live" ? "모델 추정값 수신 정상" : "시뮬레이션 값"}</div>
+        <div class="${weather.mode === "live" ? "connected" : "degraded"}">● 기상: ${weather.mode !== "live" ? "시뮬레이션 값" : s.real ? "기상청 관측값 수신 정상" : "모델 추정값 수신 정상"}</div>
         <div>${weather.mode === "live" ? `Open-Meteo · ${fmtTime(weather.at).slice(0, 5)} 갱신` : weather.error ? "수신 실패 — 10분 후 재시도" : "설정에서 기상 모델 값으로 전환 가능"}${weather.error && weather.mode === "live" ? ` · ${weather.error}` : ""}</div>
         <div>경보 기준: 위험도 ${cfg.alertAt}점 이상</div>`);
 
@@ -3571,4 +3751,5 @@
     start();
   </script>
 </body>
+
 </html>
