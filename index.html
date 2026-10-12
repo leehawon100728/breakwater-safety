@@ -2398,13 +2398,14 @@
       const hit = (key) => src.find((l) => pos(l, key));
       const zone = src.find((l) => zonePeople(s, l).length);
       // 해제 조건: 어느 카메라에서도 추락·위험이 아니고, 한 대 이상이 확실히 정상 (판별 중·불확실한 카메라는 해제를 막지 않음)
-      const sure = (l) => ["fall", "danger"].every((key) => r(l, key) && r(l, key).state === "ok");
+      const sure = (l) => ["fall", "danger"].every((key) => r(l, key) && ["ok", "no_target"].includes(r(l, key).state));
       const normal = !zone && !src.some((l) => pos(l, "fall") || pos(l, "danger")) && src.some(sure);
       return { online: true, fall: hit("fall"), danger: hit("danger") || zone, zone, normal };
     }
 
     const fmtAI = (r) => (!r ? "분석 없음" : r.state === "ok" ? `${r.label} ${Math.round(r.confidence * 100)}%`
       : r.state === "no_signal" ? "영상 없음 · 판정 안 함"
+      : r.state === "no_target" ? "사람 없음 · 판정 안 함"
       : r.state === "pending" ? "판별 중" : r.state === "uncertain" ? `확인 필요 (${r.candidate} ${Math.round(r.confidence * 100)}%)` : "모델 오류");
 
     // 상황 기록에 붙일 AI 결과 (카메라 번호·인원·모델 결과)
@@ -3721,6 +3722,7 @@
         const view = st ? st.cameras.find((v) => v.id === l.srvId) : null;
         const prev = l.srv;
         l.srv = view || null;
+        gateAI(l);
         if (prev && view && prev.status !== view.status && !l.dup) {
           addLog(site, "sys", view.status === "live"
             ? `${camName(site, l.k)} 카메라 연결 — ${view.device_name} ${(view.resolution || []).join("x")}`
@@ -3877,7 +3879,21 @@
     }
 
     // 화면 인원 목록: YOLO 탐지 박스마다 1명 (PERSON 번호 유지). 탐지기를 쓸 수 없으면 TM 분류 인원수로 대신함.
+    // 레고(사람)가 확인되지 않은 화면에서는 위험도·추락을 판정하지 않음
+    // (카메라가 방파제 모형이 아닌 곳을 비출 때 티처블 머신 모델이 '위험'으로 오판하는 것 방지)
+    function gateAI(l) {
+      const a = l.srv && l.srv.analysis, p = l.persons;
+      if (!a || !p) return;
+      const empty = (p.state === "ok" && p.count === 0) || p.state === "uncertain" || p.state === "no_background";
+      if (!empty) return;
+      // 인원수 분류도 같이 멈춤: 레고가 인식됐을 때만 사람 수를 셈
+      for (const key of ["people", "danger", "fall"]) {
+        if (a[key] && a[key].state !== "no_signal") a[key] = { state: "no_target", label: null, confidence: null, positive: null, count: null, raw: a[key].raw };
+      }
+    }
+
     function aiPeople(l) {
+      gateAI(l);
       let list = [];
       if (!l.dup && online(l)) {
         if (personsOk(l)) {
