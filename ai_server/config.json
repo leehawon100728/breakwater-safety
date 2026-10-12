@@ -1,0 +1,60 @@
+{
+  "server": { "host": "127.0.0.1", "port": 5050 },
+
+  "_cameras_설명": "실제 카메라만 적습니다. 두 번째 카메라가 생기면 { \"id\": \"CAM-02\", \"device\": 장치번호, \"fallback\": false } 를 추가하세요. (share 로 다른 카메라 영상을 복제할 수도 있지만 관제 화면은 복제 화면을 표시하지 않음)",
+  "cameras": [
+    {
+      "id": "CAM-01",
+      "device": "auto",
+      "name_hint": "K420",
+      "fallback": false,
+      "width": 1280,
+      "height": 720
+    }
+  ],
+
+  "overlap": {
+    "mode": "unknown",
+    "_설명": "서로 다른 카메라 두 대를 쓸 때만 의미 있음 (CAM-02 가 복제 화면이면 중복이 생기지 않음). unknown = 겹침 여부를 모름 → 전체 인원을 '최소~최대(추정)'로 표시 / none = 두 카메라 촬영 영역이 겹치지 않음을 확인함 → 합계 / regions = 각 카메라 화면에서 서로 겹치는 영역을 다각형(0~1 비율 좌표)으로 지정 → 예: \"regions\": {\"CAM-01\": [[0.6,0],[1,0],[1,1],[0.6,1]], \"CAM-02\": [[0,0],[0.4,0],[0.4,1],[0,1]]}"
+  },
+
+  "models": {
+    "people": { "path": "models/사람수", "min_confidence": 0.6 },
+    "danger": { "path": "models/위험도", "positive_label": "위험", "min_confidence": 0.7 },
+    "fall":   { "path": "models/낙상",   "positive_label": "추락", "min_confidence": 0.97 }
+  },
+
+  "person_detector": {
+    "enabled": true,
+    "mode": "background",
+    "interval_sec": 0.25,
+    "_설명": "mode: background = 레고 피규어 탐지(노란 머리 확인 + 빈 배경 보조) / yolo = 사전 학습 YOLO 의 사람(person) 탐지. interval_sec 0.25 = 초당 4회",
+    "lego": {
+      "head_hue": [18, 34],
+      "head_sat_min": 150,
+      "head_val_min": 80,
+      "head_min_area": 0.00012,
+      "head_max_area": 0.01,
+      "chroma_threshold": 0.06,
+      "max_foreground": 0.25,
+      "max_figures": 12,
+      "hold_sec": 0.8,
+      "min_hits": 3,
+      "_설명": "레고 피규어 노란 머리 색(HSV)으로 레고를 확인한 뒤에만 PERSON 표시. head_hue 는 OpenCV 색상(0~180), 레고 노란색 ≈ 20~30. 레고 노랑 채도는 약 175~215, 사람 피부는 약 60~140 이라 head_sat_min 150 으로 피부·나무를 제외. 너무 낮추면 사람 피부를 레고로 오인식. 빈 배경을 저장하면 몸 전체로 박스를 넓히고 원래 있던 노란 물체는 제외"
+    },
+    "yolo": {
+      "weights": "models/yolo/yolo11n.pt",
+      "confidence": 0.35,
+      "imgsz": 640,
+      "device": "cpu",
+      "tracker": "bytetrack.yaml",
+      "hold_sec": 0.6
+    }
+  },
+
+  "analysis": {
+    "interval_sec": 0.3,
+    "window": 8,
+    "min_agreement": 0.6
+  }
+}
