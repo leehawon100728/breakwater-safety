@@ -3,12 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>해안 안전 관제</title>
+  <title>WAVEON</title>
   <link rel="icon" href="data:," />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
   <style>
+    @font-face {
+      font-family: "GmarketSans";
+      font-weight: 300;
+      font-display: swap;
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansLight.woff") format("woff");
+    }
+
+    @font-face {
+      font-family: "GmarketSans";
+      font-weight: 500;
+      font-display: swap;
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff") format("woff");
+    }
+
+    @font-face {
+      font-family: "GmarketSans";
+      font-weight: 700;
+      font-display: swap;
+      src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansBold.woff") format("woff");
+    }
+
     :root {
       --navy: #10243a;
       --navy-light: #183653;
@@ -36,7 +57,7 @@
       margin: 0;
       color: var(--text);
       background: var(--page);
-      font-family: Pretendard, "Noto Sans KR", -apple-system,
+      font-family: GmarketSans, Pretendard, "Noto Sans KR", -apple-system,
         BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
@@ -86,13 +107,13 @@
       color: white;
       background: var(--blue);
       font-size: 27px;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .brand-name {
       font-size: 19px;
-      font-weight: 800;
-      letter-spacing: -.05em;
+      font-weight: 600;
+      letter-spacing: -.02em;
     }
 
     .brand-sub {
@@ -105,7 +126,7 @@
       margin: 24px 8px 12px;
       color: #a8b8ca;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .area-list {
@@ -139,7 +160,7 @@
     .area-name {
       flex: 1;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .area-status {
@@ -235,8 +256,8 @@
       font-size: 13px;
     }
 
-    .system-status .connected { color: #55d1ae; font-weight: 700; }
-    .system-status .degraded { color: #f2c166; font-weight: 700; }
+    .system-status .connected { color: #55d1ae; font-weight: 500; }
+    .system-status .degraded { color: #f2c166; font-weight: 500; }
 
     /* 본문 영역 */
     .main {
@@ -261,8 +282,8 @@
     .page-title {
       margin: 0;
       font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -.04em;
+      font-weight: 600;
+      letter-spacing: -.02em;
     }
 
     .page-subtitle {
@@ -301,7 +322,7 @@
       border-color: #bfe8db;
       color: #148668;
       background: #eff9f5;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .monitor-status .dot {
@@ -329,7 +350,7 @@
       border-color: var(--navy);
       color: white;
       background: var(--navy);
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .tool-button.strong:hover {
@@ -360,7 +381,7 @@
       border: 1px solid var(--line);
       border-top: 3px solid var(--blue);
       background: white;
-      box-shadow: 0 5px 14px #16324f08;
+      box-shadow: none;
     }
 
     .summary-card.alarm {
@@ -376,8 +397,8 @@
     .summary-value {
       margin-top: 6px;
       font-size: 26px;
-      font-weight: 800;
-      letter-spacing: -.03em;
+      font-weight: 600;
+      letter-spacing: -.02em;
       font-variant-numeric: tabular-nums;
     }
 
@@ -404,7 +425,7 @@
       padding: 11px 16px 4px;
       color: #b42828;
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .alarm-row {
@@ -427,7 +448,7 @@
 
     .alarm-row .alarm-site {
       min-width: 150px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .alarm-row .alarm-detail {
@@ -437,7 +458,7 @@
 
     .alarm-row .alarm-stage {
       color: #b42828;
-      font-weight: 700;
+      font-weight: 500;
       white-space: nowrap;
     }
 
@@ -448,7 +469,7 @@
       color: white;
       background: var(--green);
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 600;
       text-align: center;
       white-space: nowrap;
     }
@@ -476,7 +497,7 @@
       overflow: hidden;
       border: 1px solid var(--line);
       background: white;
-      box-shadow: 0 5px 14px #16324f08;
+      box-shadow: none;
     }
 
     .panel-header {
@@ -493,7 +514,7 @@
     .panel-title {
       margin: 0;
       font-size: 16px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .panel-note {
@@ -514,7 +535,7 @@
       color: #40546f;
       background: white;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 500;
       white-space: nowrap;
     }
 
@@ -580,7 +601,7 @@
       color: white;
       background: #5d6b7a;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .live-tag.real {
@@ -598,7 +619,7 @@
       color: white;
       background: #000000a0;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .tile-time {
@@ -617,7 +638,7 @@
       color: white;
       background: #000000a0;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .tile-count.hot {
@@ -634,6 +655,12 @@
       background: #00000080;
       font-size: 14px;
       line-height: 1;
+    }
+
+    .tile-full {
+      display: grid;
+      place-items: center;
+      padding: 0;
     }
 
     .tile-full:hover {
@@ -685,7 +712,7 @@
       background: var(--green);
       box-shadow: 0 1px 5px #0008;
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 600;
       white-space: nowrap;
       transform: translate(-50%, -150%);
     }
@@ -711,7 +738,7 @@
       background: var(--blue);
       box-shadow: 0 0 0 6px #2d7dd255, 0 1px 6px #000a;
       font-size: 12px;
-      font-weight: 800;
+      font-weight: 600;
       transform: translate(-50%, -50%);
     }
 
@@ -741,14 +768,14 @@
       padding: 15px 16px;
       border: 1px solid var(--line);
       background: white;
-      box-shadow: 0 5px 14px #16324f08;
+      box-shadow: none;
     }
 
     .fc-title {
       display: flex;
       justify-content: space-between;
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .fc-title small {
@@ -804,7 +831,7 @@
       margin-top: 9px;
       color: #40546f;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 500;
       line-height: 1.5;
     }
 
@@ -877,7 +904,7 @@
       color: white;
       background: var(--blue);
       font-size: 11px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .people-num.hot {
@@ -886,7 +913,7 @@
 
     .people-row .where {
       flex: 1;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .people-row .cam,
@@ -921,7 +948,7 @@
     }
 
     .log-type {
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .log-type.alert, .log-type.detect, .log-type.urgent { color: #c83232; }
@@ -933,7 +960,7 @@
     .log-site {
       overflow: hidden;
       color: #40546f;
-      font-weight: 700;
+      font-weight: 500;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -944,7 +971,7 @@
       border: 1px solid var(--line);
       border-top: 4px solid var(--green);
       background: white;
-      box-shadow: 0 5px 14px #16324f08;
+      box-shadow: none;
     }
 
     .risk-card.watch { border-top-color: var(--yellow); }
@@ -956,13 +983,13 @@
       align-items: center;
       justify-content: space-between;
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .risk-value {
       margin-top: 10px;
       font-size: 44px;
-      font-weight: 800;
+      font-weight: 600;
       font-variant-numeric: tabular-nums;
     }
 
@@ -1021,12 +1048,12 @@
       border-radius: 50%;
       font-size: 10px;
       font-style: normal;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .steps li span {
       flex: 1;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .steps li time {
@@ -1066,7 +1093,7 @@
       padding: 7px 10px;
       color: #40546f;
       background: #f3f6fa;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .ai-head.hot { color: #a32222; background: #ffecec; }
@@ -1082,7 +1109,7 @@
 
     .ai-row > span {
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 500;
       white-space: nowrap;
     }
 
@@ -1098,7 +1125,7 @@
       color: #40546f;
       background: #f3f6fa;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 500;
       line-height: 1.5;
     }
 
@@ -1120,7 +1147,7 @@
       background: white;
       color: var(--text);
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .action-button.broadcast {
@@ -1164,7 +1191,7 @@
       padding: 15px 16px;
       border: 1px solid var(--line);
       background: white;
-      box-shadow: 0 5px 14px #16324f08;
+      box-shadow: none;
     }
 
     .metric-heading {
@@ -1173,7 +1200,7 @@
       justify-content: space-between;
       color: var(--muted);
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .metric-icon {
@@ -1183,7 +1210,7 @@
     .metric-value {
       margin-top: 8px;
       font-size: 28px;
-      font-weight: 800;
+      font-weight: 600;
       font-variant-numeric: tabular-nums;
     }
 
@@ -1249,7 +1276,7 @@
 
     .wall-title {
       font-size: 15px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .wall-info {
@@ -1266,7 +1293,7 @@
       color: #e4edf7;
       background: transparent;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 500;
       white-space: nowrap;
     }
 
@@ -1305,7 +1332,7 @@
       color: white;
       background: #00000040;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .wall-grid {
@@ -1369,7 +1396,7 @@
       margin: 0;
       padding: 16px 20px 0;
       font-size: 18px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .modal-body {
@@ -1383,7 +1410,7 @@
       margin-top: 12px;
       color: #40546f;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     .modal-body select,
@@ -1471,7 +1498,7 @@
       color: var(--text);
       background: white;
       font-size: 13px;
-      font-weight: 800;
+      font-weight: 600;
     }
 
     .modal-foot .ok {
@@ -1507,39 +1534,779 @@
       transform: translateY(0);
     }
 
-    @media (max-width: 1250px) {
-      .sidebar { width: 240px; }
-      .main { margin-left: 240px; }
-      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .dashboard-grid { grid-template-columns: minmax(0, 1fr) 280px; }
+    /* ===== 디자인 개편: 밝은 카드형 3단 레이아웃 ===== */
+    :root {
+      --navy: #0f1d3a;
+      --navy-light: #1b2d52;
+      --blue: #2272ee;
+      --blue-soft: #eaf2ff;
+      --blue-line: #cfe0fb;
+      --green: #12a67f;
+      --yellow: #e9a615;
+      --orange: #ee7b2c;
+      --red: #e5484d;
+      --red-soft: #fff0f0;
+      --text: #0f1d3a;
+      --muted: #7d8aa1;
+      --line: #e7ecf4;
+      --page: #eaf0fb;
+      --radius: 20px;
+      --shadow: none;
+    }
+
+    body {
+      background: linear-gradient(160deg, #e9effc 0%, #f3f6fd 55%, #eaf0fb 100%) fixed;
+    }
+
+    .app {
+      display: grid;
+      align-content: start;
+      gap: 16px;
+      padding: 16px;
+    }
+
+    /* 상단 바 */
+    .appbar {
+      display: flex;
+      min-height: 76px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 12px 28px;
+      border-radius: var(--radius);
+      background: white;
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0;
+      border: 0;
+    }
+
+    .brand-symbol {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      place-items: center;
+      border-radius: 14px;
+      color: white;
+      background: linear-gradient(145deg, #3d8bff, #1c5fd6);
+      box-shadow: none;
+    }
+
+    .brand-name {
+      color: var(--blue);
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: .04em;
+    }
+
+    .topbar-tools {
+      gap: 4px;
+    }
+
+    .tool-button,
+    .clock {
+      min-height: 40px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 12px;
+      color: #566380;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .clock {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .tool-button:hover {
+      color: var(--text);
+      background: #f1f5fb;
+    }
+
+    .tool-button.icon {
+      width: 40px;
+      padding: 0;
+    }
+
+    .tool-sep {
+      width: 1px;
+      height: 18px;
+      margin: 0 6px;
+      background: var(--line);
+    }
+
+    /* 3단 배치 */
+    .shell {
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      align-items: start;
+      gap: 16px;
+    }
+
+    .main {
+      min-height: 0;
+      margin: 0;
+    }
+
+    .dashboard-grid {
+      grid-template-columns: minmax(0, 1fr) 380px;
+      gap: 16px;
+    }
+
+    .center-column {
+      gap: 16px;
+    }
+
+    .panel,
+    .right-column {
+      border: 0;
+      border-radius: var(--radius);
+      background: white;
+      box-shadow: var(--shadow);
+    }
+
+    /* 왼쪽: 주요 감시 지점 */
+    .sidebar {
+      position: sticky;
+      top: 16px;
+      width: auto;
+      max-height: calc(100vh - 32px);
+      padding: 24px 14px 18px;
+      border-radius: var(--radius);
+      color: var(--text);
+      background: white;
+      box-shadow: var(--shadow);
+    }
+
+    .side-head {
+      padding: 0 10px 14px;
+    }
+
+    .sidebar-heading {
+      margin: 0;
+      color: var(--text);
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -.02em;
+    }
+
+    .side-count {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .area-list {
+      gap: 6px;
+    }
+
+    .site-button {
+      position: relative;
+      display: flex;
+      width: 100%;
+      min-height: 64px;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px 0 14px;
+      border: 0;
+      border-radius: 12px;
+      color: var(--text);
+      background: transparent;
+      text-align: left;
+    }
+
+    .site-button:hover {
+      background: #f5f8fd;
+    }
+
+    .site-button.active {
+      background: var(--blue-soft);
+    }
+
+    .site-button.active::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 4px;
+      border-radius: 12px 0 0 12px;
+      background: var(--blue);
+      content: "";
+    }
+
+    .pin {
+      width: 24px;
+      height: 24px;
+      flex: 0 0 24px;
+      color: #a3aec2;
+    }
+
+    .site-button.active .pin { color: var(--blue); }
+    .pin.watch { color: var(--yellow); }
+    .pin.warn { color: var(--orange); }
+    .pin.danger { color: var(--red); animation: blink 1s infinite; }
+
+    .site-text {
+      display: grid;
+      min-width: 0;
+      flex: 1;
+      gap: 2px;
+    }
+
+    .site-name {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -.02em;
+      line-height: 1.3;
+    }
+
+    .site-gu {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .site-meta {
+      color: var(--muted);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .site-meta b {
+      color: var(--red);
+    }
+
+    /* 중앙: 실시간 감시 카드 */
+    .hero-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 16px;
+      padding: 24px 28px 0;
+    }
+
+    .page-title {
+      font-size: 30px;
+      letter-spacing: -.02em;
+    }
+
+    .page-subtitle {
+      margin: 6px 0 0;
+      padding: 0 28px;
+      color: var(--muted);
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    .monitor-status {
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      color: var(--green);
+      background: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .monitor-status .dot {
+      width: 9px;
+      height: 9px;
+      flex-basis: 9px;
+    }
+
+    .monitor-status.alarm {
+      border: 0;
+      color: var(--red);
+      background: none;
+    }
+
+    .summary-grid {
+      grid-template-columns: repeat(4, auto);
+      justify-content: start;
+      gap: 0;
+      margin: 18px 28px 18px;
+    }
+
+    .summary-card {
+      padding: 0 28px;
+      border: 0;
+      border-left: 1px solid var(--line);
+      background: none;
+      box-shadow: none;
+    }
+
+    .summary-card:first-child {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .summary-label {
+      font-size: 13px;
+    }
+
+    .summary-value {
+      margin-top: 3px;
+      font-size: 22px;
+    }
+
+    .summary-value small {
+      font-size: 13px;
+    }
+
+    .summary-card.alarm .summary-value {
+      color: var(--red);
+    }
+
+    .summary-note {
+      max-width: 190px;
+      margin-top: 1px;
+    }
+
+    .alarm-panel {
+      margin: 0 28px 14px;
+      border: 1px solid #ffd0d0;
+      border-left: 5px solid var(--red);
+      border-radius: 14px;
+      background: var(--red-soft);
+    }
+
+    .alarm-row:first-of-type { border-top: 0; }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .map-block {
+      padding-bottom: 6px;
+    }
+
+    .panel-header {
+      min-height: 60px;
+      padding: 12px 28px;
+      border-bottom: 0;
+    }
+
+    .panel-title {
+      font-size: 20px;
+      letter-spacing: -.02em;
+    }
+
+    .title-sub {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .panel-note {
+      font-size: 12px;
+    }
+
+    .mini-button {
+      min-height: 34px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 10px;
+      color: #3c4d6e;
+      background: #f0f4fa;
+      font-size: 12px;
+    }
+
+    .mini-button:hover {
+      background: #e4ebf6;
+    }
+
+    .mini-button.accent {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .mini-button.accent:hover {
+      background: #dbe9ff;
+    }
+
+    .mini-button.primary {
+      color: white;
+      background: var(--blue);
+    }
+
+    #map {
+      height: 400px;
+      margin: 0 28px;
+      overflow: hidden;
+      border-radius: 18px;
+    }
+
+    .map-hint {
+      margin: 12px 28px 0;
+      padding: 10px 14px;
+      border: 0;
+      border-radius: 12px;
+      background: #f3f6fb;
+    }
+
+    .map-hint:empty { display: none; }
+
+    .map-legend {
+      padding: 12px 28px 4px;
+      border-top: 0;
+    }
+
+    .people-list {
+      margin: 6px 0 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .people-row,
+    .people-empty {
+      padding-right: 28px;
+      padding-left: 28px;
+    }
+
+    .cctv-grid {
+      margin: 0 28px;
+      overflow: hidden;
+      border-radius: 16px;
+      background: transparent;
+      gap: 14px;
+    }
+
+    .tile {
+      overflow: hidden;
+      border-radius: 14px;
+      background: #343f52;
+    }
+
+    .live-tag,
+    .tile-name,
+    .tile-count,
+    .tile-full {
+      border-radius: 8px;
+    }
+
+    .cctv-disclaimer {
+      padding: 12px 28px 18px;
+    }
+
+    .log-list {
+      padding-bottom: 8px;
+    }
+
+    .log-row {
+      padding-right: 28px;
+      padding-left: 28px;
+    }
+
+    /* 오른쪽: 기상 위험도 */
+    .right-column {
+      display: block;
+      padding: 24px 24px 22px;
+    }
+
+    .right-column > * + * {
+      margin-top: 22px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+    }
+
+    .risk-card,
+    .fc-card {
+      padding: 0;
+      border: 0;
+      box-shadow: none;
+      background: none;
+    }
+
+    .risk-heading {
+      font-size: 22px;
+      letter-spacing: -.02em;
+    }
+
+    .risk-heading .badge {
+      font-size: 12px;
+    }
+
+    .gauge {
+      position: relative;
+      width: 210px;
+      height: 210px;
+      margin: 14px auto 6px;
+    }
+
+    .gauge svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .gauge circle {
+      fill: none;
+      stroke-width: 14;
+    }
+
+    .gauge-bg { stroke: #eceff4; }
+
+    .gauge-fg {
+      stroke: var(--blue);
+      stroke-linecap: round;
+      transition: stroke-dasharray .4s ease;
+    }
+
+    .risk-card.watch .gauge-fg { stroke: var(--yellow); }
+    .risk-card.warn .gauge-fg { stroke: var(--orange); }
+    .risk-card.danger .gauge-fg { stroke: var(--red); }
+
+    .gauge-mark {
+      stroke: var(--text);
+      stroke-width: 2.5;
+      transform-origin: 100px 100px;
+    }
+
+    .gauge-center {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      align-content: center;
+      justify-items: center;
+    }
+
+    .risk-value {
+      margin: 0;
+      font-size: 62px;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -.02em;
+    }
+
+    .gauge-max {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 17px;
+      font-weight: 500;
+    }
+
+    .risk-description {
+      display: grid;
+      justify-content: center;
+      gap: 2px;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .ai-panel {
+      overflow: hidden;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 12px;
+      background: #f5f8fc;
+    }
+
+    .ai-head {
+      background: none;
+    }
+
+    .ai-row {
+      border-top-color: #e8edf5;
+    }
+
+    .steps {
+      margin-top: 14px;
+      border-top: 0;
+    }
+
+    .next-hint {
+      border-radius: 12px;
+    }
+
+    .fc-title {
+      align-items: baseline;
+      font-size: 18px;
+      letter-spacing: -.02em;
+    }
+
+    .fc-bars {
+      display: block;
+      height: auto;
+      margin-top: 8px;
+      border: 0;
+    }
+
+    .fc-bars svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: visible;
+    }
+
+    .fc-hours { display: none; }
+
+    .fc-text {
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .weather-title {
+      margin: 0 0 14px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -.02em;
+    }
+
+    .weather-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 14px 10px;
+    }
+
+    .weather-grid .metric-card:nth-child(-n + 3) { grid-column: span 2; }
+    .weather-grid .metric-card:nth-child(n + 4) { grid-column: span 3; }
+
+    .metric-card {
+      padding: 0;
+      border: 0;
+      background: none;
+      box-shadow: none;
+    }
+
+    .metric-heading {
+      justify-content: flex-start;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .metric-value {
+      margin-top: 4px;
+      font-size: 22px;
+      letter-spacing: -.02em;
+    }
+
+    .metric-value small {
+      font-size: 12px;
+    }
+
+    .progress-track {
+      height: 5px;
+      margin-top: 8px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #eceff4;
+    }
+
+    .progress-fill {
+      border-radius: 99px;
+      background: var(--blue);
+    }
+
+    .progress-fill.watch { background: var(--yellow); }
+    .progress-fill.warn { background: var(--orange); }
+    .progress-fill.danger { background: var(--red); }
+
+    .metric-footer {
+      flex-direction: column;
+      gap: 1px;
+      margin-top: 6px;
+    }
+
+    .action-buttons {
+      gap: 12px;
+    }
+
+    .action-button {
+      min-height: 62px;
+      border: 0;
+      border-radius: 16px;
+      font-size: 16px;
+      letter-spacing: -.02em;
+    }
+
+    .action-button.broadcast {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .action-button.primary {
+      color: var(--red);
+      background: #ffe9e9;
+    }
+
+    .action-button.primary.urgent {
+      color: white;
+      background: var(--red);
+    }
+
+    .action-button.wide {
+      min-height: 44px;
+      color: #3c4d6e;
+      background: #f0f4fa;
+    }
+
+    .toast {
+      border-radius: 14px;
+    }
+
+    .modal-box {
+      overflow: hidden;
+      border-radius: 20px;
+    }
+
+    .modal-foot button,
+    .modal-body select,
+    .modal-body textarea,
+    .modal-body input[type="text"],
+    .modal-body input[type="url"] {
+      border-radius: 10px;
+    }
+
+    /* CCTV를 위로 올리고 한 줄에 한 대씩 크게 */
+    .cctv-block {
+      padding-top: 6px;
+    }
+
+    .cctv-grid {
+      grid-template-columns: 1fr;
+      margin: 0 28px;
+    }
+
+    .map-panel {
+      padding-top: 10px;
+    }
+
+    @media (max-width: 1350px) {
+      .dashboard-grid { grid-template-columns: minmax(0, 1fr) 340px; }
+      .shell { grid-template-columns: 230px minmax(0, 1fr); }
       .clock { display: none; }
     }
 
-    @media (max-width: 900px) {
-      .sidebar {
-        position: static;
-        width: 100%;
-        padding: 14px;
-      }
-
-      .brand { padding: 0 5px 12px; }
-      .sidebar-heading { margin: 12px 5px 8px; }
-      .area-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .sea-list { padding-left: 6px; }
-      .sidebar-spacer, .system-status { display: none; }
-      .main { margin-left: 0; }
-
-      .topbar {
-        position: static;
-        flex-wrap: wrap;
-        padding: 12px 14px;
-      }
-
-      .topbar-tools { flex-wrap: wrap; }
-      .dashboard { padding: 12px 12px 24px; }
+    @media (max-width: 1100px) {
       .dashboard-grid { grid-template-columns: 1fr; }
       .right-column { order: -1; }
+      .summary-grid { grid-template-columns: repeat(2, auto); gap: 14px 0; }
+      .summary-card:nth-child(3) { padding-left: 0; border-left: 0; }
+    }
+
+    @media (max-width: 800px) {
+      .app { padding: 10px; }
+      .appbar { flex-wrap: wrap; padding: 12px 16px; }
+      .topbar-tools { flex-wrap: wrap; }
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: static; max-height: none; }
+      .area-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero-head, .page-subtitle, .panel-header { padding-right: 16px; padding-left: 16px; }
+      .page-subtitle { font-size: 14px; }
+      .summary-grid, #map, .map-hint, .cctv-grid, .alarm-panel { margin-right: 16px; margin-left: 16px; }
+      .map-legend, .people-row, .people-empty, .log-row, .cctv-disclaimer { padding-right: 16px; padding-left: 16px; }
       .cctv-grid { grid-template-columns: 1fr; }
+      #map { height: 320px; }
       .log-row { grid-template-columns: 58px 40px 1fr; }
       .log-row .log-msg { grid-column: 1 / -1; }
       .alarm-row { flex-wrap: wrap; }
@@ -1549,91 +2316,82 @@
 
 <body>
   <div class="app">
-    <aside class="sidebar">
+    <header class="appbar">
       <div class="brand">
-        <div class="brand-symbol">〰</div>
-        <div>
-          <div class="brand-name">해안 안전 관제</div>
-          <div class="brand-sub">방파제 추락사고 예방 · 경찰 상황실</div>
-        </div>
+        <div class="brand-name">WAVEON</div>
       </div>
 
-      <div class="sidebar-heading">감시 구역 선택</div>
+      <div class="topbar-tools">
+        <div class="clock" id="clock">--:--:--</div>
+        <button class="tool-button" id="demoButton" type="button" hidden title="가상 인원·시연 그래픽 켜기/끄기"></button>
+        <button class="tool-button" id="wallButton" type="button" title="CCTV만 전체화면으로 보기 (F)">CCTV 전체화면</button>
+        <span class="tool-sep" aria-hidden="true"></span>
+        <button class="tool-button" id="soundButton" type="button" aria-label="경보음 켜기/끄기">경보음</button>
+        <button class="tool-button" id="settingsButton" type="button" aria-label="시스템 설정">시스템 설정</button>
+      </div>
+    </header>
 
-      <div class="area-list" id="areaList"></div>
-
-      <div class="sidebar-spacer"></div>
-
-      <div class="system-status" id="systemStatus"></div>
-    </aside>
-
-    <main class="main">
-      <header class="topbar">
-        <div>
-          <h1 class="page-title">방파제 실시간 감시</h1>
-          <div class="page-subtitle" id="pageSubtitle"></div>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="side-head">
+          <div class="sidebar-heading">주요 감시 지점</div>
+          <div class="side-count" id="sideCount"></div>
         </div>
+        <div class="area-list" id="areaList"></div>
+      </aside>
 
-        <div class="topbar-tools">
-          <div class="monitor-status" id="monitorStatus"><span class="dot"></span><span id="monitorText">실시간 모니터링</span></div>
-          <div class="clock" id="clock">--:--:--</div>
-          <button class="tool-button" id="demoButton" type="button" title="가상 인원·시연 그래픽 켜기/끄기"></button>
-          <button class="tool-button strong" id="wallButton" type="button" title="CCTV만 전체화면으로 보기 (F)">⛶ CCTV 전체화면</button>
-          <button class="tool-button icon" id="soundButton" type="button" aria-label="경보음 켜기/끄기">🔔</button>
-          <button class="tool-button icon" id="settingsButton" type="button" aria-label="설정">⚙</button>
-        </div>
-      </header>
-
-      <div class="dashboard">
-        <section class="summary-grid" aria-label="관제 요약">
-          <article class="summary-card">
-            <div class="summary-label">감시 구역</div>
-            <div class="summary-value"><span id="sumSites">0</span> <small>개소</small></div>
-            <div class="summary-note" id="sumSitesNote"></div>
-          </article>
-
-          <article class="summary-card">
-            <div class="summary-label">온라인 카메라</div>
-            <div class="summary-value"><span id="sumCams">0</span> <small id="sumCamsTotal"></small></div>
-            <div class="summary-note" id="sumCamsNote"></div>
-          </article>
-
-          <article class="summary-card" id="sumPeopleCard">
-            <div class="summary-label">방파제 내 감지 인원</div>
-            <div class="summary-value"><span id="sumPeople">0</span> <small>명</small></div>
-            <div class="summary-note" id="sumPeopleNote"></div>
-          </article>
-
-          <article class="summary-card" id="sumAlarmCard">
-            <div class="summary-label">진행 중 경보</div>
-            <div class="summary-value"><span id="sumAlarm">0</span> <small>건</small></div>
-            <div class="summary-note" id="sumAlarmNote"></div>
-          </article>
-        </section>
-
-        <section class="alarm-panel" id="alarmPanel" hidden aria-live="assertive">
-          <div class="alarm-head">⚠ 경보 현황 — 항목을 누르면 해당 구역으로 이동합니다</div>
-          <div id="alarmList"></div>
-        </section>
-
-        <section class="dashboard-grid">
+      <main class="main">
+        <div class="dashboard-grid">
           <div class="center-column">
-            <section class="panel">
+            <section class="panel hero">
+              <div class="hero-head">
+                <h1 class="page-title">방파제 실시간 감시</h1>
+                <div class="monitor-status" id="monitorStatus"><span class="dot"></span><span id="monitorText">모니터링 중</span></div>
+              </div>
+              <div class="page-subtitle" id="pageSubtitle"></div>
+
+              <section class="summary-grid" aria-label="관제 요약">
+                <article class="summary-card">
+                  <div class="summary-label">감시 구역</div>
+                  <div class="summary-value"><span id="sumSites">0</span> <small>개소</small></div>
+                  <div class="summary-note" id="sumSitesNote"></div>
+                </article>
+
+                <article class="summary-card">
+                  <div class="summary-label">카메라</div>
+                  <div class="summary-value"><span id="sumCams">0</span> <small id="sumCamsTotal"></small></div>
+                  <div class="summary-note" id="sumCamsNote"></div>
+                </article>
+
+                <article class="summary-card" id="sumPeopleCard">
+                  <div class="summary-label">방파제 내 감지 인원</div>
+                  <div class="summary-value"><span id="sumPeople">0</span> <small>명</small></div>
+                  <div class="summary-note" id="sumPeopleNote"></div>
+                </article>
+
+                <article class="summary-card" id="sumAlarmCard">
+                  <div class="summary-label">진행 경보</div>
+                  <div class="summary-value"><span id="sumAlarm">0</span> <small>건</small></div>
+                  <div class="summary-note" id="sumAlarmNote"></div>
+                </article>
+              </section>
+
+              <section class="alarm-panel" id="alarmPanel" hidden aria-live="assertive">
+                <div class="alarm-head">경보 현황 — 항목을 누르면 해당 구역으로 이동합니다</div>
+                <div id="alarmList"></div>
+              </section>
+
+              <div class="cctv-block">
               <div class="panel-header">
                 <div>
-                  <h2 class="panel-title">현장 CCTV · 사람 인식</h2>
+                  <h2 class="panel-title">현장 CCTV <span class="title-sub">· 사람 인식</span></h2>
                   <span class="panel-note" id="cameraLabel"></span>
                 </div>
                 <div class="panel-tools">
-                  <button class="mini-button" id="webcamButton" type="button">📷 카메라 연결</button>
-                  <button class="mini-button" id="fileButton" type="button">🎞 영상 파일</button>
-                  <button class="mini-button" id="streamButton" type="button">🌐 스트림 주소</button>
-                  <button class="mini-button" id="aiButton" type="button">🤖 AI 서버</button>
-                  <button class="mini-button" id="calButton" type="button" hidden>📐 위치 보정</button>
-                  <button class="mini-button" id="bgButton" type="button" hidden>🖼 빈 배경 저장</button>
-                  <button class="mini-button" id="zoneButton" type="button" hidden>⚠ 위험 구역 지정</button>
+                  <button class="mini-button accent" id="webcamButton" type="button">카메라 연결</button>
+                  <button class="mini-button" id="calButton" type="button" hidden>위치 보정</button>
                   <button class="mini-button" id="disconnectButton" type="button" hidden>연결 해제</button>
-                  <button class="mini-button primary" id="wallButton2" type="button">⛶ 전체화면</button>
+                  <button class="mini-button" id="wallButton2" type="button">전체화면</button>
                   <input id="fileInput" type="file" accept="video/*" hidden />
                 </div>
               </div>
@@ -1641,40 +2399,43 @@
               <div class="cctv-grid" id="cctvGrid"></div>
 
               <div class="cctv-disclaimer" id="cctvDisclaimer"></div>
+              </div>
             </section>
 
-            <section class="panel">
-              <div class="panel-header">
-                <h2 class="panel-title">방파제 내 인원 위치</h2>
-                <div class="panel-tools">
-                  <button class="mini-button" id="geoStart" type="button">📍 방파제 선 지정</button>
-                  <button class="mini-button primary" id="geoDone" type="button" hidden>완료</button>
-                  <button class="mini-button" id="geoCancel" type="button" hidden>취소</button>
-                  <button class="mini-button" id="geoReset" type="button" hidden>↺ 기본값</button>
-                  <button class="mini-button" id="mapSite" type="button">현재 구역</button>
-                  <button class="mini-button" id="mapAll" type="button">전체 구역</button>
+            <section class="panel map-panel">
+              <div class="map-block">
+                <div class="panel-header">
+                  <h2 class="panel-title">방파제 내 인원 위치</h2>
+                  <div class="panel-tools">
+                    <button class="mini-button" id="geoStart" type="button">방파제 선 지정</button>
+                    <button class="mini-button primary" id="geoDone" type="button" hidden>완료</button>
+                    <button class="mini-button" id="geoCancel" type="button" hidden>취소</button>
+                    <button class="mini-button" id="geoReset" type="button" hidden>기본값</button>
+                    <button class="mini-button" id="mapSite" type="button">현재 구역</button>
+                    <button class="mini-button" id="mapAll" type="button">전체 구역</button>
+                  </div>
                 </div>
-              </div>
 
-              <div id="map" aria-label="방파제 지도"></div>
-              <div class="map-hint" id="mapHint"></div>
-              <div class="map-legend">
-                <span class="legend-item"><i class="legend-dot"></i>경보 중 감지 인원</span>
-                <span class="legend-item"><i class="legend-dot blue"></i>감지 인원</span>
-                <span class="legend-item"><i class="legend-line" style="background:#7bd3ff"></i>A 진입부</span>
-                <span class="legend-item"><i class="legend-line" style="background:#ffd166"></i>B 중간부</span>
-                <span class="legend-item"><i class="legend-line" style="background:#ff8c6b"></i>C 끝단</span>
-                <span class="legend-item"><i class="legend-dot cam"></i>CCTV (구간 기준 표시)</span>
-              </div>
+                <div id="map" aria-label="방파제 지도"></div>
+                <div class="map-hint" id="mapHint"></div>
+                <div class="map-legend">
+                  <span class="legend-item"><i class="legend-dot"></i>경보 중 감지 인원</span>
+                  <span class="legend-item"><i class="legend-dot blue"></i>감지 인원</span>
+                  <span class="legend-item"><i class="legend-line" style="background:#7bd3ff"></i>A 진입부</span>
+                  <span class="legend-item"><i class="legend-line" style="background:#ffd166"></i>B 중간부</span>
+                  <span class="legend-item"><i class="legend-line" style="background:#ff8c6b"></i>C 끝단</span>
+                  <span class="legend-item"><i class="legend-dot cam"></i>CCTV (구간 기준 표시)</span>
+                </div>
 
-              <div class="people-list" id="peopleList"></div>
+                <div class="people-list" id="peopleList"></div>
+              </div>
             </section>
 
             <section class="panel">
               <div class="panel-header">
                 <h2 class="panel-title">상황 기록</h2>
                 <div class="panel-tools">
-                  <button class="mini-button" id="csvButton" type="button">⬇ CSV 저장</button>
+                  <button class="mini-button" id="csvButton" type="button">CSV 저장</button>
                   <button class="mini-button" id="clearLogButton" type="button">기록 비우기</button>
                 </div>
               </div>
@@ -1682,18 +2443,29 @@
             </section>
           </div>
 
-          <aside class="right-column" aria-label="위험도 및 대응">
+          <aside class="panel right-column" aria-label="위험도 및 대응">
             <article class="risk-card" id="riskCard">
               <div class="risk-heading">
-                <span>종합 위험도</span>
+                <span>기상 위험도</span>
                 <span class="badge" id="riskBadge">정상</span>
               </div>
 
-              <div class="risk-value"><span id="riskValue">0</span><small> / 100점</small></div>
+              <div class="gauge">
+                <svg viewBox="0 0 200 200" aria-hidden="true">
+                  <circle class="gauge-bg" cx="100" cy="100" r="86" pathLength="100" />
+                  <circle class="gauge-fg" id="riskRing" cx="100" cy="100" r="86" pathLength="100" stroke-dasharray="0 100" />
+                  <line class="gauge-mark" id="riskTick" x1="178" y1="100" x2="196" y2="100" />
+                </svg>
+                <div class="gauge-center">
+                  <div class="risk-value"><span id="riskValue">0</span></div>
+                  <div class="gauge-max">/ 100</div>
+                </div>
+              </div>
 
-              <div class="progress-track risk-track">
+              <!-- 기존 스크립트가 참조하는 막대 (화면에는 표시하지 않음) -->
+              <div class="progress-track risk-track" hidden>
                 <div class="progress-fill" id="riskBar"></div>
-                <div class="risk-mark" id="riskMark" title="경보 기준"></div>
+                <div class="risk-mark" id="riskMark"></div>
               </div>
 
               <div class="risk-description">
@@ -1711,12 +2483,6 @@
               </ol>
 
               <div class="next-hint" id="nextHint"></div>
-
-              <div class="action-buttons">
-                <button class="action-button broadcast" id="broadcastButton" type="button">📢 안내 방송</button>
-                <button class="action-button primary" id="dispatchButton" type="button">🚨 현장 출동</button>
-                <button class="action-button wide" id="closeButton" type="button" hidden>✔ 상황 종료</button>
-              </div>
             </article>
 
             <article class="fc-card">
@@ -1726,43 +2492,53 @@
               <div class="fc-text" id="fcText"></div>
             </article>
 
-            <div class="pair-cards">
-              <article class="metric-card">
-                <div class="metric-heading"><span>기온</span><span class="metric-icon">🌡️</span></div>
-                <div class="metric-value"><span id="tempValue">-</span> <small>℃</small></div>
-                <div class="metric-footer"><span id="tempSrc"></span></div>
-              </article>
-              <article class="metric-card">
-                <div class="metric-heading"><span>습도</span><span class="metric-icon">💧</span></div>
-                <div class="metric-value"><span id="humValue">-</span> <small>%</small></div>
-                <div class="metric-footer"><span id="humSrc"></span><button class="mini-button" id="sensorButton" type="button">🔌 아두이노 연결</button></div>
-              </article>
+            <section class="weather">
+              <h3 class="weather-title">현재 기상 상황</h3>
+              <div class="weather-grid">
+                <article class="metric-card">
+                  <div class="metric-heading"><span>기온</span></div>
+                  <div class="metric-value"><span id="tempValue">-</span> <small>℃</small></div>
+                  <div class="metric-footer"><span id="tempSrc"></span></div>
+                </article>
+
+                <article class="metric-card">
+                  <div class="metric-heading"><span>풍속</span></div>
+                  <div class="metric-value"><span id="windValue">-</span> <small>m/s</small></div>
+                  <div class="progress-track"><div class="progress-fill" id="windBar"></div></div>
+                  <div class="metric-footer"><span id="windStatus"></span><span>주의 14 · 위험 20</span></div>
+                </article>
+
+                <article class="metric-card">
+                  <div class="metric-heading"><span>유의 파고</span></div>
+                  <div class="metric-value"><span id="waveValue">-</span> <small>m</small></div>
+                  <div class="progress-track"><div class="progress-fill" id="waveBar"></div></div>
+                  <div class="metric-footer"><span id="waveStatus"></span><span>주의 1.5 · 위험 3</span></div>
+                </article>
+
+                <article class="metric-card">
+                  <div class="metric-heading"><span>습도</span></div>
+                  <div class="metric-value"><span id="humValue">-</span> <small>%</small></div>
+                  <div class="metric-footer"><span id="humSrc"></span></div>
+                </article>
+
+                <article class="metric-card">
+                  <div class="metric-heading"><span>강수량</span></div>
+                  <div class="metric-value"><span id="rainValue">-</span> <small>mm/h</small></div>
+                  <div class="progress-track"><div class="progress-fill" id="rainBar"></div></div>
+                  <div class="metric-footer"><span id="rainStatus"></span><span>주의 15 · 위험 30</span></div>
+                </article>
+              </div>
+            </section>
+
+            <div class="action-buttons">
+              <button class="action-button broadcast" id="broadcastButton" type="button">안내 방송</button>
+              <button class="action-button primary" id="dispatchButton" type="button">현장 출동</button>
+              <button class="action-button wide" id="closeButton" type="button" hidden>상황 종료</button>
             </div>
-
-            <article class="metric-card">
-              <div class="metric-heading"><span>풍속</span><span class="metric-icon">🌬️</span></div>
-              <div class="metric-value"><span id="windValue">-</span> <small>m/s</small></div>
-              <div class="progress-track"><div class="progress-fill" id="windBar"></div></div>
-              <div class="metric-footer"><span id="windStatus"></span><span>주의 14 · 위험 20 m/s</span></div>
-            </article>
-
-            <article class="metric-card">
-              <div class="metric-heading"><span>강수량</span><span class="metric-icon">🌧️</span></div>
-              <div class="metric-value"><span id="rainValue">-</span> <small>mm/h</small></div>
-              <div class="progress-track"><div class="progress-fill" id="rainBar"></div></div>
-              <div class="metric-footer"><span id="rainStatus"></span><span>주의 15 · 위험 30 mm/h</span></div>
-            </article>
-
-            <article class="metric-card">
-              <div class="metric-heading"><span>유의 파고</span><span class="metric-icon">🌊</span></div>
-              <div class="metric-value"><span id="waveValue">-</span> <small>m</small></div>
-              <div class="progress-track"><div class="progress-fill" id="waveBar"></div></div>
-              <div class="metric-footer"><span id="waveStatus"></span><span>주의 1.5 · 위험 3 m</span></div>
-            </article>
           </aside>
-        </section>
-      </div>
-    </main>
+        </div>
+      </main>
+    </div>
   </div>
 
   <!-- CCTV 전체화면 -->
@@ -1776,9 +2552,9 @@
       <button class="wall-button" data-mode="all" type="button" title="단축키 3">전체 카메라</button>
       <button class="wall-button" id="wallPrev" type="button" title="←">◀</button>
       <button class="wall-button" id="wallNext" type="button" title="→">▶</button>
-      <button class="wall-button broadcast" id="wallBroadcast" type="button">📢 안내 방송</button>
-      <button class="wall-button dispatch" id="wallDispatch" type="button">🚨 현장 출동</button>
-      <button class="wall-button" id="wallClose" type="button" title="Esc">✕ 닫기</button>
+      <button class="wall-button broadcast" id="wallBroadcast" type="button">안내 방송</button>
+      <button class="wall-button dispatch" id="wallDispatch" type="button">현장 출동</button>
+      <button class="wall-button" id="wallClose" type="button" title="Esc">닫기</button>
     </div>
     <div class="wall-alarm" id="wallAlarm" hidden></div>
     <div class="wall-grid" id="wallGrid"></div>
@@ -2104,24 +2880,33 @@
     let userActed = false;
     for (const ev of ["pointerdown", "keydown"]) window.addEventListener(ev, () => { userActed = true; }, { once: true, capture: true });
 
+    // 구급차 사이렌: 높은 음(960Hz)과 낮은 음(770Hz)을 번갈아 내는 '삐뽀삐뽀'. times 는 반복 횟수
     function beep(times) {
       lastBeep = Date.now();
       if (!cfg.sound || !userActed) return;
       try {
         audio = audio || new (window.AudioContext || window.webkitAudioContext)();
         if (audio.state === "suspended") audio.resume();
-        for (let i = 0; i < times; i++) {
-          const osc = audio.createOscillator();
-          const gain = audio.createGain();
-          const t = audio.currentTime + i * 0.28;
-          osc.frequency.value = times > 1 ? 980 : 720;
-          gain.gain.setValueAtTime(0.0001, t);
-          gain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
-          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
-          osc.connect(gain).connect(audio.destination);
-          osc.start(t);
-          osc.stop(t + 0.24);
+        const HI = 960, LO = 770, STEP = 0.42;
+        const t0 = audio.currentTime + 0.02;
+        const end = t0 + times * 2 * STEP;
+        const osc = audio.createOscillator();
+        const tone = audio.createBiquadFilter();
+        const gain = audio.createGain();
+        osc.type = "square";
+        tone.type = "lowpass";
+        tone.frequency.value = 2600;
+        osc.frequency.setValueAtTime(HI, t0);
+        for (let i = 0; i < times * 2; i++) {
+          osc.frequency.setTargetAtTime(i % 2 ? LO : HI, t0 + i * STEP, 0.012);
         }
+        gain.gain.setValueAtTime(0.0001, t0);
+        gain.gain.exponentialRampToValueAtTime(0.16, t0 + 0.03);
+        gain.gain.setValueAtTime(0.16, end - 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.0001, end);
+        osc.connect(tone).connect(gain).connect(audio.destination);
+        osc.start(t0);
+        osc.stop(end + 0.02);
       } catch (e) { /* 소리를 낼 수 없는 환경 */ }
     }
 
@@ -2132,7 +2917,7 @@
     function notifyOut(event, s, message, extra) {
       if (cfg.desktop && window.Notification && Notification.permission === "granted") {
         try {
-          new Notification(`해안 안전 관제 — ${s.name}`, { body: message, tag: event + s.i });
+          new Notification(`WAVEON — ${s.name}`, { body: message, tag: event + s.i });
         } catch (e) { /* 알림을 띄울 수 없는 환경 */ }
       }
       if (!cfg.webhook) return;
@@ -2337,7 +3122,7 @@
           for (const inc of fresh) inc.detAt = now;
           addLog(s, "detect", `방파제 내 인원 ${countText(s)} 감지 (${fresh.map(incName).join(" · ")}) — ${whereAll(s)}`, aiExtra(s));
           beep(3);
-          showToast(`🚨 ${s.name} 인원 ${countText(s)} 감지 — 안내 방송이 필요합니다`);
+          showToast(`${s.name} 인원 ${countText(s)} 감지 — 안내 방송이 필요합니다`);
           notifyOut("detect", s, `방파제 내 인원 ${countText(s)} 감지 — ${whereAll(s)}`);
         }
 
@@ -2347,7 +3132,7 @@
           s.inc = { id: ++incSeq, at: now, lv: s.lv.key };
           addLog(s, "alert", `위험도 ${s.risk}점(${s.lv.name}) 경보 발령 — 풍속 ${s.r.wind.toFixed(1)}m/s, 강수 ${s.r.rain.toFixed(1)}mm/h, 파고 ${s.r.wave == null ? "-" : s.r.wave.toFixed(1) + "m"}`, { alarm: "기상 경보" });
           beep(1);
-          showToast(`⚠ ${s.name} 위험도 ${s.risk}점 — 경보 발령`);
+          showToast(`${s.name} 위험도 ${s.risk}점 — 경보 발령`);
           notifyOut("alert", s, `위험도 ${s.risk}점(${s.lv.name}) 경보 발령`);
         }
 
@@ -2450,7 +3235,7 @@
         else s.aiInc = { id: ++incSeq, kind: "fall", at: now, fallAt: now, cam: k };
         addLog(s, "urgent", `${inc ? "위험 구역 경보에서 격상 — " : ""}${MSG_FALL}`, { ...aiExtra(s, k), alarm: "긴급 · 추락 의심" });
         beep(3);
-        showToast(`🚨 ${s.name} ${cam} — 추락 의심 감지`);
+        showToast(`${s.name} ${cam} — 추락 의심 감지`);
         notifyOut("fall", s, MSG_FALL, { camera: cam });
         if (cfg.autoCast) doBroadcast(s, BROADCASTS[CAST_FALL].text, "browser", true);
         if ($("modal").hidden) askAck(s);
@@ -2461,7 +3246,7 @@
         s.aiInc = { id: ++incSeq, kind: "danger", at: now, cam: k, reason: who ? `위험 구역 진입: ${who}` : "위험도 모델 판단" };
         addLog(s, "alert", `AI 위험 구역 감지 — ${cam} · ${s.aiInc.reason} (안내 방송 가능 상태로 전환)`, { ...aiExtra(s, k), alarm: "AI 위험 구역" });
         beep(1);
-        showToast(`⚠ ${s.name} ${cam} — 위험 구역 감지`);
+        showToast(`${s.name} ${cam} — 위험 구역 감지`);
         notifyOut("danger", s, "AI 위험 구역 감지", { camera: cam });
         if (cfg.autoCast) doBroadcast(s, BROADCASTS[CAST_DANGER].text, "browser", true);
       }
@@ -2549,7 +3334,7 @@
       const inc = s.aiInc;
       if (!inc || inc.kind !== "fall") return;
       openModal({
-        title: "🚨 긴급: 추락 의심",
+        title: "긴급: 추락 의심",
         ok: inc.ackAt ? "확인함" : "담당자 확인",
         cancel: "닫기",
         danger: true,
@@ -2572,7 +3357,7 @@
       const tts = !!window.speechSynthesis;
       const mac = ai.ok && ai.status && ai.status.speech && ai.status.speech.available;
       openModal({
-        title: "📢 안내 방송",
+        title: "안내 방송",
         ok: "방송 송출",
         body: `${aiTable(s)}${factTable(s)}
           <label>방송 문안
@@ -2632,7 +3417,7 @@
       }
       addLog(s, "broadcast", `${auto ? "자동 안내 방송(시연 설정)" : "안내 방송"} 송출 · ${how} · 현재 인원 ${countText(s)} — "${text}"`,
         { ...aiExtra(s, inc && inc.cam), alarm: inc ? incName(inc) : "" });
-      showToast(`📢 ${s.name} 방송: ${text}`);
+      showToast(`${s.name} 방송: ${text}`);
 
       // 시연용 가상 인원: 방송을 들으면 일부가 육지로 이동
       if (!anyLive(s)) {
@@ -2651,7 +3436,7 @@
       const inc = curInc(s);
       const fall = inc && inc.kind === "fall";
       openModal({
-        title: fall ? "🚨 현장 출동 요청 — 긴급: 추락 의심" : "🚨 현장 출동 지시",
+        title: fall ? "현장 출동 요청 — 긴급: 추락 의심" : "현장 출동 지시",
         ok: fall ? "출동 요청 접수" : "출동 지시",
         danger: true,
         body: `${fall ? `<p><b>${esc(MSG_DISPATCH)}</b></p>` : ""}${aiTable(s)}${factTable(s)}
@@ -2739,9 +3524,9 @@
             <h4>시연 도구 — ${esc(current.name)}</h4>
             <div>선택한 구역에 가상 상황을 만들어 경보→방송→출동 흐름을 확인합니다.</div>
             <div class="demo-buttons">
-              <button class="mini-button" data-demo="storm" type="button">🌊 기상 악화</button>
-              <button class="mini-button" data-demo="person" type="button">🚶 인원 진입</button>
-              <button class="mini-button" data-demo="reset" type="button">☀ 정상 복귀</button>
+              <button class="mini-button" data-demo="storm" type="button">기상 악화</button>
+              <button class="mini-button" data-demo="person" type="button">인원 진입</button>
+              <button class="mini-button" data-demo="reset" type="button">정상 복귀</button>
             </div>
             <label class="check"><input id="autoCastInput" type="checkbox" ${cfg.autoCast ? "checked" : ""} /> AI 경보 발생 시 안내 방송 자동 송출 (시연용 · 기본 꺼짐)</label>
             <div>실제 운영에서는 끄고, 담당자가 방송 내용을 확인한 뒤 ‘안내 방송’ 버튼으로 송출하세요.</div>
@@ -2838,12 +3623,12 @@
     function setSound(on) {
       cfg.sound = on;
       store("bw.cfg", cfg);
-      $("soundButton").textContent = on ? "🔔" : "🔕";
+      $("soundButton").textContent = on ? "경보음 켜짐" : "경보음 꺼짐";
       $("soundButton").title = on ? "경보음 켜짐" : "경보음 꺼짐";
     }
 
     /* ---------------- 브라우저 안에서 하는 AI 분석 (AI 서버 없이) ----------------
-       '📷 카메라 연결'·'🎞 영상 파일'·'🌐 스트림 주소'로 연결한 영상을 브라우저가 직접 분석한다.
+       '카메라 연결'·'영상 파일'·'스트림 주소'로 연결한 영상을 브라우저가 직접 분석한다.
        - 티처블 머신 모델 3개(사람수·위험도·추락)를 브라우저용으로 변환한 web_models/ 를 TensorFlow.js 로 한 번만 불러와 재사용
        - 레고 피규어 개별 탐지: 빈 배경과 비교 (ai_server/lego_detector.py 와 같은 방식)
        - 분류는 초당 약 3회, 레고 탐지는 초당 약 4회 (화면 그리기와 별도) */
@@ -3173,7 +3958,7 @@
     /* ---------------- 아두이노 온습도 센서 (여러 대) ----------------
        1순위: 화면 서버(부우산 시작.command → ai_server/page_server.py)가 USB 아두이노를 자동으로 찾아 읽은 값을 /api/sensors 로 받음
               → 버튼을 누를 필요 없음
-       2순위(화면 서버가 없을 때): Chrome Web Serial — '🔌 아두이노 추가'로 한 대씩 연결 (처음 한 번은 브라우저 보안상 포트 선택 필요)
+       2순위(화면 서버가 없을 때): Chrome Web Serial — '아두이노 추가'로 한 대씩 연결 (처음 한 번은 브라우저 보안상 포트 선택 필요)
        아두이노가 보내는 줄: "T=23.4,H=56.0", "습도:56% 온도:23도", "T:23.4 H:56", {"t":23.4,"h":56}, "23.4,56"
        온도·습도가 모두 0 이면 센서를 못 읽는 것으로 보고 표시하지 않음. 10초 넘게 값이 없으면 '응답 없음'. */
     const SENSOR_STALE_MS = 10000;
@@ -3391,7 +4176,7 @@
         return showToast(url ? `${camId} 스트림을 열 수 없습니다. 주소와 서버의 CORS 허용 여부를 확인하세요.` : `${camId} 영상을 재생할 수 없습니다.`);
       }
       // 브라우저 카메라의 실제 사람 인식(COCO-SSD)은 레고에 맞지 않고 무거우므로 기본으로 끔 (설정에서 켤 수 있음).
-      // 레고 피규어 개별 탐지는 AI 서버(🤖)에 연결했을 때 서버에서 한다.
+      // 레고 피규어 개별 탐지는 AI 서버()에 연결했을 때 서버에서 한다.
       // 기본: 브라우저 안에서 티처블 머신 모델 + 레고 탐지 (AI 서버 불필요). 설정에서 COCO-SSD 를 켠 경우만 아래 사람 인식.
       if (!cfg.cocoPerson) return startLocal(site, k, live);
       addLog(site, "sys", `${camId} ${live.label} 연결 — AI 사람 인식(COCO-SSD) 시작`);
@@ -3480,7 +4265,7 @@
         devices = (await navigator.mediaDevices.enumerateDevices()).filter((d) => d.kind === "videoinput");
       } catch (e) { /* 장치 목록을 못 받아도 기본 카메라로 연결 */ }
       openModal({
-        title: "📷 카메라 연결",
+        title: "카메라 연결",
         ok: "연결",
         body: `<p><b>${esc(s.name)}</b>의 CCTV 두 대에 카메라를 각각 연결할 수 있습니다.</p>
           ${camSelect(s)}
@@ -3517,7 +4302,7 @@
     function askFile() {
       const s = current;
       openModal({
-        title: "🎞 영상 파일 연결",
+        title: "영상 파일 연결",
         ok: "파일 선택",
         body: `<p><b>${esc(s.name)}</b>의 어느 CCTV 화면에 영상 파일을 재생할지 고르세요.</p>${camSelect(s)}`,
         onOk() {
@@ -3532,7 +4317,7 @@
       const s = current;
       const url = (k) => savedStream[streamKey(s, k)] || "";
       openModal({
-        title: "🌐 CCTV 스트림 주소 연결",
+        title: "CCTV 스트림 주소 연결",
         ok: "연결",
         body: `<p><b>${esc(s.name)}</b>에 연결할 영상 주소를 입력하세요. 저장해 두고 다음에 열 때 자동으로 다시 연결합니다.</p>
           ${camSelect(s)}
@@ -3593,7 +4378,7 @@
     function askAI() {
       const s = ai.site || current;
       openModal({
-        title: "🤖 AI 영상 분석 서버",
+        title: "AI 영상 분석 서버",
         ok: ai.site ? "다시 연결" : "연결",
         body: `<p>Python AI 서버가 웹캠을 열고 사람 수 · 위험 구역 · 추락 의심 모델로 분석한 결과를 <b>${esc(s.name)}</b>의 CCTV 화면과 경보에 반영합니다.</p>
           <label>AI 서버 주소
@@ -3706,7 +4491,7 @@
           Object.assign(ai, { ok: false, tries: 0, gaveUp: false, lastTry: Date.now() });
           applyAI(null);
           addLog(site, "sys", "AI 연결 끊김 — 분석 중단 (이전 분석 결과는 표시하지 않음)");
-          showToast("⚠ AI 서버 연결 끊김 — 분석 중단");
+          showToast("AI 서버 연결 끊김 — 분석 중단");
         }
       } finally {
         ai.busy = false;
@@ -3788,9 +4573,9 @@
     function askBackground() {
       const site = current;
       const l = site.lives.find((x) => isAnalyzed(x) && !x.dup);
-      if (!l) return showToast("영상이 연결된 카메라가 없습니다. 먼저 ‘📷 카메라 연결’을 누르세요.");
+      if (!l) return showToast("영상이 연결된 카메라가 없습니다. 먼저 ‘카메라 연결’을 누르세요.");
       openModal({
-        title: "🖼 빈 배경 저장",
+        title: "빈 배경 저장",
         ok: "지금 화면을 빈 배경으로 저장",
         body: `<p>레고 피규어를 <b>모두 치운</b> 빈 방파제 모형 화면을 저장합니다. 이후 이 배경과 달라진 덩어리를 레고 피규어로 찾아 PERSON 번호를 붙입니다.</p>
           <p>카메라 위치나 조명을 바꾸면 다시 저장하세요. 손이나 다른 물건이 화면에 있으면 그것도 배경으로 저장되니 주의하세요.</p>`,
@@ -3968,7 +4753,7 @@
     function calClick(tile, e) {
       const k = Number(tile.dataset.cam);
       const live = current.lives[k];
-      if (isAnalyzed(live)) return showToast("AI 분석 화면은 위치 보정 대신 ‘⚠ 위험 구역 지정’을 쓰세요.");
+      if (isAnalyzed(live)) return showToast("AI 분석 화면은 위치 보정 대신 ‘위험 구역 지정’을 쓰세요.");
       if (!live || !live.video.videoWidth) return showToast("영상이 연결된 CCTV 화면을 누르세요.");
       if (calMode.k == null) calMode.k = k;
       else if (calMode.k !== k) return showToast(`${cams(current)[calMode.k].id} 화면에서 이어서 누르세요.`);
@@ -3999,11 +4784,11 @@
         el.dataset.cam = cam.k;
         el.innerHTML = `
           <canvas></canvas>
-          <span class="live-tag ${cam.live && !cam.dup ? "real" : ""}">${cam.dup ? `⧉ ${cam.dup} 복제` : cam.live ? "● LIVE" : cfg.demo ? "시연 화면" : "미연결"}</span>
+          <span class="live-tag ${cam.live && !cam.dup ? "real" : ""}">${cam.dup ? `${cam.dup} 복제` : cam.live ? "● LIVE" : cfg.demo ? "시연 화면" : "미연결"}</span>
           <span class="tile-time"></span>
           <span class="tile-name">${cam.id} · ${esc(site.name)} · ${esc(cam.base)}</span>
           <span class="tile-count"></span>
-          <button class="tile-full" type="button" title="이 카메라 전체화면" aria-label="전체화면">⛶</button>`;
+          <button class="tile-full" type="button" title="이 카메라 전체화면" aria-label="전체화면"><svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg></button>`;
         container.appendChild(el);
         tiles.push({
           el, site, cam,
@@ -4274,7 +5059,7 @@
         ctx.fillRect(0, h - h * 0.24, w, h * 0.08);
         ctx.fillStyle = "#fff";
         ctx.font = `700 ${Math.max(10, h * 0.032)}px sans-serif`;
-        ctx.fillText("영상만 표시 · 레고 탐지는 🤖 AI 서버에 연결하세요", w * 0.03, h - h * 0.185);
+        ctx.fillText("영상만 표시 · 레고 탐지는 AI 서버에 연결하세요", w * 0.03, h - h * 0.185);
       }
       if (!live.ready) {
         ctx.fillStyle = "rgba(0,0,0,.55)";
@@ -4338,8 +5123,8 @@
       // 추락 배너는 '지금' 추락(97% 이상 확정)으로 판단되고 화면에 레고가 있을 때만 (레고 0개면 추락 아님, 지난 경보만으로는 띄우지 않음)
       const legoNone = srcL => personsOk(srcL) && srcL.persons.count === 0;
       const fallNow = a && a.fall.state === "ok" && a.fall.positive && !legoNone(src || live);
-      if (fallNow) banner(`⚠ 추락 의심 감지${a && a.fall.confidence != null ? ` · 추락 모델 ${Math.round(a.fall.confidence * 100)}%` : ""}`, "rgba(227,78,78,.88)");
-      else if (zonePeople(site, live).length) banner(`⚠ 위험 구역 진입 · ${zonePeople(site, live).map((b) => b.label).join(", ")}`, "rgba(233,119,43,.88)");
+      if (fallNow) banner(`추락 의심 감지${a && a.fall.confidence != null ? ` · 추락 모델 ${Math.round(a.fall.confidence * 100)}%` : ""}`, "rgba(227,78,78,.88)");
+      else if (zonePeople(site, live).length) banner(`위험 구역 진입 · ${zonePeople(site, live).map((b) => b.label).join(", ")}`, "rgba(233,119,43,.88)");
       drawZone(ctx, h, site, live, area);
       drawPersons(ctx, h, live, area, site); // 경보 띠보다 위에 그려 PERSON 번호가 가려지지 않게
       // 모델 판단 요약(레고 탐지·TM 인원·추락)과 위험도는 CCTV 영상 위에 표시하지 않음 (위험도 패널에서 확인)
@@ -4487,30 +5272,19 @@
 
     const aiKey = (s) => (s.aiInc.kind === "fall" ? "danger" : "warn");
 
+    const PIN_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></svg>`;
+
     function renderSidebar() {
-      const groups = [...new Set(sites.map((s) => s.gu))];
-      setHTML($("areaList"), groups.map((gu) => {
-        const list = sites.filter((s) => s.gu === gu);
-        const worst = list.reduce((a, b) => (b.risk > a.risk ? b : a));
-        const urgent = list.find((x) => x.aiInc && x.aiInc.kind === "fall") || list.find((x) => x.aiInc);
-        const active = current.gu === gu;
-        return `
-          <div class="area-group">
-            <button class="area-button ${active ? "active" : ""}" data-site="${list[0].i}" type="button">
-              <span class="dot ${urgent ? aiKey(urgent) : worst.lv.key}"></span>
-              <span class="area-name">${esc(gu)}</span>
-              <span class="area-status">${urgent ? incName(urgent.aiInc) : worst.lv.name}</span>
-            </button>
-            <div class="sea-list ${active ? "open" : ""}">
-              ${list.map((s) => `
-                <button class="sea-button ${s === current ? "active" : ""}" data-site="${s.i}" type="button">
-                  <span class="dot ${s.aiInc ? aiKey(s) : s.lv.key}"></span>
-                  <span class="sea-name">${esc(s.name)}</span>
-                  <span class="sea-meta">${s.aiInc ? `<b>${s.aiInc.kind === "fall" ? "긴급" : "AI 위험"}</b> · ` : ""}${s.people.length ? (curInc(s) ? `<b>👤${shortCount(s)}</b> · ` : `👤${shortCount(s)} · `) : ""}${s.risk}</span>
-                </button>`).join("")}
-            </div>
-          </div>`;
-      }).join(""));
+      setText("sideCount", `부산 · ${sites.length}개소`);
+      setHTML($("areaList"), sites.map((s) => `
+        <button class="site-button ${s === current ? "active" : ""}" data-site="${s.i}" type="button">
+          <span class="pin ${s.aiInc ? aiKey(s) : s.lv.key}">${PIN_SVG}</span>
+          <span class="site-text">
+            <span class="site-name">${esc(s.name)}</span>
+            <span class="site-gu">${esc(s.gu)}</span>
+          </span>
+          <span class="site-meta">${s.aiInc ? `<b>${s.aiInc.kind === "fall" ? "긴급" : "AI 위험"}</b> · ` : ""}${s.people.length ? (curInc(s) ? `<b>${shortCount(s)}명</b> · ` : `${shortCount(s)}명 · `) : ""}${s.risk}</span>
+        </button>`).join(""));
     }
 
     function setMetric(name, value, max, warnAt, dangerAt, labels) {
@@ -4610,10 +5384,8 @@
       setText("mapHint", edit
         ? "지도에서 방파제를 따라 육지 쪽 입구부터 끝단까지 차례로 누른 뒤 ‘완료’를 누르세요. (꺾이는 곳마다 한 점씩, 오른쪽 위에서 위성 사진으로 바꾸면 찾기 쉽습니다)"
         : s.geoSrc === "none"
-          ? "⚠ 이 구역은 방파제 위치가 아직 지정되지 않아 지도에 선과 인원 위치를 표시하지 않습니다. ‘방파제 선 지정’으로 지도에서 실제 방파제를 찍어 주세요."
-          : s.geoSrc === "osm"
-            ? `방파제 선형: ${SITE_DATA[s.i].src === "OSM" ? "OpenStreetMap 자료" : "위성 사진 판독"} · 길이 ${s.len}m. 실제와 다르면 ‘방파제 선 지정’으로 고칠 수 있습니다.`
-            : `방파제 선형: 직접 지정 · 길이 ${s.len}m`);
+          ? "이 구역은 방파제 위치가 아직 지정되지 않아 지도에 선과 인원 위치를 표시하지 않습니다. ‘방파제 선 지정’으로 지도에서 실제 방파제를 찍어 주세요."
+          : "");
       $("geoReset").hidden = !!edit || s.geoSrc !== "user";
       if (!map) return;
 
@@ -4627,7 +5399,7 @@
         for (const x of sites) {
           if (x === s && near) continue;
           L.marker(pointAt(x, 0.5), {
-            icon: icon(`<span class="site-mk ${x.lv.key} ${x === s ? "on" : ""}">${x.geoSrc === "none" ? "위치 미지정 · " : ""}${esc(x.name)} · ${x.risk}${x.people.length ? ` · 👤${x.people.length}` : ""}</span>`),
+            icon: icon(`<span class="site-mk ${x.lv.key} ${x === s ? "on" : ""}">${x.geoSrc === "none" ? "위치 미지정 · " : ""}${esc(x.name)} · ${x.risk}${x.people.length ? ` · ${x.people.length}명` : ""}</span>`),
             zIndexOffset: x === s ? 600 : 0
           }).on("click", () => { if (!edit) selectSite(x); }).addTo(layer.sites);
         }
@@ -4677,14 +5449,36 @@
         return setText("fcText", "기상 데이터가 연결되면 앞으로 24시간의 위험도 예보를 표시합니다.");
       }
       setText("fcRange", `${fc[0].hour}시 ~ 내일 ${fc[fc.length - 1].hour}시`);
-      setHTML($("fcBars"), fc.map((f) => `<i class="${level(f.risk).key}" style="height:${Math.max(3, f.risk)}%" title="${f.hour}시 · 위험도 ${f.risk}점 · 풍속 ${f.wind.toFixed(1)}m/s · 강수 ${f.rain.toFixed(1)}mm · 파고 ${f.wave == null ? "-" : f.wave.toFixed(1) + "m"}"></i>`).join("")
-        + `<span class="fc-line" style="bottom:${cfg.alertAt}%"></span>`);
-      setHTML($("fcHours"), fc.map((f, k) => `<span>${k % 4 === 0 ? f.hour + "시" : ""}</span>`).join(""));
+      const W = 340, H = 168, L = 30, R = 8, T = 10, B = 28;
+      const x = (k) => L + (fc.length > 1 ? k / (fc.length - 1) : 0) * (W - L - R);
+      const y = (v) => T + (1 - clamp(v / 100)) * (H - T - B);
+      const pts = fc.map((f, k) => [x(k), y(f.risk)]);
+      const line = pts.map(([px, py], k) => {
+        if (!k) return `M${px.toFixed(1)},${py.toFixed(1)}`;
+        const mx = ((pts[k - 1][0] + px) / 2).toFixed(1);
+        return `C${mx},${pts[k - 1][1].toFixed(1)} ${mx},${py.toFixed(1)} ${px.toFixed(1)},${py.toFixed(1)}`;
+      }).join(" ");
+      const area = `${line} L${pts[pts.length - 1][0].toFixed(1)},${y(0)} L${pts[0][0].toFixed(1)},${y(0)} Z`;
+      const grid = [0, 25, 50, 75, 100].map((v) => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="#e7ecf4"/><text x="${L - 6}" y="${y(v) + 3.5}" text-anchor="end" font-size="10" fill="#8a94a8">${v}</text>`).join("");
+      const ticks = fc.map((f, k) => k % 3 === 0 ? `<text x="${x(k).toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="10" fill="#8a94a8">${String(f.hour).padStart(2, "0")}시</text>` : "").join("");
+      const dots = fc.map((f, k) => {
+        const hot = f.risk >= cfg.alertAt;
+        const tip = `${f.hour}시 · 위험도 ${f.risk}점 · 풍속 ${f.wind.toFixed(1)}m/s · 강수 ${f.rain.toFixed(1)}mm · 파고 ${f.wave == null ? "-" : f.wave.toFixed(1) + "m"}`;
+        return `<g><circle cx="${pts[k][0].toFixed(1)}" cy="${pts[k][1].toFixed(1)}" r="9" fill="transparent"><title>${tip}</title></circle>${k % 3 === 0 || hot ? `<circle cx="${pts[k][0].toFixed(1)}" cy="${pts[k][1].toFixed(1)}" r="3" fill="white" stroke="${hot ? "#e5484d" : "#2272ee"}" stroke-width="1.8" pointer-events="none"/>` : ""}</g>`;
+      }).join("");
+      setHTML($("fcBars"), `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="24시간 위험도 예보">
+        <defs><linearGradient id="fcGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2272ee" stop-opacity=".28"/><stop offset="1" stop-color="#2272ee" stop-opacity=".02"/></linearGradient></defs>
+        ${grid}
+        <line x1="${L}" x2="${W - R}" y1="${y(cfg.alertAt)}" y2="${y(cfg.alertAt)}" stroke="#e5484d" stroke-dasharray="4 3" stroke-width="1"/>
+        <path d="${area}" fill="url(#fcGrad)"/>
+        <path d="${line}" fill="none" stroke="#2272ee" stroke-width="2" stroke-linejoin="round"/>
+        ${ticks}${dots}</svg>`);
+      setHTML($("fcHours"), "");
       const peak = fc.reduce((a, b) => (b.risk > a.risk ? b : a));
       const over = fc.find((f) => f.risk >= cfg.alertAt);
       $("fcText").classList.toggle("hot", !!over);
       setText("fcText", over
-        ? `⚠ ${over.hour}시부터 경보 기준 초과 예상 · 최고 ${peak.risk}점 (${peak.hour}시)`
+        ? `${over.hour}시부터 경보 기준 초과 예상 · 최고 ${peak.risk}점 (${peak.hour}시)`
         : `24시간 내 경보 기준 초과 예상 없음 · 최고 ${peak.risk}점 (${peak.hour}시)`);
     }
 
@@ -4713,14 +5507,6 @@
             ? (src.persons.count ? `<b class="hot">${src.persons.count}명 · ${src.persons.boxes.map((b) => b.label).join(", ")}</b>` : `<b class="ok">사람 감지 대기 · 감지 인원 0명</b>`)
             : src.persons && src.persons.state === "uncertain" ? `<b class="warn" title="${esc(src.persons.error || "")}">감지 불확실 — ${esc((src.persons.error || "").slice(0, 40))}</b>`
             : personsBroken(src) ? `<b class="hot" title="${esc(src.persons.error || "")}">사용 불가 — ${esc((src.persons.error || "").slice(0, 40))}</b>` : `<b class="off">판별 중</b>`],
-          ["인원수", !a || !a.people || a.people.state !== "ok" || !personsOk(src) ? val(a && a.people, () => false)
-            : `<b class="${a.people.count === src.persons.count ? "ok" : "warn"}">${esc(fmtAI(a.people))} · 탐지와 ${a.people.count === src.persons.count ? "일치" : "다름"}</b>`],
-          ...(s.lives.filter((l) => isAnalyzed(l) && !l.dup).length > 1 ? [["전체 인원 (두 카메라)", (() => {
-            const h = headcount(s);
-            return h.exact ? `<b class="ok">${h.max}명${h.how ? ` · ${esc(h.how)}` : ""}</b>` : `<b class="warn">추정 ${h.min}~${h.max}명 · 중복 확인 필요 (${esc(h.how)})</b>`;
-          })()]] : []),
-          ["위험 구역 ", !a ? `<b class="off">–</b>` : !zoneOf(s, src.k) ? `<b class="off">구역 미지정</b>`
-            : zonePeople(s, src).length ? `<b class="hot">진입: ${zonePeople(s, src).map((b) => b.label).join(", ")}</b>` : `<b class="ok">진입 없음</b>`],
           ["위험도", val(a && a.danger, (r) => r.positive)],
           ["추락", val(a && a.fall, (r) => r.positive)]
         ];
@@ -4732,8 +5518,8 @@
       }
       const camText = src ? `${camName(s, src.k)} · ${src.kind === "local" ? "브라우저 분석" : src.srv && src.srv.device_name ? src.srv.device_name : "AI 서버"}` : "";
       const canRetry = src && src.kind === "ai" && (!ai.ok || (src.srv && src.srv.status === "error"));
-      const retryBtn = canRetry ? ` <button class="mini-button" data-ai="reconnect" type="button">↻ 재연결</button>` : "";
-      const bgBtn = src && src.persons && src.persons.state === "no_background" ? ` <button class="mini-button" data-ai="background" type="button">🖼 빈 배경 저장</button>` : "";
+      const retryBtn = canRetry ? ` <button class="mini-button" data-ai="reconnect" type="button">재연결</button>` : "";
+      const bgBtn = src && src.persons && src.persons.state === "no_background" ? ` <button class="mini-button" data-ai="background" type="button">빈 배경 저장</button>` : "";
       setHTML($("aiPanel"), `<div class="ai-head ${cls}"><span>${esc(head)}${retryBtn}${bgBtn}</span><span>${esc(camText)}</span></div>`
         + rows.map(([k, v]) => `<div class="ai-row"><span>${k}</span>${v}</div>`).join(""));
     }
@@ -4750,6 +5536,8 @@
       $("riskBar").style.width = `${s.risk}%`;
       $("riskBar").className = "progress-fill " + s.lv.key;
       $("riskMark").style.left = `${cfg.alertAt}%`;
+      $("riskRing").setAttribute("stroke-dasharray", `${clamp(s.risk / 100) * 100} 100`);
+      $("riskTick").style.transform = `rotate(${cfg.alertAt * 3.6}deg)`;
       setText("riskSource", s.demo ? "시연 값" : weather.mode !== "live" ? "시뮬레이션 값"
         : s.real ? `풍속·강수: 기상청 ${s.real.name} 관측 ${fmtTime(s.real.at).slice(0, 5)} · 파고: ${s.realWave ? `${s.realWave.name} 부이 ${fmtTime(s.realWave.at).slice(0, 5)}` : "모델"}`
         : "기상 모델 추정값 (현장 관측 아님)");
@@ -4797,7 +5585,7 @@
       // 추락 의심이면 출동 버튼을 강조하고, 요청 접수 후에는 상태를 표시
       const fallOpen = inc && inc.kind === "fall" && !inc.dispAt;
       $("dispatchButton").classList.toggle("urgent", !!fallOpen);
-      setText("dispatchButton", inc && inc.kind && inc.dispAt ? "✔ 출동 요청 접수 (시연)" : "🚨 현장 출동");
+      setText("dispatchButton", inc && inc.kind && inc.dispAt ? "출동 요청 접수 (시연)" : "현장 출동");
 
       // 기온·습도는 위험도 계산에 쓰지 않는 참고 값 (시연·시뮬레이션 중에는 표시 안 함)
       // 기온·습도: 아두이노 센서가 있으면 정상 값을 보내는 센서들의 평균(아래에 센서별 값), 없으면 기상 모델 값(참고)
@@ -4815,9 +5603,6 @@
       setText("humSrc", list.length ? each("h", "%") : "");
       const errs = list.filter((x) => x.error).map((x) => `${x.name}: ${x.error}`).join(" / ");
       $("tempSrc").title = $("humSrc").title = errs;
-      // 화면 서버가 자동으로 읽는 중이면 버튼이 필요 없음
-      $("sensorButton").hidden = !!sensorSrv.available;
-      setText("sensorButton", webSensors.length ? "🔌 아두이노 추가" : "🔌 아두이노 연결");
       setMetric("wind", s.r.wind, 25, 14, 20, ["보통", "강풍 주의", "강풍 위험"]);
       setMetric("rain", s.r.rain, 40, 15, 30, [s.r.rain < 0.1 ? "비 없음" : "약한 비", "강한 비", "매우 강한 비"]);
       setMetric("wave", s.r.wave, 4, 1.5, 3, ["평온", "높은 파도", "매우 높은 파도"]);
@@ -4846,7 +5631,7 @@
 
       $("monitorStatus").classList.toggle("alarm", active.length > 0);
       setText("monitorText", urgentN ? `긴급 ${urgentN}건 · 경보 ${active.length}건 진행 중` : active.length ? `경보 ${active.length}건 진행 중` : "실시간 모니터링");
-      document.title = active.length ? `(${active.length}) ⚠ 경보 — 해안 안전 관제` : "해안 안전 관제";
+      document.title = active.length ? `(${active.length}) 경보 — WAVEON` : "WAVEON";
 
       setText("sumSites", String(sites.length).padStart(2, "0"));
       const alarmSites = new Set(rows.map(({ x }) => x)).size;
@@ -4896,15 +5681,12 @@
       $("disconnectButton").hidden = !live;
       $("calButton").hidden = !s.lives.some((l) => l && !l.kind);
       const aiSrc = s.lives.find((l) => isAnalyzed(l) && !l.dup);
-      $("bgButton").hidden = !(aiSrc && aiSrc.persons && aiSrc.persons.mode === "background");
-      $("zoneButton").hidden = !aiSrc;
-      setText("zoneButton", zoneMode ? `✔ 구역 저장 (${zoneMode.pts.length}점)` : "⚠ 위험 구역 지정");
       setText("cctvDisclaimer", localHere
         ? `브라우저 AI 분석 중 (서버 없이) — ${liveCams.map((c) => c.dup ? `${c.id}: ${c.dup} 복제 영상 (별도 카메라 아님)` : `${c.id}: 실제 카메라 영상`).join(" · ")}. 레고는 빈 배경과 비교해 PERSON 번호를 붙이고, 사람수·위험도·추락은 티처블 머신 모델로 판단합니다.`
         : aiHere
         ? `AI 서버(Python) 영상 분석 중 — ${liveCams.map((c) => c.dup ? `${c.id}: ${c.dup} 복제 영상 (별도 카메라 아님, AI 분석 화면)` : `${c.id}: 실제 카메라 영상`).join(" · ")}. 레고 피규어는 빈 배경과 비교해 개별로 찾아 PERSON 번호를 붙이고, TM 사람수 분류는 비교용으로만 표시합니다.`
         : live && s.lives.every((l) => !l || l.noDetect)
-          ? `${liveCams.map((c) => c.id).join("·")} 브라우저 카메라 영상만 표시 중입니다. 레고 피규어 탐지·PERSON 번호는 ‘🤖 AI 서버’에 연결하면 동작합니다.`
+          ? `${liveCams.map((c) => c.id).join("·")} 브라우저 카메라 영상만 표시 중입니다. 레고 피규어 탐지·PERSON 번호는 ‘AI 서버’에 연결하면 동작합니다.`
         : live
         ? `${liveCams.map((c) => c.id).join("·")} 실제 영상에서 AI(COCO-SSD)가 카메라별로 사람을 인식합니다. ` + (liveCams.every((c) => s.cals[c.k])
           ? "카메라별 보정선을 기준으로 발 위치를 방파제 거리로 환산해 지도에 표시합니다."
@@ -4923,8 +5705,8 @@
           // AI 화면: 인원 판별 상태를 그대로 표시, 복제 화면은 원본 카메라 결과임을 표시
           const st = aiCamState(l);
           n = st.n || 0;
-          txt = st.text; // 복제 화면은 왼쪽 위 ‘⧉ 복제’ 표시로 구분
-          const tag = l.dup ? `⧉ ${l.dup} 복제` : st.bad ? (online(l) ? "연결 오류" : "AI 끊김") : "● LIVE";
+          txt = st.text; // 복제 화면은 왼쪽 위 ‘복제’ 표시로 구분
+          const tag = l.dup ? `${l.dup} 복제` : st.bad ? (online(l) ? "연결 오류" : "AI 끊김") : "● LIVE";
           if (tile.tagEl.textContent !== tag) tile.tagEl.textContent = tag;
           tile.tagEl.classList.toggle("real", !l.dup && !st.bad);
           const src = srcLive(x, l);
@@ -4941,14 +5723,6 @@
       renderRisk(s);
       renderForecast(s);
 
-      // 시스템 상태
-      setHTML($("systemStatus"), `
-        <strong>시스템 상태</strong>
-        <div class="${weather.mode === "live" && !weather.error.includes("값 유지") ? "connected" : "degraded"}">● 기상: ${weather.mode !== "live" ? "시뮬레이션 값" : weather.error.includes("값 유지") ? "수신 실패 · 마지막 실제 값 유지" : "모델 추정값 수신 정상"}</div>
-        <div>${weather.mode === "live" ? `Open-Meteo · ${fmtTime(weather.at).slice(0, 5)} 갱신` : weather.error ? "수신 실패 — 10분 후 재시도" : "설정에서 기상 모델 값으로 전환 가능"}${weather.error && weather.mode === "live" ? ` · ${weather.error}` : ""}</div>
-        <div>경보 기준: 위험도 ${cfg.alertAt}점 이상</div>
-        <div class="${ai.site ? (ai.ok ? "connected" : "degraded") : ""}">● AI 영상 분석: ${ai.site ? (ai.ok ? `연결 정상 · ${esc(ai.site.name)}` : "연결 끊김 — 분석 중단") : "미연결"}</div>`);
-
       // 전체화면 상단 표시
       if (wallState.open) {
         const all = wallState.mode === "all";
@@ -4962,7 +5736,7 @@
         const others = ordered.filter((r) => all || r.x !== s);
         $("wallAlarm").hidden = !others.length;
         setHTML($("wallAlarm"), others.map(({ x, inc }) => `
-          <button data-site="${x.i}" type="button">⚠ ${esc(x.name)} · ${inc.kind ? incName(inc) : `${x.lv.name} ${x.risk}`}${x.people.length ? ` · 인원 ${countText(x)}` : ""} · ${stage(x, inc)}</button>`).join(""));
+          <button data-site="${x.i}" type="button">${esc(x.name)} · ${inc.kind ? incName(inc) : `${x.lv.name} ${x.risk}`}${x.people.length ? ` · 인원 ${countText(x)}` : ""} · ${stage(x, inc)}</button>`).join(""));
       }
     }
 
@@ -5004,11 +5778,6 @@
       const tile = e.target.closest(".tile");
       if (tile && !calMode && !zoneMode) openWall("single", Number(tile.dataset.cam));
     });
-    $("streamButton").addEventListener("click", askStream);
-    $("aiButton").addEventListener("click", askAI);
-    $("sensorButton").addEventListener("click", () => connectSensor());
-    $("bgButton").addEventListener("click", askBackground);
-    $("zoneButton").addEventListener("click", toggleZone);
     $("aiPanel").addEventListener("click", (e) => {
       const b = e.target.closest("[data-ai]");
       if (b && b.dataset.ai === "reconnect") aiReconnect();
@@ -5119,7 +5888,6 @@
     });
 
     $("webcamButton").addEventListener("click", askWebcam);
-    $("fileButton").addEventListener("click", askFile);
     $("fileInput").addEventListener("change", (e) => {
       const file = e.target.files[0];
       e.target.value = "";
@@ -5171,7 +5939,7 @@
       setInterval(pollAI, AI_POLL_MS);
       setInterval(pollPersons, PERSON_POLL_MS);
       setInterval(pumpFrames, FRAME_MS);
-      // 첫 화면은 CAM-01·CAM-02 모두 미연결. AI 서버는 자동으로 붙이지 않고 '🤖 AI 서버' 버튼으로만 연결한다.
+      // 첫 화면은 CAM-01·CAM-02 모두 미연결. AI 서버는 자동으로 붙이지 않고 'AI 서버' 버튼으로만 연결한다.
     }
 
     start();
