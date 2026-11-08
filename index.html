@@ -1749,6 +1749,24 @@
       color: #a3aec2;
     }
 
+    .gu-group { display: grid; gap: 4px; }
+    .gu-head {
+      display: flex; width: 100%; min-height: 48px; align-items: center; gap: 10px;
+      padding: 0 12px 0 14px; border: 0; border-radius: 12px;
+      color: var(--text); background: transparent; text-align: left;
+      font-size: 15px; font-weight: 600; letter-spacing: -.02em;
+    }
+    .gu-head:hover { background: #f5f8fd; }
+    .gu-head.has-current { color: var(--blue); }
+    .gu-head .dot { flex: 0 0 auto; }
+    .gu-name { flex: 1; }
+    .gu-count { color: var(--muted); font-size: 12px; font-weight: 500; }
+    .gu-state { color: var(--muted); font-size: 12px; font-weight: 500; min-width: 28px; text-align: right; }
+    .gu-caret { width: 16px; height: 16px; color: var(--muted); transition: transform .15s; }
+    .gu-group.open .gu-caret { transform: rotate(180deg); }
+    .gu-sites { display: grid; gap: 2px; margin: 0 0 6px 14px; padding-left: 8px; border-left: 2px solid var(--blue-soft); }
+    .gu-sites .site-button { min-height: 52px; }
+
     .site-button.active .pin { color: var(--blue); }
     .pin.watch { color: var(--yellow); }
     .pin.warn { color: var(--orange); }
@@ -5274,17 +5292,37 @@
 
     const PIN_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5" fill="currentColor"/></svg>`;
 
+    const openGu = new Set();
+    let lastGu = null;
+
     function renderSidebar() {
       setText("sideCount", `부산 · ${sites.length}개소`);
-      setHTML($("areaList"), sites.map((s) => `
+      if (current && current.gu !== lastGu) { lastGu = current.gu; openGu.add(current.gu); }
+      const guList = [...new Set(sites.map((s) => s.gu))];
+      const itemHtml = (s) => `
         <button class="site-button ${s === current ? "active" : ""}" data-site="${s.i}" type="button">
           <span class="pin ${s.aiInc ? aiKey(s) : s.lv.key}">${PIN_SVG}</span>
-          <span class="site-text">
-            <span class="site-name">${esc(s.name)}</span>
-            <span class="site-gu">${esc(s.gu)}</span>
-          </span>
+          <span class="site-text"><span class="site-name">${esc(s.name)}</span></span>
           <span class="site-meta">${s.aiInc ? `<b>${s.aiInc.kind === "fall" ? "긴급" : "AI 위험"}</b> · ` : ""}${s.people.length ? (curInc(s) ? `<b>${shortCount(s)}명</b> · ` : `${shortCount(s)}명 · `) : ""}${s.risk}</span>
-        </button>`).join(""));
+        </button>`;
+      setHTML($("areaList"), guList.map((gu) => {
+        const list = sites.filter((s) => s.gu === gu);
+        const worst = list.reduce((a, s) => (LEVELS.indexOf(s.lv) < LEVELS.indexOf(a.lv) ? s : a), list[0]);
+        const key = list.some((s) => s.aiInc) ? "danger" : worst.lv.key;
+        const name = list.some((s) => s.aiInc) ? "경보" : worst.lv.name;
+        const open = openGu.has(gu);
+        const hasCur = list.includes(current);
+        return `<div class="gu-group ${open ? "open" : ""}">
+          <button class="gu-head ${hasCur ? "has-current" : ""}" data-gu="${esc(gu)}" type="button" aria-expanded="${open}">
+            <i class="dot ${key}"></i>
+            <span class="gu-name">${esc(gu)}</span>
+            <span class="gu-count">${list.length}</span>
+            <span class="gu-state">${name}</span>
+            <svg class="gu-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          ${open ? `<div class="gu-sites">${list.map(itemHtml).join("")}</div>` : ""}
+        </div>`;
+      }).join(""));
     }
 
     function setMetric(name, value, max, warnAt, dangerAt, labels) {
@@ -5748,6 +5786,13 @@
 
     /* ---------------- 이벤트 ---------------- */
     function onSiteClick(e) {
+      const head = e.target.closest("[data-gu]");
+      if (head) {
+        const g = head.dataset.gu;
+        openGu.has(g) ? openGu.delete(g) : openGu.add(g);
+        renderSidebar();
+        return false;
+      }
       const el = e.target.closest("[data-site]");
       if (el && !el.classList.contains("tile")) {
         selectSite(sites[el.dataset.site]);
