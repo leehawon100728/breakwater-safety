@@ -36,8 +36,8 @@ class PersonDetector:
             from ultralytics import YOLO
             self.model = YOLO(str(self.weights))
             names = self.model.names
-            if names.get(0) != "person":
-                raise ValueError(f"클래스 0이 person 이 아님: {names.get(0)}")
+            if names.get(0) not in ("person", "danger"):
+                raise ValueError(f"클래스 0이 person/danger 가 아님: {names.get(0)}")
             log.info("사람 탐지 모델 로드: %s (신뢰도 기준 %.2f, 입력 %d, 장치 %s)", self.weights.name, self.conf, self.imgsz, self.device)
         except Exception as e:
             self.model = None
@@ -64,7 +64,7 @@ class PersonDetector:
     def update(self, frame_bgr):
         """프레임 하나를 처리하고 현재 표시할 사람 목록을 돌려준다."""
         h, w = frame_bgr.shape[:2]
-        res = self.model.track(frame_bgr, persist=True, classes=[0], conf=self.conf, imgsz=self.imgsz,
+        res = self.model.track(frame_bgr, persist=True, conf=self.conf, imgsz=self.imgsz,
                                device=self.device, tracker=self.tracker, verbose=False)[0]
         now = time.time()
         boxes = res.boxes
@@ -72,17 +72,22 @@ class PersonDetector:
             xyxy = boxes.xyxy.cpu().numpy()
             confs = boxes.conf.cpu().numpy()
             ids = boxes.id.cpu().numpy().astype(int) if boxes.id is not None else [None] * len(xyxy)
-            for (x1, y1, x2, y2), c, tid in zip(xyxy, confs, ids):
+            clss = boxes.cls.cpu().numpy().astype(int)
+            for (x1, y1, x2, y2), c, tid, k in zip(xyxy, confs, ids, clss):
+                if self.model.names[int(k)] == "safe":
+                    continue  # 안전 판정은 다른 AI 담당 — 안전 클래스는 오탐을 줄이는 학습용으로만 쓰고 내보내지 않음
                 if tid is None:
                     continue  # 추적기가 아직 확정하지 않은 박스는 번호 없이 띄우지 않음
                 box = [float(x1 / w), float(y1 / h), float((x2 - x1) / w), float((y2 - y1) / h)]
                 t = self.tracks.get(tid)
                 if t is None:
                     t = self.tracks[tid] = {"no": self._number()}
-                t.update(box=box, conf=float(c), seen=now)
+                t.update(box=box, conf=float(c), seen=now, name=self.model.names[int(k)])
         # 오래 안 보인 추적은 제거 (사람이 화면에서 사라지면 박스도 사라짐)
         for tid in [k for k, t in self.tracks.items() if now - t["seen"] > self.hold]:
             del self.tracks[tid]
         return sorted(({"id": t["no"], "label": f"PERSON {t['no']}", "box": [round(v, 4) for v in t["box"]],
-                        "conf": round(t["conf"], 3), "held": now - t["seen"] > 0.01} for t in self.tracks.values()),
+                        "conf": round(t["conf"], 3), "held": now - t["seen"] > 0.01,
+                        # 위험/안전 2클래스 모델이면 구역 없이 모델이 직접 판단 (danger 키 없으면 화면이 구역으로 판단)
+                        **({"danger": t["name"] == "danger"} if t["name"] in ("danger", "safe") else {})} for t in self.tracks.values()),
                       key=lambda p: p["id"])

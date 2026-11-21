@@ -2407,6 +2407,8 @@
                 </div>
                 <div class="panel-tools">
                   <button class="mini-button accent" id="webcamButton" type="button">카메라 연결</button>
+                  <button class="mini-button" id="aiButton" type="button">AI 서버</button>
+                  <button class="mini-button" id="zoneButton" type="button">위험 구역 지정/저장</button>
                   <button class="mini-button" id="calButton" type="button" hidden>위치 보정</button>
                   <button class="mini-button" id="disconnectButton" type="button" hidden>연결 해제</button>
                   <button class="mini-button" id="wallButton2" type="button">전체화면</button>
@@ -4583,8 +4585,11 @@
     // 이 카메라에서 위험 구역 안에 발이 있는 피규어
     function zonePeople(site, l) {
       const src = srcLive(site, l);
-      const poly = src && zoneOf(site, src.k);
-      if (!poly || !personsOk(src)) return [];
+      if (!src || !personsOk(src)) return [];
+      // 위험/안전을 직접 구분하는 모델이면 구역 없이 그 판단을 씀 (카메라 고정 불필요)
+      if (src.persons.boxes.some((b) => typeof b.danger === "boolean")) return src.persons.boxes.filter((b) => b.danger);
+      const poly = zoneOf(site, src.k);
+      if (!poly) return [];
       return src.persons.boxes.filter((b) => inPoly([b.box[0] + b.box[2] / 2, b.box[1] + b.box[3]], poly));
     }
 
@@ -5933,6 +5938,8 @@
     });
 
     $("webcamButton").addEventListener("click", askWebcam);
+    $("aiButton").addEventListener("click", askAI);
+    $("zoneButton").addEventListener("click", toggleZone);
     $("fileInput").addEventListener("change", (e) => {
       const file = e.target.files[0];
       e.target.value = "";
