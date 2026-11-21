@@ -1,0 +1,38 @@
+[
+  {
+    "id": "231_IMG_9004",
+    "missed_boxes": [
+      [
+        329,
+        489,
+        449,
+        576
+      ]
+    ],
+    "false_positive_predictions": []
+  },
+  {
+    "id": "233_IMG_9006",
+    "missed_boxes": [
+      [
+        346,
+        494,
+        466,
+        576
+      ]
+    ],
+    "false_positive_predictions": []
+  },
+  {
+    "id": "234_IMG_9007",
+    "missed_boxes": [
+      [
+        342,
+        493,
+        463,
+        572
+      ]
+    ],
+    "false_positive_predictions": []
+  }
+]

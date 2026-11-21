@@ -1,0 +1,804 @@
+{
+  "weights_sha256": "36e1831f1e1faddc77626a7d74c4cd91928da6656e46c8379097175e21c374c3",
+  "count_test_images": 59,
+  "count_exact": 56,
+  "all_counts_reproduced": true,
+  "true_positives": 89,
+  "false_positives": 0,
+  "false_negatives": 3,
+  "negative_images": 19,
+  "negative_images_with_false_positive": 0,
+  "provisional_safety_examples": 6,
+  "provisional_persons": 15,
+  "ai_reference_agreement": 0.9333333333333333,
+  "ai_reference_agreement_count": 14,
+  "safe_count_matches": 6,
+  "heldout_safety_examples": 3,
+  "heldout_safety_persons": 7,
+  "heldout_ai_agreement": 6,
+  "confusion": [
+    {
+      "reference": "unknown",
+      "predicted": "unknown",
+      "count": 8
+    },
+    {
+      "reference": "safe",
+      "predicted": "safe",
+      "count": 3
+    },
+    {
+      "reference": "not_safe",
+      "predicted": "not_safe",
+      "count": 3
+    },
+    {
+      "reference": "not_safe",
+      "predicted": "unknown",
+      "count": 1
+    }
+  ],
+  "official_safety_accuracy": null,
+  "human_reviewed": false,
+  "limitation": "Unblinded AI visual reinspection of 6 existing examples, not an independent or human-certified benchmark",
+  "count_results": [
+    {
+      "id": "000_IMG_8872",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "001_IMG_8873",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "002_IMG_8874",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "003_IMG_8875",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "004_IMG_8876",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "005_IMG_8877",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "006_IMG_8878",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "007_IMG_8879",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "008_IMG_8880",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "009_IMG_8881",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "010_IMG_8882",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "011_IMG_8883",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "012_IMG_8884",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "013_IMG_8885",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "014_IMG_8886",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "015_IMG_8887",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "016_IMG_8888",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "017_IMG_8889",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "018_IMG_8890",
+      "truth_count": 0,
+      "predicted_count": 0,
+      "matches_saved_count": true
+    },
+    {
+      "id": "060_IMG_8962",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "061_IMG_8963",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "062_IMG_8964",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "063_IMG_8965",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "064_IMG_8966",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "065_IMG_8967",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "066_IMG_8968",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "067_IMG_8969",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "068_IMG_8970",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "069_IMG_8971",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "070_IMG_8972",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "071_IMG_8973",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "072_IMG_8974",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "073_IMG_8975",
+      "truth_count": 1,
+      "predicted_count": 1,
+      "matches_saved_count": true
+    },
+    {
+      "id": "199_IMG_8780",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "200_IMG_8781",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "201_IMG_8782",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "202_IMG_8783",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "203_IMG_8784",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "204_IMG_8785",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "205_IMG_8786",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "206_IMG_8787",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "207_IMG_8788",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "208_IMG_8789",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "222_IMG_8947",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "223_IMG_8948",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "224_IMG_8949",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "225_IMG_8950",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "226_IMG_8951",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "227_IMG_8952",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "228_IMG_8953",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "229_IMG_8954",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "230_IMG_9003",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "231_IMG_9004",
+      "truth_count": 3,
+      "predicted_count": 2,
+      "matches_saved_count": true
+    },
+    {
+      "id": "232_IMG_9005",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "233_IMG_9006",
+      "truth_count": 3,
+      "predicted_count": 2,
+      "matches_saved_count": true
+    },
+    {
+      "id": "234_IMG_9007",
+      "truth_count": 3,
+      "predicted_count": 2,
+      "matches_saved_count": true
+    },
+    {
+      "id": "235_IMG_9008",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "236_IMG_9009",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    },
+    {
+      "id": "237_IMG_9010",
+      "truth_count": 3,
+      "predicted_count": 3,
+      "matches_saved_count": true
+    }
+  ],
+  "safety_results": [
+    {
+      "id": "129_IMG_8986",
+      "split": "train",
+      "reference_safe_count": 1,
+      "comparisons": [
+        {
+          "reference_status": "unknown",
+          "predicted_status": "unknown",
+          "reference_bbox": [
+            438,
+            454,
+            524,
+            617
+          ],
+          "reason": "방파제 가장자리에 앉아 다리가 밖으로 돌출됨",
+          "iou": 0.9869550720695166
+        },
+        {
+          "reference_status": "safe",
+          "predicted_status": "safe",
+          "reference_bbox": [
+            114,
+            592,
+            244,
+            757
+          ],
+          "reason": "누운 피규어 전체가 상면 안쪽에 보임",
+          "iou": 0.9648596415150567
+        }
+      ],
+      "unmatched_predictions": [],
+      "total_count": 2,
+      "safe_count": 1,
+      "persons": [
+        {
+          "bbox": [
+            437.42,
+            453.7,
+            523.78,
+            617.33
+          ],
+          "confidence": 0.96417,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            111.48,
+            590.98,
+            245.15,
+            756.7
+          ],
+          "confidence": 0.942774,
+          "status": "safe"
+        }
+      ]
+    },
+    {
+      "id": "199_IMG_8780",
+      "split": "test",
+      "reference_safe_count": 0,
+      "comparisons": [
+        {
+          "reference_status": "unknown",
+          "predicted_status": "unknown",
+          "reference_bbox": [
+            552,
+            481,
+            632,
+            630
+          ],
+          "reason": "가장자리에 앉은 피규어",
+          "iou": 0.9785382992186106
+        },
+        {
+          "reference_status": "unknown",
+          "predicted_status": "unknown",
+          "reference_bbox": [
+            466,
+            573,
+            552,
+            718
+          ],
+          "reason": "가장자리에 앉은 피규어",
+          "iou": 0.9805120226512742
+        },
+        {
+          "reference_status": "unknown",
+          "predicted_status": "unknown",
+          "reference_bbox": [
+            363,
+            652,
+            457,
+            816
+          ],
+          "reason": "가장자리에 앉은 피규어",
+          "iou": 0.9826364871774362
+        }
+      ],
+      "unmatched_predictions": [],
+      "total_count": 3,
+      "safe_count": 0,
+      "persons": [
+        {
+          "bbox": [
+            466.04,
+            571.9,
+            552.23,
+            719.32
+          ],
+          "confidence": 0.9598,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            552.87,
+            480.68,
+            632.55,
+            630.27
+          ],
+          "confidence": 0.959747,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            362.38,
+            652.88,
+            457.22,
+            815.46
+          ],
+          "confidence": 0.959402,
+          "status": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "230_IMG_9003",
+      "split": "test",
+      "reference_safe_count": 2,
+      "comparisons": [
+        {
+          "reference_status": "safe",
+          "predicted_status": "safe",
+          "reference_bbox": [
+            330,
+            500,
+            449,
+            586
+          ],
+          "reason": "뒤쪽 누운 피규어가 상면 안쪽",
+          "iou": 0.8876627295173881
+        },
+        {
+          "reference_status": "unknown",
+          "predicted_status": "unknown",
+          "reference_bbox": [
+            437,
+            535,
+            513,
+            676
+          ],
+          "reason": "가장자리에 앉아 있음",
+          "iou": 0.9842336877053772
+        },
+        {
+          "reference_status": "safe",
+          "predicted_status": "safe",
+          "reference_bbox": [
+            121,
+            745,
+            290,
+            870
+          ],
+          "reason": "앞쪽 누운 피규어가 상면 안쪽",
+          "iou": 0.9221873024474013
+        }
+      ],
+      "unmatched_predictions": [],
+      "total_count": 3,
+      "safe_count": 2,
+      "persons": [
+        {
+          "bbox": [
+            436.81,
+            533.81,
+            512.94,
+            676.6
+          ],
+          "confidence": 0.948054,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            123.67,
+            743.99,
+            290.89,
+            876.82
+          ],
+          "confidence": 0.917672,
+          "status": "safe"
+        },
+        {
+          "bbox": [
+            335.14,
+            493.4,
+            449.3,
+            585.86
+          ],
+          "confidence": 0.320909,
+          "status": "safe"
+        }
+      ]
+    },
+    {
+      "id": "242_IMG_8818",
+      "split": "train",
+      "reference_safe_count": 0,
+      "comparisons": [
+        {
+          "reference_status": "not_safe",
+          "predicted_status": "not_safe",
+          "reference_bbox": [
+            591,
+            546,
+            664,
+            681
+          ],
+          "reason": "오른쪽 뒤 파란 테트라포드 위",
+          "iou": 0.9876690816843235
+        },
+        {
+          "reference_status": "not_safe",
+          "predicted_status": "not_safe",
+          "reference_bbox": [
+            487,
+            692,
+            569,
+            837
+          ],
+          "reason": "오른쪽 앞 회색 테트라포드 위",
+          "iou": 0.9686052947272044
+        },
+        {
+          "reference_status": "unknown",
+          "predicted_status": "unknown",
+          "reference_bbox": [
+            242,
+            694,
+            344,
+            860
+          ],
+          "reason": "방파제 가장자리에 앉아 있음",
+          "iou": 0.9729335084950118
+        }
+      ],
+      "unmatched_predictions": [],
+      "total_count": 3,
+      "safe_count": 0,
+      "persons": [
+        {
+          "bbox": [
+            241.43,
+            694.28,
+            345.45,
+            858.96
+          ],
+          "confidence": 0.965636,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            591.0,
+            546.68,
+            663.79,
+            680.4
+          ],
+          "confidence": 0.962656,
+          "status": "not_safe"
+        },
+        {
+          "bbox": [
+            485.18,
+            691.67,
+            569.46,
+            837.32
+          ],
+          "confidence": 0.954735,
+          "status": "not_safe"
+        }
+      ]
+    },
+    {
+      "id": "279_IMG_8891",
+      "split": "train",
+      "reference_safe_count": 0,
+      "comparisons": [
+        {
+          "reference_status": "unknown",
+          "predicted_status": "unknown",
+          "reference_bbox": [
+            452,
+            368,
+            534,
+            531
+          ],
+          "reason": "방파제 뒤 가장자리에 앉아 있음",
+          "iou": 0.9712606544735221
+        },
+        {
+          "reference_status": "not_safe",
+          "predicted_status": "not_safe",
+          "reference_bbox": [
+            467,
+            614,
+            556,
+            772
+          ],
+          "reason": "회색 테트라포드 위",
+          "iou": 0.9733252538061555
+        },
+        {
+          "reference_status": "unknown",
+          "predicted_status": "unknown",
+          "reference_bbox": [
+            197,
+            694,
+            326,
+            872
+          ],
+          "reason": "방파제 앞 가장자리에 앉아 있음",
+          "iou": 0.984380961796572
+        }
+      ],
+      "unmatched_predictions": [],
+      "total_count": 3,
+      "safe_count": 0,
+      "persons": [
+        {
+          "bbox": [
+            195.98,
+            693.4,
+            325.88,
+            872.64
+          ],
+          "confidence": 0.9645,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            451.52,
+            367.44,
+            535.08,
+            532.13
+          ],
+          "confidence": 0.959024,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            466.62,
+            613.24,
+            556.95,
+            773.18
+          ],
+          "confidence": 0.958334,
+          "status": "not_safe"
+        }
+      ]
+    },
+    {
+      "id": "060_IMG_8962",
+      "split": "test",
+      "reference_safe_count": 0,
+      "comparisons": [
+        {
+          "reference_status": "not_safe",
+          "predicted_status": "unknown",
+          "reference_bbox": [
+            147,
+            961,
+            296,
+            1084
+          ],
+          "reason": "높은 방파제 상면이 아니라 앞쪽 낮은 바닥에 놓여 보임; 물리적 접촉은 현장 확인 필요",
+          "iou": 0.9270137148755302
+        }
+      ],
+      "unmatched_predictions": [],
+      "total_count": 1,
+      "safe_count": 0,
+      "persons": [
+        {
+          "bbox": [
+            145.02,
+            962.34,
+            294.46,
+            1089.25
+          ],
+          "confidence": 0.936115,
+          "status": "unknown"
+        }
+      ]
+    }
+  ]
+}

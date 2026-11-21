@@ -1,0 +1,32 @@
+{
+  "image_size": [
+    960,
+    1280
+  ],
+  "image_sha256": "c6d1e92cc8a97aaeaf8f171359cb00a2e53abdf9827305195155a76988cb451d",
+  "polygon": [
+    [
+      0.0,
+      0.71412680756396
+    ],
+    [
+      0.39020771513353114,
+      0.3548387096774194
+    ],
+    [
+      0.586053412462908,
+      0.38264738598442716
+    ],
+    [
+      0.21513353115727002,
+      0.8932146829810901
+    ],
+    [
+      0.0,
+      0.8053392658509455
+    ]
+  ],
+  "margin_fraction": 0.015,
+  "reviewed": true,
+  "annotation_source": "AI manually traced deck top in image; independent human review pending"
+}

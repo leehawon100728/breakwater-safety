@@ -1,0 +1,44 @@
+{
+  "source_images": 306,
+  "unique_images": 302,
+  "source_labels_found": 0,
+  "resolutions": {
+    "(4284, 5712)": 67,
+    "(3024, 4032)": 239
+  },
+  "exact_duplicate_groups": [
+    [
+      "117_IMG_8814",
+      "238_IMG_8814"
+    ],
+    [
+      "118_IMG_8815",
+      "239_IMG_8815"
+    ],
+    [
+      "119_IMG_8816",
+      "240_IMG_8816"
+    ],
+    [
+      "120_IMG_8817",
+      "241_IMG_8817"
+    ]
+  ],
+  "box_width_range": [
+    59,
+    185
+  ],
+  "box_height_range": [
+    76,
+    184
+  ],
+  "converted_size_limit": 1280,
+  "mean_brightness_range": [
+    156.93385904947917,
+    167.46756917317708
+  ],
+  "lighting": "Same indoor scene, some exposure/viewpoint variation; no night/rain/outdoor coverage.",
+  "pose": "Sitting and reclined/lying; fully upright standing unvalidated; some frame-truncated figures.",
+  "labels": "Single class; HSV proposals manually reviewed by AI in 16 full-frame contact sheets, not independently human-certified.",
+  "negative_policy": "19 near-identical negatives all held out for leakage-safe test; no dedicated negative training images."
+}

@@ -1,0 +1,36 @@
+{
+  "total_count": 3,
+  "safe_count": 2,
+  "persons": [
+    {
+      "bbox": [
+        436.81,
+        533.81,
+        512.94,
+        676.6
+      ],
+      "confidence": 0.948054,
+      "status": "unknown"
+    },
+    {
+      "bbox": [
+        123.67,
+        743.99,
+        290.89,
+        876.82
+      ],
+      "confidence": 0.917672,
+      "status": "safe"
+    },
+    {
+      "bbox": [
+        335.14,
+        493.4,
+        449.3,
+        585.86
+      ],
+      "confidence": 0.320909,
+      "status": "safe"
+    }
+  ]
+}

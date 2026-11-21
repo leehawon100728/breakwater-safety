@@ -1,0 +1,185 @@
+[
+  {
+    "id": "129_IMG_8986",
+    "split": "train",
+    "reviewed": false,
+    "reviewer": null,
+    "persons": [
+      {
+        "bbox": [
+          438,
+          454,
+          524,
+          617
+        ],
+        "status": null
+      },
+      {
+        "bbox": [
+          114,
+          592,
+          244,
+          757
+        ],
+        "status": null
+      }
+    ]
+  },
+  {
+    "id": "199_IMG_8780",
+    "split": "test",
+    "reviewed": false,
+    "reviewer": null,
+    "persons": [
+      {
+        "bbox": [
+          552,
+          481,
+          632,
+          630
+        ],
+        "status": null
+      },
+      {
+        "bbox": [
+          466,
+          573,
+          552,
+          718
+        ],
+        "status": null
+      },
+      {
+        "bbox": [
+          363,
+          652,
+          457,
+          816
+        ],
+        "status": null
+      }
+    ]
+  },
+  {
+    "id": "230_IMG_9003",
+    "split": "test",
+    "reviewed": false,
+    "reviewer": null,
+    "persons": [
+      {
+        "bbox": [
+          330,
+          500,
+          449,
+          586
+        ],
+        "status": null
+      },
+      {
+        "bbox": [
+          437,
+          535,
+          513,
+          676
+        ],
+        "status": null
+      },
+      {
+        "bbox": [
+          121,
+          745,
+          290,
+          870
+        ],
+        "status": null
+      }
+    ]
+  },
+  {
+    "id": "242_IMG_8818",
+    "split": "train",
+    "reviewed": false,
+    "reviewer": null,
+    "persons": [
+      {
+        "bbox": [
+          591,
+          546,
+          664,
+          681
+        ],
+        "status": null
+      },
+      {
+        "bbox": [
+          487,
+          692,
+          569,
+          837
+        ],
+        "status": null
+      },
+      {
+        "bbox": [
+          242,
+          694,
+          344,
+          860
+        ],
+        "status": null
+      }
+    ]
+  },
+  {
+    "id": "279_IMG_8891",
+    "split": "train",
+    "reviewed": false,
+    "reviewer": null,
+    "persons": [
+      {
+        "bbox": [
+          452,
+          368,
+          534,
+          531
+        ],
+        "status": null
+      },
+      {
+        "bbox": [
+          467,
+          614,
+          556,
+          772
+        ],
+        "status": null
+      },
+      {
+        "bbox": [
+          197,
+          694,
+          326,
+          872
+        ],
+        "status": null
+      }
+    ]
+  },
+  {
+    "id": "060_IMG_8962",
+    "split": "test",
+    "reviewed": false,
+    "reviewer": null,
+    "persons": [
+      {
+        "bbox": [
+          147,
+          961,
+          296,
+          1084
+        ],
+        "status": null
+      }
+    ]
+  }
+]

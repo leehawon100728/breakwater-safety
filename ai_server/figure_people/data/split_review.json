@@ -1,0 +1,19 @@
+{
+  "labels_reviewed": true,
+  "scene_groups_reviewed": true,
+  "reviewer": "AI visual inspection",
+  "independent_human_review": false,
+  "counts": {
+    "test": 59,
+    "train": 215,
+    "val": 28
+  },
+  "duplicates_excluded": [
+    "238_IMG_8814",
+    "239_IMG_8815",
+    "240_IMG_8816",
+    "241_IMG_8817"
+  ],
+  "negative_policy": "All 19 near-identical empty-scene images held out together for test; no separate empty images in train.",
+  "grouping_method": "Visual arrangement groups across bursts, merged across repeated sessions; no random frame split."
+}

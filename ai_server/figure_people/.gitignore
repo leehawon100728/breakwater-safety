@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+*.cache
+.venv/
+yolo11n.pt
+runs/**/weights/last.pt

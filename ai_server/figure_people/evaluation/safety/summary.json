@@ -1,0 +1,215 @@
+{
+  "examples": [
+    {
+      "id": "129_IMG_8986",
+      "split": "train",
+      "safety_truth_reviewed": false,
+      "total_count": 2,
+      "safe_count": 1,
+      "persons": [
+        {
+          "bbox": [
+            437.42,
+            453.7,
+            523.78,
+            617.33
+          ],
+          "confidence": 0.96417,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            111.48,
+            590.98,
+            245.15,
+            756.7
+          ],
+          "confidence": 0.942774,
+          "status": "safe"
+        }
+      ]
+    },
+    {
+      "id": "199_IMG_8780",
+      "split": "test",
+      "safety_truth_reviewed": false,
+      "total_count": 3,
+      "safe_count": 0,
+      "persons": [
+        {
+          "bbox": [
+            466.04,
+            571.9,
+            552.23,
+            719.32
+          ],
+          "confidence": 0.9598,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            552.87,
+            480.68,
+            632.55,
+            630.27
+          ],
+          "confidence": 0.959747,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            362.38,
+            652.88,
+            457.22,
+            815.46
+          ],
+          "confidence": 0.959402,
+          "status": "unknown"
+        }
+      ]
+    },
+    {
+      "id": "230_IMG_9003",
+      "split": "test",
+      "safety_truth_reviewed": false,
+      "total_count": 3,
+      "safe_count": 2,
+      "persons": [
+        {
+          "bbox": [
+            436.81,
+            533.81,
+            512.94,
+            676.6
+          ],
+          "confidence": 0.948054,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            123.67,
+            743.99,
+            290.89,
+            876.82
+          ],
+          "confidence": 0.917672,
+          "status": "safe"
+        },
+        {
+          "bbox": [
+            335.14,
+            493.4,
+            449.3,
+            585.86
+          ],
+          "confidence": 0.320909,
+          "status": "safe"
+        }
+      ]
+    },
+    {
+      "id": "242_IMG_8818",
+      "split": "train",
+      "safety_truth_reviewed": false,
+      "total_count": 3,
+      "safe_count": 0,
+      "persons": [
+        {
+          "bbox": [
+            241.43,
+            694.28,
+            345.45,
+            858.96
+          ],
+          "confidence": 0.965636,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            591.0,
+            546.68,
+            663.79,
+            680.4
+          ],
+          "confidence": 0.962656,
+          "status": "not_safe"
+        },
+        {
+          "bbox": [
+            485.18,
+            691.67,
+            569.46,
+            837.32
+          ],
+          "confidence": 0.954735,
+          "status": "not_safe"
+        }
+      ]
+    },
+    {
+      "id": "279_IMG_8891",
+      "split": "train",
+      "safety_truth_reviewed": false,
+      "total_count": 3,
+      "safe_count": 0,
+      "persons": [
+        {
+          "bbox": [
+            195.98,
+            693.4,
+            325.88,
+            872.64
+          ],
+          "confidence": 0.9645,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            451.52,
+            367.44,
+            535.08,
+            532.13
+          ],
+          "confidence": 0.959024,
+          "status": "unknown"
+        },
+        {
+          "bbox": [
+            466.62,
+            613.24,
+            556.95,
+            773.18
+          ],
+          "confidence": 0.958334,
+          "status": "not_safe"
+        }
+      ]
+    },
+    {
+      "id": "060_IMG_8962",
+      "split": "test",
+      "safety_truth_reviewed": false,
+      "total_count": 1,
+      "safe_count": 0,
+      "persons": [
+        {
+          "bbox": [
+            145.02,
+            962.34,
+            294.46,
+            1089.25
+          ],
+          "confidence": 0.936115,
+          "status": "unknown"
+        }
+      ]
+    }
+  ],
+  "reviewed_images": 0,
+  "safety_classification_accuracy": null,
+  "safe_count_exact_accuracy": null,
+  "outside_figures_incorrectly_safe": null,
+  "safe_figures_missed": null,
+  "unknown_predictions": 9,
+  "note": "Illustrative examples include train scenes; not an independent safety benchmark. Null metrics mean no human-reviewed safety truth."
+}

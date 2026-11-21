@@ -1,0 +1,6 @@
+path: /Users/ryuahyeon/Desktop/leehawon_latest/ai_server/figure_people/data/dataset
+train: images/train
+val: images/val
+test: images/test
+names:
+  0: person_figure

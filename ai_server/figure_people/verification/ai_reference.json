@@ -1,0 +1,209 @@
+{
+  "method": "Unblinded AI visual reinspection of 6 existing examples, not an independent or human-certified benchmark",
+  "records": [
+    {
+      "id": "129_IMG_8986",
+      "split": "train",
+      "reviewed": true,
+      "reviewer": "AI visual reinspection",
+      "persons": [
+        {
+          "bbox": [
+            438,
+            454,
+            524,
+            617
+          ],
+          "status": "unknown",
+          "reason": "방파제 가장자리에 앉아 다리가 밖으로 돌출됨"
+        },
+        {
+          "bbox": [
+            114,
+            592,
+            244,
+            757
+          ],
+          "status": "safe",
+          "reason": "누운 피규어 전체가 상면 안쪽에 보임"
+        }
+      ],
+      "human_reviewed": false
+    },
+    {
+      "id": "199_IMG_8780",
+      "split": "test",
+      "reviewed": true,
+      "reviewer": "AI visual reinspection",
+      "persons": [
+        {
+          "bbox": [
+            552,
+            481,
+            632,
+            630
+          ],
+          "status": "unknown",
+          "reason": "가장자리에 앉은 피규어"
+        },
+        {
+          "bbox": [
+            466,
+            573,
+            552,
+            718
+          ],
+          "status": "unknown",
+          "reason": "가장자리에 앉은 피규어"
+        },
+        {
+          "bbox": [
+            363,
+            652,
+            457,
+            816
+          ],
+          "status": "unknown",
+          "reason": "가장자리에 앉은 피규어"
+        }
+      ],
+      "human_reviewed": false
+    },
+    {
+      "id": "230_IMG_9003",
+      "split": "test",
+      "reviewed": true,
+      "reviewer": "AI visual reinspection",
+      "persons": [
+        {
+          "bbox": [
+            330,
+            500,
+            449,
+            586
+          ],
+          "status": "safe",
+          "reason": "뒤쪽 누운 피규어가 상면 안쪽"
+        },
+        {
+          "bbox": [
+            437,
+            535,
+            513,
+            676
+          ],
+          "status": "unknown",
+          "reason": "가장자리에 앉아 있음"
+        },
+        {
+          "bbox": [
+            121,
+            745,
+            290,
+            870
+          ],
+          "status": "safe",
+          "reason": "앞쪽 누운 피규어가 상면 안쪽"
+        }
+      ],
+      "human_reviewed": false
+    },
+    {
+      "id": "242_IMG_8818",
+      "split": "train",
+      "reviewed": true,
+      "reviewer": "AI visual reinspection",
+      "persons": [
+        {
+          "bbox": [
+            591,
+            546,
+            664,
+            681
+          ],
+          "status": "not_safe",
+          "reason": "오른쪽 뒤 파란 테트라포드 위"
+        },
+        {
+          "bbox": [
+            487,
+            692,
+            569,
+            837
+          ],
+          "status": "not_safe",
+          "reason": "오른쪽 앞 회색 테트라포드 위"
+        },
+        {
+          "bbox": [
+            242,
+            694,
+            344,
+            860
+          ],
+          "status": "unknown",
+          "reason": "방파제 가장자리에 앉아 있음"
+        }
+      ],
+      "human_reviewed": false
+    },
+    {
+      "id": "279_IMG_8891",
+      "split": "train",
+      "reviewed": true,
+      "reviewer": "AI visual reinspection",
+      "persons": [
+        {
+          "bbox": [
+            452,
+            368,
+            534,
+            531
+          ],
+          "status": "unknown",
+          "reason": "방파제 뒤 가장자리에 앉아 있음"
+        },
+        {
+          "bbox": [
+            467,
+            614,
+            556,
+            772
+          ],
+          "status": "not_safe",
+          "reason": "회색 테트라포드 위"
+        },
+        {
+          "bbox": [
+            197,
+            694,
+            326,
+            872
+          ],
+          "status": "unknown",
+          "reason": "방파제 앞 가장자리에 앉아 있음"
+        }
+      ],
+      "human_reviewed": false
+    },
+    {
+      "id": "060_IMG_8962",
+      "split": "test",
+      "reviewed": true,
+      "reviewer": "AI visual reinspection",
+      "persons": [
+        {
+          "bbox": [
+            147,
+            961,
+            296,
+            1084
+          ],
+          "status": "not_safe",
+          "reason": "높은 방파제 상면이 아니라 앞쪽 낮은 바닥에 놓여 보임; 물리적 접촉은 현장 확인 필요"
+        }
+      ],
+      "human_reviewed": false
+    }
+  ]
+}
