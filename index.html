@@ -3208,7 +3208,7 @@
 
     const fmtAI = (r) => (!r ? "분석 없음" : r.state === "ok" ? `${r.label} ${Math.round(r.confidence * 100)}%`
       : r.state === "no_signal" ? "영상 없음 · 판정 안 함"
-      : r.state === "no_target" ? "사람 없음 · 판정 안 함"
+      : r.state === "no_target" ? (r.note || "사람 없음 · 판정 안 함")
       : r.state === "pending" ? "판별 중" : r.state === "uncertain" ? `확인 필요 (${r.candidate} ${Math.round(r.confidence * 100)}%)` : "모델 오류");
 
     // 상황 기록에 붙일 AI 결과 (카메라 번호·인원·모델 결과)
